@@ -13,10 +13,12 @@ See what you get: the sample apartment, published by this repository itself, is 
   of direct sun on 21 June, 21 March and 21 December, and the sun's path over the site.
 - **A 3D walkthrough**:
   - stand in every room at true size, with a view of each room framed for you;
-  - open and close the doors, windows and shutters;
+  - open and close the doors, windows and shutters, all at once or one door at a time, and switch the lights room by
+    room;
   - drag the sun along its real path for your site, or play the day;
   - measure anything with the tape;
-  - place real-size furniture and see the gap on every side.
+  - place real-size furniture and see the gap on every side;
+  - share a link that opens the same view, with the furniture you placed and the finishes you tried.
   It works on a phone too.
 - **A plan lock**, so nothing moves your walls by accident: every build checks the measurements against the ones you
   approved.

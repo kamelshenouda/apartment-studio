@@ -114,6 +114,9 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .pcard .pl span:first-child{color:#1D2125;font-weight:600}
 .pcard .px{position:absolute;top:3px;right:3px;width:26px;height:26px;border:0;border-radius:6px;background:transparent;font:500 18px/1 var(--display);color:#666C71;cursor:pointer}
 .pcard .px:hover{background:rgba(0,0,0,.06)}
+.pcard .pa{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.pcard .pa button{appearance:none;border:1px solid #2E5A74;background:#2E5A74;color:#fff;font:600 12px var(--display);padding:5px 9px;border-radius:6px;cursor:pointer}
+.pcard .pa button:focus-visible{outline:2px solid #2E5A74;outline-offset:2px}
 .pcard .px:focus-visible{outline:2px solid #2E5A74;outline-offset:1px}
 .minimap{position:absolute;right:12px;top:58px;width:200px;height:182px;border-radius:8px;background:rgba(251,250,247,.9);box-shadow:0 2px 8px rgba(0,0,0,.12);cursor:crosshair;touch-action:manipulation}
 .minimap:focus-visible{outline:2px solid #2E5A74;outline-offset:2px}
@@ -404,6 +407,8 @@ h3{font-weight:600}
       <div class="ctl"><div class="cl"><span>Dimensions</span><kbd class="sk" data-k="8"></kbd></div><div class="bt" data-state="dim"><button type="button" data-v="off" aria-pressed="true">Off</button><button type="button" data-v="on" aria-pressed="false" title="Room widths and lengths in metres, from the survey">On</button></div></div>
       <div class="ctl" id="wallrow"><div class="cl"><span>Height from above</span><kbd class="sk" data-k="9"></kbd></div><div class="bt" data-state="cut"><button type="button" data-v="full" aria-pressed="true" title="Real height: 2.80 m to the slab">2.80 m</button><button type="button" data-v="cut" aria-pressed="false" title="Cut at 1.25 m to see into the rooms">Cut at 1.25 m</button></div></div>
       <div class="ctl" id="dofrow"><div class="cl"><span>Depth of field from above</span></div><div class="bt" data-state="dof"><button type="button" data-v="on" aria-pressed="true" title="From above, once the view settles: the model in focus, the far ground softening like a photograph">On</button><button type="button" data-v="off" aria-pressed="false">Off</button></div></div>
+      <div class="ctl" id="strow"><div class="cl"><span>Styling</span></div><div class="bt" data-state="st"><button type="button" data-v="off" aria-pressed="true" title="The design as drawn">Off</button><button type="button" data-v="on" aria-pressed="false" title="Cushions, a throw, books, a vase and a lamp: the rooms as they look lived in. Props only, not part of the design">On</button></div></div>
+      <div class="ctl" id="pwrow"><div class="cl"><span>Sockets and switches</span></div><div class="bt" data-state="pw"><button type="button" data-v="off" aria-pressed="true">Hide</button><button type="button" data-v="on" aria-pressed="false" title="From the power plan: sockets and data points 30 cm from the floor, light switches and keypads at 1.05 m. Click one for what it is">Show</button></div></div>
 <@v16></@v16>      <div class="ctl"><div class="cl"><span>Layers</span></div>
         <div class="ftools"><button type="button" id="lyopen" title="From above: the floor stays, the furniture and joinery, the walls and the lighting lift apart">Separate the layers</button><button type="button" id="lyclose" disabled>Put back</button></div></div>
 <@v17></@v17>      <span id="sum-fin" hidden></span>
@@ -486,7 +491,7 @@ h3{font-weight:600}
     <div class="ftray" id="fintray" hidden role="region" aria-label="Finish samples"><div class="fthead"><div class="fttabs" id="fttabs"></div><span class="ftnote" id="ftnote"></span><button type="button" class="ftx" id="ftclose" aria-label="Close the samples">×</button></div><div class="ftitems" id="ftitems"></div></div>
     <div class="finghost" id="finghost" hidden></div>
     <div class="fbar" id="fbar" hidden aria-live="polite"><b id="fbname"></b><label class="fsz">W <input type="number" id="fbw" min="20" max="500" step="1" inputmode="numeric"></label><label class="fsz">D <input type="number" id="fbd" min="20" max="500" step="1" inputmode="numeric"></label><span class="fszu">cm</span><button type="button" id="fbrot" title="Turn 90° (R)">↻ 90°</button><button type="button" id="fbdel" class="danger" title="Remove (Delete)">Remove</button><button type="button" id="fbundo" disabled title="Undo (Ctrl+Z, ⌘Z on a Mac)">↶</button><button type="button" id="fbdone">Done</button><span class="fx" id="fbinfo"></span></div>
-    <div class="pcard" id="pcard" hidden aria-live="polite"><button type="button" class="px" id="pcardx" aria-label="Close">×</button><b id="pcardt"></b><span class="pl" id="pcardl"></span></div>
+    <div class="pcard" id="pcard" hidden aria-live="polite"><button type="button" class="px" id="pcardx" aria-label="Close">×</button><b id="pcardt"></b><span class="pl" id="pcardl"></span><span class="pa" id="pcarda" hidden></span></div>
     <div class="zoomui" role="group" aria-label="Zoom">
       <button type="button" class="home" id="zhome" title="Stand at the main door at true size (H)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 14.5V2.2l7-1v14.3z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><circle cx="8.3" cy="8.3" r=".9" fill="currentColor"/><path d="M1.5 14.5h13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>At the door · 1:1</button>
       <button type="button" id="zmeas" aria-pressed="false" aria-label="Tape measure" title="Tape measure (M): click two points"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="1.5" y="6" width="17" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5 6v3.5M8 6v2M11 6v3.5M14 6v2" stroke="currentColor" stroke-width="1.3"/></svg></button>
@@ -866,8 +871,9 @@ function clearModel(){
 }
 
 // ---------- states (needed by the material factory, so declared before the first build)
-var state={dof:'on',chg:'on',sp:'on',isl:'design',k:'open',p:'open',d:'open',v:'now',season:'mar',hour:12,cut:'full',up:'on',sh:'open',gs:'pergola',aw:'out',fu:'all',fl:'stone',dim:'off',
+var state={st:'off',pw:'off',dof:'on',chg:'on',sp:'on',isl:'design',k:'open',p:'open',d:'open',v:'now',season:'mar',hour:12,cut:'full',up:'on',sh:'open',gs:'pergola',aw:'out',fu:'all',fl:'stone',dim:'off',
            wm:Q.get('walls')==='solid'?'solid':Q.get('walls')==='glass'?'glass':'auto',look:Q.get('look')==='model'?'model':'natural'};
+var DOORS={}, DOORV=0;   // doors opened or shut one at a time (click a door): door number -> 'open' or 'closed'; the Doors switch clears them
 progress(.3,'Building the rooms…'); await tick();
 buildModel();
 // site: paving everywhere, grass in the garden
@@ -1074,7 +1080,7 @@ function startLxRamp(delay){
 }
 function setLights(){
   var eye=typeof mode!=='undefined'&&mode==='eye', pergola=state.gs==='pergola';
-  lxObjs.forEach(function(m){ var u=m.userData, lv=lxLevel(u.k,u.g==='outp'?'out':u.g)*(u.g==='outp'&&!pergola?0:1)*lxRamp(u.g);
+  lxObjs.forEach(function(m){ var u=m.userData, lv=lxLevel(u.k,u.g==='outp'?'out':u.g)*(u.g==='outp'&&!pergola?0:1)*lxRamp(u.g)*(LXOFF[u.g+'|'+u.k]?0:1);
     if(u.kind==='body'){ m.visible=state.fu==='all'; return; }
     if(u.kind==='fit'){ m.material.emissiveIntensity=lv*(u.k==='lamp'?.25+.35*NIGHT:1+(u.k==='ceil'?1.2:4)*NIGHT); m.visible=(eye||u.k==='ext'||u.k==='lamp'||(typeof LY!=='undefined'&&LY&&LY.on))&&(u.k!=='lamp'||state.fu==='all'); return; }
     var op=lv*NIGHT*(u.kind==='pool'?.3:u.kind==='band'?.32:.38); m.material.opacity=op; m.visible=op>.004&&(u.k!=='lamp'||state.fu==='all'); });
@@ -1446,6 +1452,8 @@ function applyState(){
     if(g==='k-open')on=state.k==='open'; if(g==='k-closed')on=state.k==='closed';
     if(g==='p-open')on=state.p==='open'; if(g==='p-closed')on=state.p==='closed';
     if(g==='d-open')on=state.d==='open'; if(g==='d-closed')on=state.d==='closed'; if(g==='d-hidden')on=state.d!=='none';
+    var dm=/^d-(open|closed)\.(\d+)$/.exec(g); if(dm)on=state.d!=='none'&&(DOORS[dm[2]]||state.d)===dm[1];   // one door, or the switch
+    if(g==='st-on')on=state.st==='on'; if(g==='pw')on=state.pw==='on';
     if(g==='w-open')on=state.d==='open'; if(g==='w-closed')on=state.d!=='open';   // windows open with the doors
     if(g==='v-now')on=state.v==='now'; if(g==='v-later')on=state.v==='later';
     if(g==='i-design')on=state.isl==='design'; if(g==='i-trial')on=state.isl==='trial';
@@ -1460,6 +1468,7 @@ function applyState(){
   UPPER.visible=state.up==='on';
   NEIGH.forEach(function(m){m.visible=state.up==='on';m.material=mode==='eye'?M.context:HIDDEN;m.renderOrder=mode==='eye'?0:-1;});
   document.getElementById('awrow').hidden=state.gs!=='awning';
+  document.getElementById('strow').hidden=!groups['st-on']; document.getElementById('pwrow').hidden=!groups['pw'];
   setSun();
   var cut=state.cut==='cut'&&mode==='overview';
   cutPlane.constant=cut?1.25:1e5;
@@ -1476,6 +1485,7 @@ var userSet={}, prevD='open', prevGs='pergola';
 function press(key,val){state[key]=val;[].forEach.call(document.querySelectorAll('.bt[data-state="'+key+'"] button'),function(x){x.setAttribute('aria-pressed',x.getAttribute('data-v')===val?'true':'false');});}
 function setKey(key,val,user){
   var was=state[key]; if(user)userSet[key]=true;
+  if(key==='d'&&user){ DOORS={}; DOORV++; }
   if(key==='d'&&val!=='none')prevD=val; if(key==='gs'&&val!=='none')prevGs=val;
   press(key,val);
   if(key==='fu'&&val!==was){ if(val==='none'){press('d','none');press('gs','none');} else if(was==='none'){press('d',prevD);press('gs',prevGs);} }
@@ -1598,7 +1608,7 @@ function composeRoom(rm,obs){   // as a photographer would: from a far corner, a
 var RESOLVED={};
 function resolveView(name){
   var v=VIEWS[name]; if(v.mode==='overview')return v;
-  var key=LAYOUT+'|'+state.d+'|'+state.isl+'|'+name; if(RESOLVED[key])return RESOLVED[key];
+  var key=LAYOUT+'|'+state.d+DOORV+'|'+state.isl+'|'+name; if(RESOLVED[key])return RESOLVED[key];
   var obs=viewObstacles(), rm=roomAt(v.pos[0],v.pos[1]), seated=v.pos[2]<EYE-10, out=null;
 <@v93>  if(v.compose&&rm){ var cc=composeRoom(rm,obs); if(cc)return (RESOLVED[key]={pos:cc.pos,look:cc.look,z:.7,msg:rm.n+', '+rm.d+' m, from the spot that takes in the most of it. Press 1:1 for true size.'}); }
 </@v93>  var fits=(!v.need||hasPiece(v.need,v.pos[0],v.pos[1],seated?70:220))&&(!v.room||(rm&&rm.n.indexOf(v.room)===0));
@@ -1920,7 +1930,7 @@ function hud(){
 
 // ---------- what is it? Click or tap any piece for its name, true size and finish, outlined in the model; click a
 // floor for the room. Esc or × closes it. Pieces come from the plan's records (build_3d.py), so the sizes are the plan's.
-var pickRay=new T.Raycaster(), cardEl=document.getElementById('pcard'), cardT=document.getElementById('pcardt'), cardL=document.getElementById('pcardl');
+var pickRay=new T.Raycaster(), cardEl=document.getElementById('pcard'), cardT=document.getElementById('pcardt'), cardL=document.getElementById('pcardl'), cardA=document.getElementById('pcarda');
 var hl=null, cardAnchor=null, clickTimer=null, downAt=null;
 var hlLine=new T.LineBasicMaterial({color:0x2E5A74,transparent:true,opacity:.95,depthTest:false});
 var hlFill=new T.MeshBasicMaterial({color:0x5C93B5,transparent:true,opacity:.14,depthWrite:false});
@@ -1950,9 +1960,10 @@ function describe(p){
   return out;
 }
 function clearCard(){ if(hl){ scene.remove(hl); hl.traverse(function(o){ if(o.geometry)o.geometry.dispose(); }); hl=null; } cardEl.hidden=true; cardAnchor=null; dirty=true; }
-function showCard(title,lines,box,at){
-  clearCard(); cardT.textContent=title; cardL.textContent='';
+function showCard(title,lines,box,at,acts){
+  clearCard(); cardT.textContent=title; cardL.textContent=''; cardA.textContent=''; cardA.hidden=!(acts&&acts.length);
   lines.forEach(function(t){ var sp=document.createElement('span'); sp.textContent=t; cardL.appendChild(sp); });
+  (acts||[]).forEach(function(a){ var b=document.createElement('button'); b.type='button'; b.textContent=a[0]; b.addEventListener('click',a[1]); cardA.appendChild(b); });
   if(box){ var w=(box[3]-box[0])*S, d=(box[4]-box[1])*S, h=Math.max(.01,(box[5]-box[2])*S), g=new T.BoxGeometry(w+.012,h+.012,d+.012);
     hl=new T.Group(); hl.add(new T.LineSegments(new T.EdgesGeometry(g),hlLine)); var fm=new T.Mesh(g,hlFill); fm.renderOrder=5; hl.add(fm);
     hl.position.set((box[0]+box[3])/2*S,(box[2]+box[5])/2*S,(box[1]+box[4])/2*S); hl.children[0].renderOrder=6; scene.add(hl);
@@ -1973,10 +1984,11 @@ function placeCard(){
 function pickAt(cx,cy){
   var r=renderer.domElement.getBoundingClientRect(), cut=state.cut==='cut'&&mode==='overview';
   ndc.set(((cx-r.left)/r.width)*2-1,-((cy-r.top)/r.height)*2+1); pickRay.setFromCamera(ndc,camera); pickRay.firstHitOnly=!cut;
-  var obs=solids.concat(floors,caps).filter(function(o){return o.visible&&o.isMesh;});
+  var obs=solids.concat(floors,caps,lxObjs.filter(function(m){ return m.userData.kind==='fit'; })).filter(function(o){return o.visible&&o.isMesh;});
   var hit=pickRay.intersectObjects(obs,false).filter(function(h){ return !cut||h.point.y<=1.25; })[0];
   if(!hit){ clearCard(); return; }
   var x=hit.point.x/S, y=hit.point.z/S, z=hit.point.y/S;
+  if(hit.object.userData.lx){ lightCard(hit.object.userData,hit.point); return; }
   if(floors.indexOf(hit.object)>-1){
     var rm=roomAt(x,y);
     if(rm){ var a=(rm.r[2]-rm.r[0])*(rm.r[3]-rm.r[1])/1e4; showCard(rm.n,[rm.d+' m inside the walls','About '+a.toFixed(1)+' m² · ceiling 2.80 m'],null,hit.point); }
@@ -1984,8 +1996,27 @@ function pickAt(cx,cy){
     else clearCard();
     return;
   }
-  var pc=pieceAt(x,y,z); if(pc)showCard(pc.n,describe(pc),pc.b); else clearCard();
+  var pc=pieceAt(x,y,z); if(!pc){ clearCard(); return; }
+  var dn=doorNo(pc); if(dn)doorCard(dn,pc); else showCard(pc.n,describe(pc),pc.b);
 }
+// one door at a time: a door's card opens or shuts just that one; the Doors switch sets them all again
+function doorNo(p){ if(p.dn)return String(p.dn); var m=/^d-(open|closed)\.(\d+)$/.exec(p.v||''); return m&&m[2]; }
+function doorIs(n){ return DOORS[n]||state.d; }
+function doorCard(n,pc){
+  if(state.d==='none'){ showCard(pc.n,describe(pc),pc.b); return; }
+  var open=doorIs(n)==='open';
+  showCard(pc.n,describe(pc),pc.b,null,[[open?'Close this door':'Open this door',function(){
+    DOORS[n]=open?'closed':'open'; if(DOORS[n]===state.d)delete DOORS[n]; DOORV++; applyState();
+    var v='d-'+doorIs(n)+'.'+n, np=(SCENE.pieces||[]).filter(function(q){ return q.v===v||(q.dn&&String(q.dn)===n); })[0]||pc;
+    doorCard(n,np); }]]); }
+// a light fitting: its card switches that room's fittings of that kind, off or back to the scene
+var LXOFF={}, LXNAME={cove:'Cove light',down:'Downlights',wash:'Wall washers',ceil:'Ceiling light',lamp:'Floor lamp',ext:'Garden wall lights',shelf:'Strip light under the shelves'};
+function lightCard(u,at){
+  var key=u.g+'|'+u.k, off=!!LXOFF[key], rm=roomAt(at.x/S,at.z/S), lv=lxLevel(u.k,u.g==='outp'?'out':u.g);
+  var lines=[(rm?rm.n:u.g==='out'||u.g==='outp'?'Garden':'')+(rm||/^out/.test(u.g)?' · ':'')+'from the lighting plan',
+             off?'Switched off here':lv>0?'On in this scene, at '+Math.round(lv*100)+' %':'Off in this scene'];
+  showCard(LXNAME[u.k]||'Light',lines,null,at,[[off?'Switch back on':'Switch these off',function(){
+    if(off)delete LXOFF[key]; else LXOFF[key]=1; setLights(); lightCard(u,at); }]]); }
 renderer.domElement.addEventListener('pointerdown',function(e){ downAt={x:e.clientX,y:e.clientY,t:performance.now()}; });
 renderer.domElement.addEventListener('pointerup',function(e){
   if(!downAt)return; var moved=Math.hypot(e.clientX-downAt.x,e.clientY-downAt.y), held=performance.now()-downAt.t; downAt=null;
@@ -2255,7 +2286,7 @@ if(window.claude&&window.claude.use){
   window.claude.use('db').then(function(db){ if(!db)return; fStore=db;
     <@v113>Object.keys(ALL.layouts)</@v113>.forEach(function(L){ db.doc('furnish/'+L).onSnapshot(function(sn){
       if(!sn.exists||sn.metadata.hasPendingWrites)return; var d=sn.data(); if(!d||!Array.isArray(d.pieces))return;
-      if(fDrag&&L===LAYOUT)return; furn[L]=JSON.parse(JSON.stringify(d.pieces)).filter(function(q){ return q&&FDEF[q.t]&&isFinite(q.x)&&isFinite(q.y); });
+      if((fDrag&&L===LAYOUT)||L===SHARED_F)return; furn[L]=JSON.parse(JSON.stringify(d.pieces)).filter(function(q){ return q&&FDEF[q.t]&&isFinite(q.x)&&isFinite(q.y); });
       if(L===LAYOUT)fSync(); }, function(){}); });
   }).catch(function(){});
 }
@@ -2595,7 +2626,7 @@ function mmBuild(W,H){
 }
 function drawMinimap(){
   var show=mode==='eye'&&!renderer.xr.isPresenting; if(mm.hidden===show)mm.hidden=!show; if(!show)return;
-  var z=mmSize(), key=LAYOUT+'|'+state.fu+'|'+state.d+'|'+z.w; if(key!==mmKey){ mmBuild(z.w,z.h); mmKey=key; }
+  var z=mmSize(), key=LAYOUT+'|'+state.fu+'|'+state.d+DOORV+'|'+z.w; if(key!==mmKey){ mmBuild(z.w,z.h); mmKey=key; }
   var g=mmCtx, t=mmK(z.w,z.h), c=camera.position, x=t.ox+(c.x/S-MMB[0])*t.k, y=t.oy+(c.z/S-MMB[1])*t.k;
   var v=controls.target.clone().sub(c), ang=Math.atan2(v.z,v.x), half=Math.atan(Math.tan(camera.fov*Math.PI/360)*camera.aspect), R=Math.max(16*z.d,300*t.k);
   g.clearRect(0,0,z.w,z.h); g.drawImage(mmBase,0,0);
@@ -2676,20 +2707,45 @@ function camToken(){ var r=function(v){ return Math.round(v*10)/10; }, c=camera.
   if(mode==='eye'){ var d=t.clone().sub(c).normalize();
     return ['v1',LAYOUT,'e',r(c.x/S),r(c.z/S),r(c.y/S),r(Math.atan2(d.z,d.x)*180/Math.PI),r(Math.asin(Math.max(-1,Math.min(1,d.y)))*180/Math.PI),Math.round(EYEZ*100)/100,state.hour].join('~'); }
   return ['v1',LAYOUT,'o',r(c.x/S),r(c.z/S),r(c.y/S),r(t.x/S),r(t.z/S),r(t.y/S),state.hour].join('~'); }
+// the share link also carries what you set up: the finishes you picked ('f', by their place in the samples), the
+// furniture you placed ('p', one segment per piece: kind_x_y_turn[_width_depth]) and the doors you opened or shut one
+// at a time ('d'). The next person sees them without them being saved in their browser.
+function shareExtras(){ var out=[], fi=[], ds=[];
+  if(FIN_ON)Object.keys(FIN).forEach(function(t){ var i=FIN_X.indexOf(FIN_BY[FIN[t]]); if(i>-1&&FIN_T[t])fi.push(i); });
+  if(fi.length)out.push('f'+fi.join('_'));
+  fList().forEach(function(q){ var a=[q.t,q.x,q.y,q.r||0]; if(q.w||q.d)a.push(q.w||'',q.d||''); out.push('p'+a.join('_')); });
+  Object.keys(DOORS).forEach(function(n){ ds.push(n+(DOORS[n]==='open'?'o':'c')); }); if(ds.length)out.push('d'+ds.join('_'));
+  return {segs:out,fin:fi.length,furn:fList().length,doors:ds.length}; }
+function shareToken(){ var x=shareExtras(); return [camToken()].concat(x.segs).join('~'); }
+function applyExtras(m){ var fi=null, ps=[], ds={}, said=[];
+  m.forEach(function(sg){ var c=sg.charAt(0), a=sg.slice(1).split('_');
+    if(c==='f')fi=a.map(Number).filter(function(i){ return FIN_X[i]; });
+    else if(c==='p'&&FDEF[a[0]]){ var q={id:'s'+ps.length,t:a[0],x:+a[1],y:+a[2],r:+a[3]||0}; if(+a[4])q.w=+a[4]; if(+a[5])q.d=+a[5]; if(isFinite(q.x)&&isFinite(q.y))ps.push(q); }
+    else if(c==='d')a.forEach(function(d){ var k=/^(\d+)([oc])$/.exec(d); if(k)ds[k[1]]=k[2]==='o'?'open':'closed'; }); });
+  if(fi&&FIN_ON){ FIN={}; Object.keys(FIN_T).forEach(function(t){ finApply(t,t+':design'); });
+    fi.forEach(function(i){ var x=FIN_X[i]; if(!x.d&&FIN_T[x.t]){ FIN[x.t]=x.id; finApply(x.t,x.id); } }); finUI(); if(fi.length)said.push(fi.length+(fi.length>1?' finishes':' finish')+' tried'); }
+  if(ps.length){ furn[LAYOUT]=ps; SHARED_F=LAYOUT; fSync(); said.push(ps.length+(ps.length>1?' pieces':' piece')+' of furniture'); }
+  if(Object.keys(ds).length){ DOORS=ds; DOORV++; said.push('doors as they were left'); }
+  return said; }
+var SHARED_F=null;
 function applyCam(m){ var n=m.slice(3,9).map(Number); if(n.some(function(v){ return !isFinite(v); }))return false;
   if(m[2]==='e'){ goto('entrance',1); var pos=P(n[0],n[1],n[2]), ya=n[3]*Math.PI/180, pi=n[4]*Math.PI/180;
     anim.toP=pos; anim.toT=pos.clone().add(new T.Vector3(Math.cos(pi)*Math.cos(ya),Math.sin(pi),Math.cos(pi)*Math.sin(ya)).multiplyScalar(.05)); setEyeZoom(+m[8]||1); }
   else { goto('overview',1); anim.toP=P(n[0],n[1],n[2]); anim.toT=P(n[3],n[4],n[5]); }
   camera.position.copy(anim.toP); controls.target.copy(anim.toT); anim=null; controls.update();
   var h=+m[9]; if(isFinite(h)&&h>=5&&h<=22){ state.hour=h; timeEl.value=h; setSun(); }
-  statusEl.hidden=false; statusEl.textContent='A shared view of '+SCENE.name+'. The arrows walk on from here.'; dirty=true; return true; }
+  var said=m.length>10?applyExtras(m.slice(10)):[];
+  statusEl.hidden=false; statusEl.textContent='A shared view of '+SCENE.name+(said.length?', with '+said.join(', ')+' (not saved in your browser unless you change them)':'')+'. The arrows walk on from here.'; dirty=true; return true; }
 document.getElementById('sharebtn').addEventListener('click',function(){
-  var url=SITE_BASE+'#'+camToken(), b=this, note=document.getElementById('sharenote');
+  var x=shareExtras(), url=SITE_BASE+'#'+shareToken(), b=this, note=document.getElementById('sharenote'), with_=[];
+  if(x.fin)with_.push(x.fin+(x.fin>1?' finishes':' finish')); if(x.furn)with_.push(x.furn+(x.furn>1?' pieces':' piece')+' of furniture'); if(x.doors)with_.push(x.doors+(x.doors>1?' doors':' door')+' set by hand');
   function done(ok){ b.textContent=ok?'Link copied':'Copy the link below'; setTimeout(function(){ b.textContent='Copy a link to this view'; },2500);
-    note.hidden=false; note.textContent=url; if(!ok){ var rg=document.createRange(); rg.selectNodeContents(note); var sel=getSelection(); sel.removeAllRanges(); sel.addRange(rg); } }
+    note.hidden=false; note.textContent=(with_.length?'This view, with '+with_.join(', ')+': ':'')+url; if(!ok){ var rg=document.createRange(); rg.selectNodeContents(note); var sel=getSelection(); sel.removeAllRanges(); sel.addRange(rg); } }
   try{ navigator.clipboard.writeText(url).then(function(){done(true);},function(){done(false);}); }catch(e){ done(false); }
 });
-window.<@v131>APT3D</@v131>={layers:{open:function(){ lyStart(); },close:function(){ lyEnd(false); },check:function(){ var m=0; if(!LY.parts)return 0; ['furn','walls','lights'].forEach(function(k){ LY.parts[k].forEach(function(q){ m=Math.max(m,Math.abs(q.o.position.y-q.y)); }); }); return m; },parts:function(){ return LY.parts&&{floor:LY.parts.floor.length,furn:LY.parts.furn.length,walls:LY.parts.walls.length,lights:LY.parts.lights.length}; }},walk:{start:function(){ stStart(); },go:function(i){ stShow(i); },state:function(){ return {on:ST.on,i:ST.i,dim:state.dim,hour:state.hour}; },end:function(){ stEnd(); }},ba:{pose:function(t){ if(!BA.on)baStart(1); BA.run=false; baPose(t); },end:function(){ baEnd(); }},rig:rig,camToken:camToken,finAt:function(x,y){ var s=finSurfaceAt(x,y); return s&&(s.id||'wet'); },
+window.<@v131>APT3D</@v131>={shareToken:function(){ return shareToken(); },pieces:function(){ return SCENE.pieces||[]; },lights:function(){ return lxObjs.filter(function(m){ return m.userData.kind==='fit'; }).map(function(m){ m.geometry.computeBoundingBox(); var c=new T.Vector3(); m.geometry.boundingBox.getCenter(c); return {g:m.userData.g,k:m.userData.k,c:[c.x/S,c.z/S,c.y/S],vis:m.visible,e:m.material.emissiveIntensity}; }); },card:function(){ return cardEl.hidden?null:{t:cardT.textContent,l:cardL.textContent,a:[].map.call(cardA.querySelectorAll('button'),function(b){ return b.textContent; })}; },
+  cardAct:function(i){ var b=cardA.querySelectorAll('button')[i||0]; if(b)b.click(); },pick:function(cx,cy){ pickAt(cx,cy); },
+  screen:function(x,y,z){ camera.updateMatrixWorld(); var r=renderer.domElement.getBoundingClientRect(), v=P(x,y,z).project(camera); return v.z>1?null:[r.left+(v.x+1)/2*r.width,r.top+(1-v.y)/2*r.height]; },doors:function(){ return JSON.parse(JSON.stringify(DOORS)); },lightsOff:function(){ return Object.keys(LXOFF); },layers:{open:function(){ lyStart(); },close:function(){ lyEnd(false); },check:function(){ var m=0; if(!LY.parts)return 0; ['furn','walls','lights'].forEach(function(k){ LY.parts[k].forEach(function(q){ m=Math.max(m,Math.abs(q.o.position.y-q.y)); }); }); return m; },parts:function(){ return LY.parts&&{floor:LY.parts.floor.length,furn:LY.parts.furn.length,walls:LY.parts.walls.length,lights:LY.parts.lights.length}; }},walk:{start:function(){ stStart(); },go:function(i){ stShow(i); },state:function(){ return {on:ST.on,i:ST.i,dim:state.dim,hour:state.hour}; },end:function(){ stEnd(); }},ba:{pose:function(t){ if(!BA.on)baStart(1); BA.run=false; baPose(t); },end:function(){ baEnd(); }},rig:rig,camToken:camToken,finAt:function(x,y){ var s=finSurfaceAt(x,y); return s&&(s.id||'wet'); },
   setCam:function(t){ var m=String(t).split('~'), n=m.slice(3,9).map(Number); if(m[0]!=='v1'||n.some(function(v){ return !isFinite(v); }))return;   // follow another view (the compare page): camera only
     if((m[2]==='e')!==(mode==='eye')){ applyCam([m[0],LAYOUT].concat(m.slice(2))); return; }
     if(m[2]==='e'){ var pos=P(n[0],n[1],n[2]), ya=n[3]*Math.PI/180, pi=n[4]*Math.PI/180; camera.position.copy(pos);

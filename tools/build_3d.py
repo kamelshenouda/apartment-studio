@@ -28,6 +28,7 @@ GLAZED_DOORS = []              # boxes of glazed doors the plan draws as plain o
 TALL = ('Wardrobe', 'Pantry', 'Cleaning', 'Iron', 'Larder', 'Toys', 'Coats')
 
 items = []
+DOORN = [0]        # numbers the doors and sliding leaves, so each can be opened or shut on its own ('d-open.N')
 FURN = [None]      # 'loose' or 'built' while building furniture records (the viewer's Furniture switch)
 LOOSE = {'chair', 'sofa', 'bed', 'roundtable', 'stool', 'rug', 'nightstand', 'bench', 'piano', 'pouf', 'playhouse', 'plant', 'dtable'}
 
@@ -266,6 +267,93 @@ def lighting(layout, rooms=()):
     return out
 
 
+# ---- the Styling switch: props drawn from the furniture the plan already has ('st-on', off by default)
+def styling(R):
+    """Cushions on sofas, a vase and a bowl on dining tables, books on coffee tables and desks, a throw and cushions
+    on beds. Only furniture outside any trial or variant gets them, so nothing floats when a switch changes."""
+    FURN[0] = 'loose'
+    V = 'st-on'
+    for r in R:
+        if r['ctx'] or not r.get('furn'):
+            continue
+        k = r['kind']
+        if k == 'sofa':
+            for i, (x0, y0, x1, y1) in enumerate(r.get('back', [])):
+                along_x = (x1 - x0) >= (y1 - y0)
+                L = (x1 - x0) if along_x else (y1 - y0)
+                n = max(1, min(3, int(L // 70)))
+                for j in range(n):
+                    c = (x0 if along_x else y0) + L * (j + .5) / n
+                    mat = 'linen' if (i + j) % 2 else 'fabric'
+                    if along_x:
+                        cy = (y0 + y1) / 2; sg = 1 if cy < sum(q[1] for q in r['pts']) / len(r['pts']) else -1
+                        box(c - 22, y1 if sg > 0 else y0 - 14, c + 22, (y1 + 14) if sg > 0 else y0, 42, 84, mat, V)
+                    else:
+                        cx = (x0 + x1) / 2; sg = 1 if cx < sum(q[0] for q in r['pts']) / len(r['pts']) else -1
+                        box(x1 if sg > 0 else x0 - 14, c - 22, (x1 + 14) if sg > 0 else x0, c + 22, 42, 84, mat, V)
+        elif k == 'dtable':
+            x0, y0, x1, y1 = r['box']; cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+            cyl(cx, cy, 6, 75, 101, 'ceramic', V); cyl(cx + (25 if x1 - x0 > y1 - y0 else 0), cy + (0 if x1 - x0 > y1 - y0 else 25), 15, 75, 81, 'oakdark', V)
+        elif k == 'rect' and r.get('cls') == 'table':
+            x0, y0, x1, y1 = r['box']; cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+            h = 75 if (x1 - x0) * (y1 - y0) > 12000 else 40
+            for i, mat in enumerate(('linen', 'black', 'fabric')):
+                box(cx - 13 + i, cy - 9, cx + 11 + i, cy + 8, h + i * 3, h + i * 3 + 3, mat, V)
+        elif k == 'join' and 'Desk' in (r.get('label') or ''):
+            x0, y0, x1, y1 = r['box']; h = r.get('h') or 75
+            box(x0 + 8, y0 + 6, x0 + 30, y0 + 22, h, h + 9, 'linen', V)
+            cyl(x1 - 15, (y0 + y1) / 2, 7, h, h + 2, 'black', V); cyl(x1 - 15, (y0 + y1) / 2, 1, h + 2, h + 38, 'black', V)
+            cyl(x1 - 15, (y0 + y1) / 2, 10, h + 30, h + 44, 'linen', V)
+        elif k == 'bed':
+            x0, y0, x1, y1 = r['box']; head = r['head']
+            if head in 'we':
+                fx = x1 - 45 if head == 'w' else x0 + 5
+                box(fx, y0 + 2, fx + 40, y1 - 2, 52, 56, 'fabric', V)
+                hx = x0 + 58 if head == 'w' else x1 - 70
+                for yy in ((y0 + y1) / 2 - 30, (y0 + y1) / 2 + 2):
+                    box(hx, yy, hx + 12, yy + 28, 56, 86, 'linen', V)
+            else:
+                fy = y1 - 45 if head == 'n' else y0 + 5
+                box(x0 + 2, fy, x1 - 2, fy + 40, 52, 56, 'fabric', V)
+                hy = y0 + 58 if head == 'n' else y1 - 70
+                for xx in ((x0 + x1) / 2 - 30, (x0 + x1) / 2 + 2):
+                    box(xx, hy, xx + 28, hy + 12, 56, 86, 'linen', V)
+    FURN[0] = None
+
+
+# ---- the power plan: sockets, switches and data points on the nearest wall face ('pw', off by default)
+POWER_Z = {'socket': 30, 'data': 30, 'switch': 105, 'keypad': 105}
+
+
+def power(layout):
+    """[{k: socket|switch|keypad|data, p: (x, y), t: label, z: cm}] for this layout (none by default)."""
+    return []
+
+
+def power_plan(layout, pieces):
+    walls = [it['b'] for it in items if it['t'] == 'b' and it.get('g') == 'wall' and it['b'][2] == 0 and it['b'][5] >= 200]
+    names = {'socket': 'Socket', 'switch': 'Light switch', 'keypad': 'Lighting keypad', 'data': 'Data point'}
+    for q in power(layout):
+        x, y = q['p']; z = q.get('z', POWER_Z.get(q['k'], 30)); best = None
+        for b in walls:                                   # the nearest face of a wall, and the side the point is on
+            cx, cy = min(max(x, b[0]), b[3]), min(max(y, b[1]), b[4]); d = math.hypot(x - cx, y - cy)
+            if best is None or d < best[0]:
+                best = (d, b)
+        if not best or best[0] > 80:
+            continue
+        b = best[1]; w = 15 if q['k'] == 'keypad' else 8.5
+        side = 'x0' if x < b[0] else 'x1' if x > b[3] else 'y0' if y < b[1] else 'y1' if y > b[4] else \
+            min((x - b[0], 'x0'), (b[3] - x, 'x1'), (y - b[1], 'y0'), (b[4] - y, 'y1'))[1]   # drawn inside the wall: its nearer face
+        y = min(max(y, b[1] + w / 2), b[4] - w / 2) if side[0] == 'x' and b[4] - b[1] >= w else y   # kept on the wall's length
+        x = min(max(x, b[0] + w / 2), b[3] - w / 2) if side[0] == 'y' and b[3] - b[0] >= w else x
+        bx = {'x0': (b[0] - 1.2, y - w / 2, b[0], y + w / 2), 'x1': (b[3], y - w / 2, b[3] + 1.2, y + w / 2),
+              'y0': (x - w / 2, b[1] - 1.2, x + w / 2, b[1]), 'y1': (x - w / 2, b[4], x + w / 2, b[4] + 1.2)}[side]
+        box(bx[0], bx[1], bx[2], bx[3], z - 4.25, z + 4.25, 'white', 'pw')
+        pieces.append({'n': names.get(q['k'], 'Socket') + (' · ' + q['t'] if q.get('t') and q['k'] in ('socket', 'data') else ''),
+                       'b': [round(v, 1) for v in (bx[0], bx[1], z - 4.25, bx[2], bx[3], z + 4.25)],
+                       'mt': 'white, %d cm from the floor' % round(z), 'v': 'pw'})
+
+
 # ---- hooks: what a project adds to the 3D of its own layouts (this engine's defaults do nothing special)
 def before(layout):
     """Called after the layout is drawn and before its records are read: a project can draw 3D-only extras."""
@@ -328,6 +416,7 @@ def build(skip=(), doors_shut=False, layout='existing'):
     layout: which plan to build (a key of LAYOUTS)."""
     bp.REC = []
     items.clear()                      # one shared list; each layout starts empty
+    DOORN[0] = 0
     getattr(bp, LAYOUTS[layout][0])()
     before(layout)
     R = bp.REC
@@ -359,8 +448,9 @@ def build(skip=(), doors_shut=False, layout='existing'):
             fr(l0, l0 + 4, cc - 1.6, cc + 1.6, 3, HEAD - 5, 'frame', v); fr(l1 - 4, l1, cc - 1.6, cc + 1.6, 3, HEAD - 5, 'frame', v)
             fr(l0, l1, cc - 1.6, cc + 1.6, 3, 7, 'frame', v); fr(l0, l1, cc - 1.6, cc + 1.6, HEAD - 9, HEAD - 5, 'frame', v)
         leaf(a0, mid + 2, c - 1.8, None)                      # fixed outer leaf
-        leaf(mid - 2, a1, c + 1.8, 'd-closed')                # inner leaf, closed
-        leaf(a0 + 6, mid + 8, c + 1.8, 'd-open')              # inner leaf, slid over the fixed one
+        DOORN[0] += 1; n = DOORN[0]
+        leaf(mid - 2, a1, c + 1.8, 'd-closed.%d' % n)         # inner leaf, closed
+        leaf(a0 + 6, mid + 8, c + 1.8, 'd-open.%d' % n)       # inner leaf, slid over the fixed one
 
     # a sliding door the plan draws straight into a wall gap, with no opening record, still needs its glass and lintel
     openings_ = [r['box'] for r in R if r['kind'] == 'opening']
@@ -386,7 +476,7 @@ def build(skip=(), doors_shut=False, layout='existing'):
             return
         byv = {}
         if r['kind'] == 'opening':                    # a window or garden door: one piece, sized by its glass when closed
-            byv[None] = [it for it in new if it['m'] in ('glass', 'frame') and it.get('v') in (None, 'w-closed', 'd-closed')] or new
+            byv[None] = [it for it in new if it['m'] in ('glass', 'frame') and (it.get('v') in (None, 'w-closed') or str(it.get('v')).startswith('d-closed'))] or new
         else:
             for it in new:
                 byv.setdefault(it.get('v'), []).append(it)
@@ -412,6 +502,9 @@ def build(skip=(), doors_shut=False, layout='existing'):
                 pc['v'] = v
             if its[0].get('f'):
                 pc['f'] = its[0]['f']
+            dn = [str(it.get('v'))[9:] for it in new if str(it.get('v')).startswith('d-closed.')]
+            if r['kind'] == 'opening' and dn:              # a garden door: its sliding leaf can be opened on its own
+                pc['dn'] = int(dn[0])
             pieces.append(pc)
 
     for r in R:
@@ -526,7 +619,8 @@ def build(skip=(), doors_shut=False, layout='existing'):
             elif r['cls'] == 'door hidden':                  # the flush hidden door always shows shut, in the wall plane
                 leaf(*r['shut'], ctx or 'd-hidden')
             else:                                            # both states; the viewer's Doors switch picks one
-                leaf(lx, ly, 'd-open'); leaf(*r['shut'], 'd-closed')
+                DOORN[0] += 1
+                leaf(lx, ly, 'd-open.%d' % DOORN[0]); leaf(*r['shut'], 'd-closed.%d' % DOORN[0])
         elif k == 'join' and r.get('z0'):                  # wall-hung: cabinets, shelves, the ceiling airer
             x0, y0, x1, y1 = r['box']
             box(x0, y0, x1, y1, r['z0'], r['h'], r.get('m') or 'oak', ctx)
@@ -800,6 +894,8 @@ def build(skip=(), doors_shut=False, layout='existing'):
     grounds(layout)
 
     windows_and_shutters()
+    styling(R)
+    power_plan(layout, pieces)
 
     art(layout)
 
