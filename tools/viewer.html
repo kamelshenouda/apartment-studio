@@ -1,6 +1,6 @@
 <meta charset="utf-8">
-<title>{{NAME}} · 3D</title>
-<meta name="description" content="Walk-through 3D model of the apartment, built from the architect's drawing in true centimetres.">
+<title><@v1>{{NAME}} ·</@v1> 3D</title>
+<meta name="description" content="Walk-through 3D model of the <@v2>apartment</@v2>, built from the <@v3>architect's drawing</@v3> in true <@v4>centimetres</@v4>.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..800;1,300..500&display=swap">
@@ -216,11 +216,11 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .joy b{display:block;width:44px;height:44px;border-radius:50%;background:#2E5A74;box-shadow:0 2px 6px rgba(0,0,0,.28);transition:transform .15s ease;pointer-events:none}
 .joy.on b{transition:none}
 .stage.joyon .status{left:130px}
-/* numbered notes pinned in the model (none in this template) */
+/* <@v5>numbered notes</@v5> pinned in the model <@v6>(none in this template) </@v6>*/
 .chg{position:absolute;z-index:3;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;border:2px solid #fff;background:#A8452C;color:#fff;font:700 12px/22px var(--mono);text-align:center;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.3);padding:0}
 .chg::before{content:"";position:absolute;inset:-9px;border-radius:50%}
 .chg:hover,.chg:focus-visible{outline:2px solid #fff;outline-offset:2px;background:#8E3722}
-/* what changes between two plans */
+/* what changes<@v7> between two plans</@v7> */
 .bakey{display:flex;flex-wrap:wrap;gap:4px 12px;font:500 12px var(--mono);color:var(--ink2);margin-top:6px}
 .bakey i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
 /* the walkthrough: a caption card with its chapters */
@@ -253,7 +253,7 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .sheetgrip i{display:block;width:42px;height:5px;border-radius:3px;background:var(--line)}
 .sheetgrip:focus-visible{outline:2px solid var(--accent);outline-offset:-4px}
 
-/* Montserrat: lighter, wider headings; tabular figures for dimensions */
+/* Montserrat<@v8></@v8>: lighter, wider headings; tabular figures for dimensions */
 body{font-variant-numeric:lining-nums tabular-nums}
 h1{font-weight:500!important;letter-spacing:-.015em!important}
 h2{font-weight:500!important;letter-spacing:-.01em}
@@ -374,16 +374,16 @@ h3{font-weight:600}
   <aside class="panel" aria-label="Controls">
     <div class="sheetgrip" id="sheetgrip" role="button" tabindex="0" aria-label="Pull up for more controls"><i></i></div>
     <header class="phead">
-      <div><div class="eyebrow">3D · walk through it</div><div class="ptitle" id="layoutname">As built</div></div>
+      <div><div class="eyebrow"><@v9>3D · walk through it</@v9></div><div class="ptitle" id="layoutname">As built</div></div>
       <button type="button" class="iconbtn" id="keysbtn" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (?)"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="5" width="16" height="10.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5 8.4h1.2M8.4 8.4h1.2M11.8 8.4H13M15 8.4h.1M5 12.2h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
     </header>
-    <div class="plans" id="layout" role="group" aria-label="Plan" hidden><button type="button" data-v="existing" aria-pressed="true">As drawn<small>the architect's plan</small></button></div>
+    <div class="plans" id="layout" role="group" aria-label="Plan"<@v10> hidden></@v10><button type="button" data-v="existing" aria-pressed="<@v11>true">As drawn<small>the architect's</@v11> plan</small></button><@v12></@v12></div>
     <nav class="tabs" role="tablist" aria-label="Controls"><button type="button" role="tab" data-tab="go" aria-selected="false" aria-controls="tab-go" id="tb-go"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5c-3 0-5.2 2.3-5.2 5.1 0 3.8 5.2 9.9 5.2 9.9s5.2-6.1 5.2-9.9c0-2.8-2.2-5.1-5.2-5.1z" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="7.7" r="1.9" fill="currentColor"/></svg><span>Go</span></button><button type="button" role="tab" data-tab="view" aria-selected="false" aria-controls="tab-view" id="tb-view"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.8 17 6.6 10 10.4 3 6.6z M3 10.2l7 3.8 7-3.8 M3 13.6l7 3.8 7-3.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>View</span></button><button type="button" role="tab" data-tab="fin" aria-selected="false" aria-controls="tab-fin" id="tb-fin" hidden><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="2.5" width="6.5" height="6.5" rx="1.6" fill="currentColor" opacity=".35" stroke="currentColor" stroke-width="1.5"/><rect x="2.5" y="11" width="6.5" height="6.5" rx="1.6" fill="currentColor" opacity=".7" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="11" width="6.5" height="6.5" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span>Finishes</span></button><button type="button" role="tab" data-tab="light" aria-selected="false" aria-controls="tab-light" id="tb-light"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 1.8v2.4M10 15.8v2.4M1.8 10h2.4M15.8 10h2.4M4.2 4.2l1.7 1.7M14.1 14.1l1.7 1.7M4.2 15.8l1.7-1.7M14.1 5.9l1.7-1.7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>Light</span></button><button type="button" role="tab" data-tab="furnish" aria-selected="false" aria-controls="tab-furnish" id="tb-furnish"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 9.5V7.2c0-1.3 1-2.2 2.2-2.2h8.6c1.2 0 2.2.9 2.2 2.2v2.3M2.5 9.5h15v4.3h-15zM4.2 13.8v2.2M15.8 13.8v2.2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>Furnish</span></button><button type="button" role="tab" data-tab="more" aria-selected="false" aria-controls="tab-more" id="tb-more"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="4.5" cy="10" r="1.6" fill="currentColor"/><circle cx="10" cy="10" r="1.6" fill="currentColor"/><circle cx="15.5" cy="10" r="1.6" fill="currentColor"/></svg><span>More</span></button></nav>
 
     <section class="tabp" id="tab-go" role="tabpanel" aria-labelledby="tb-go">
-            <div class="rooms" id="views">
+<@v13>            </@v13><div class="rooms" id="views">
         <button type="button" class="wide" data-view="overview" aria-pressed="true"><span>Overview</span><kbd class="sk" data-k="0"></kbd></button>
-        <button type="button" data-view="entrance">Front door</button>
+        <button type="button" data-view="entrance"><@v14>Front</@v14> door</button><@v15></@v15>
       </div>
       <p class="hint">Click anything in the model for its name and real size. Standing, double-click the floor or the small plan to walk there. On a phone, double-tap the floor or use the thumb pad.</p>
       <div class="ftools"><button type="button" id="sharebtn" title="A link that opens this plan, standing where you stand, looking where you look, at this time of day">Copy a link to this view</button><a class="cmplink" id="cmplink" href="compare.html" hidden>Compare two plans side by side ↗</a></div>
@@ -400,14 +400,14 @@ h3{font-weight:600}
       <div class="ctl"><div class="cl"><span>Floors</span></div><div class="bt" data-state="fl"><button type="button" data-v="stone" aria-pressed="true" title="Large porcelain in the living areas, oak in the bedrooms">Porcelain</button><button type="button" data-v="wood" aria-pressed="false" title="Oak wood flooring in every room except the bathrooms, WCs and utility">Oak</button></div></div>
       <div class="ctl"><div class="cl"><span>Dimensions</span><kbd class="sk" data-k="8"></kbd></div><div class="bt" data-state="dim"><button type="button" data-v="off" aria-pressed="true">Off</button><button type="button" data-v="on" aria-pressed="false" title="Room widths and lengths in metres, from the survey">On</button></div></div>
       <div class="ctl" id="wallrow"><div class="cl"><span>Height from above</span><kbd class="sk" data-k="9"></kbd></div><div class="bt" data-state="cut"><button type="button" data-v="full" aria-pressed="true" title="Real height: 2.80 m to the slab">2.80 m</button><button type="button" data-v="cut" aria-pressed="false" title="Cut at 1.25 m to see into the rooms">Cut at 1.25 m</button></div></div>
-      <div class="ctl"><div class="cl"><span>Layers</span></div>
+<@v16></@v16>      <div class="ctl"><div class="cl"><span>Layers</span></div>
         <div class="ftools"><button type="button" id="lyopen" title="From above: the floor stays, the furniture and joinery, the walls and the lighting lift apart">Separate the layers</button><button type="button" id="lyclose" disabled>Put back</button></div></div>
-      <span id="sum-fin" hidden></span>
-      <div hidden><button type="button" id="baplay"></button><button type="button" id="barev"></button><button type="button" id="baclose"></button><div id="bakey"></div><button type="button" id="walkgo"></button></div>
-    </section>
+<@v17></@v17>      <span id="sum-fin" hidden></span>
+<@v18>      <div hidden><button type="button" id="baplay"></button><button type="button" id="barev"></button><button type="button" id="baclose"></button><div id="bakey"></div><button type="button" id="walkgo"></button></div>
+</@v18>    </section>
 
     <section class="tabp" id="tab-fin" role="tabpanel" aria-labelledby="tb-fin" hidden>
-      <p class="hint">Try other finishes on each surface. Your design stays the default: what you try is kept apart, and Back to the design restores it.</p>
+      <p class="hint">Try other finishes on each surface<@v19></@v19>. Your design stays the default: what you try is kept apart, and Back to the design restores it.</p>
       <div class="fboard" id="fboard"></div>
       <div class="finsrc" id="finsrc" hidden></div>
       <div class="ftools"><button type="button" id="finlbl" aria-pressed="true" title="Cards above the model, with a line to each surface (from above)">Labels on the model</button><button type="button" id="finreset">Back to the design</button><button type="button" id="fincopy">Copy my picks</button></div>
@@ -426,10 +426,10 @@ h3{font-weight:600}
       <div class="ctl"><div class="cl"><span>Sun path</span></div><div class="bt" data-state="sp"><button type="button" data-v="on" aria-pressed="true" title="From above: the sun's path for the chosen date over the model; drag the sun along it">Show</button><button type="button" data-v="off" aria-pressed="false">Hide</button></div></div>
       <div class="ctl"><div class="cl"><span>Lighting scene</span><kbd class="sk" data-k="7"></kbd></div>
         <select id="lxscene" class="sel" aria-label="Lighting scene"><option value="evening">Evening, all on</option><option value="cooking">Cooking</option><option value="dinner">Dinner / hosting</option><option value="film">Film</option><option value="night">Night path</option><option value="off">All off</option></select></div>
-      <div class="ctl" hidden><div class="cl"><span>Garden shade</span></div><div class="bt" data-state="gs"><button type="button" data-v="pergola" aria-pressed="true">Pergola</button><button type="button" data-v="awning" aria-pressed="false" title="Two motorised shades: A over the living and reception terrace, B over the bedrooms">Motorised</button><button type="button" data-v="none" aria-pressed="false">None</button></div></div>
+      <div class="ctl"<@v20> hidden</@v20>><div class="cl"><span>Garden shade</span></div><div class="bt" data-state="gs"><button type="button" data-v="pergola" aria-pressed="true">Pergola</button><button type="button" data-v="awning" aria-pressed="false" title="Two motorised shades: A over the living and reception terrace, B over the bedrooms">Motorised</button><button type="button" data-v="none" aria-pressed="false">None</button></div></div>
       <div class="ctl" id="awrow"><div class="cl"><span>Shades A + B</span></div><div class="bt" data-state="aw"><button type="button" data-v="out" aria-pressed="true">Out</button><button type="button" data-v="in" aria-pressed="false">In</button></div></div>
       <div class="ctl"><div class="cl"><span>Shutters</span></div><div class="bt" data-state="sh"><button type="button" data-v="open" aria-pressed="true">Open</button><button type="button" data-v="half" aria-pressed="false">Half</button><button type="button" data-v="closed" aria-pressed="false">Closed</button></div></div>
-      <div class="ctl" id="uprow"><div class="cl"><span>Neighbours</span></div><div class="bt" data-state="up"><button type="button" data-v="on" aria-pressed="true" title="The neighbouring buildings in apartment.json cast their shade">Shade on</button><button type="button" data-v="off" aria-pressed="false">None</button></div></div>
+      <div class="ctl<@v21>" id="uprow</@v21>"><div class="cl"><span>Neighbours</span></div><div class="bt" data-state="up"><button type="button" data-v="on" aria-pressed="true" title="The <@v22>neighbouring buildings in apartment.json</@v22> cast their shade">Shade on</button><button type="button" data-v="off" aria-pressed="false">None</button></div></div>
     </section>
 
     <section class="tabp" id="tab-furnish" role="tabpanel" aria-labelledby="tb-furnish" hidden>
@@ -465,9 +465,9 @@ h3{font-weight:600}
     <div class="kcols" id="kcols"></div>
   </div></div>
   <div class="stage" id="stage">
-    <div class="loading" id="loading"><!--PREVIEW--><!--BLUEPRINT--><script>(function(){ var g=document.querySelector('#bprint g'); if(g)g.classList.add('on'); })();</script><span id="loadmsg">Loading the 3D model…</span><span class="lbar"><b id="loadbar"></b></span></div>
+    <div class="loading" id="loading"><!--PREVIEW--><!--BLUEPRINT--><script>(function(){ var <@v23></@v23>g=document.querySelector('#bprint g<@v24></@v24>'); if(g)g.classList.add('on'); })();</script><span id="loadmsg">Loading the 3D model…</span><span class="lbar"><b id="loadbar"></b></span></div>
     <div class="status" id="status" hidden></div>
-    <div class="hud" id="hud" aria-live="off"><svg viewBox="-12 -12 24 24" aria-hidden="true"><circle r="11" class="hc"/><g id="hudn"><path d="M0 -9 L3.2 1 L0 -1 L-3.2 1 Z" class="hn"/><path d="M0 9 L3.2 -1 L0 1 L-3.2 -1 Z" class="hs"/></g></svg><span id="hudroom" hidden></span><span><b id="hudzoom">100%</b><span id="hudzl"> zoom</span></span><span id="hudhead"></span><span id="hudahead" hidden></span></div>
+    <div class="hud" id="hud" aria-live="off"><svg viewBox="-12 -12 24 24" aria-hidden="true"><circle r="11" class="hc"/><g id="hudn"><path d="M0 -9 L3.2 1 L0 -1 L-3.2 1 Z" class="hn"/><path d="M0 9 L3.2 -1 L0 1 L-3.2 -1 Z" class="hs"/></g></svg><span id="hudroom" hidden></span><span><b id="hudzoom">100%</b><span id="hudzl"> zoom</span></span><span id="hudhead"><@v25></@v25></span><span id="hudahead" hidden></span></div>
     <div class="aim" id="aim" hidden aria-hidden="true"></div>
     <canvas class="minimap" id="minimap" hidden tabindex="0" aria-label="Plan of the apartment showing where you stand and which way you face. Click a spot to walk there."></canvas>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -507,14 +507,14 @@ h3{font-weight:600}
 <script>
 // The import map must come before any module download (Safari and older Chrome ignore a later one), so the preloads
 // follow it. If the 3D code can't start, say why instead of waiting forever.
-window.APT_ERR='';
-window.addEventListener('error',function(e){ if(window.APT_READY||window.APT_ERR)return;
-  if(e instanceof ErrorEvent){ window.APT_ERR=e.message||'a script error'; return; }
-  var t=e&&e.target, u=t&&(t.src||(t.rel==='modulepreload'&&t.href)); if(u)window.APT_ERR='could not download '+u.replace(/^https:\/\/[^/]+\/npm\//,''); },true);
-setTimeout(function(){var l=document.getElementById('loadmsg');if(l&&!window.APT_READY)l.textContent='The 3D model could not start'+(window.APT_ERR?': '+window.APT_ERR:'')+'. Check your connection and reload; if it keeps happening, send me this message.';},20000);
+window.<@v26>APT_ERR</@v26>='';
+window.addEventListener('error',function(e){ if(window.<@v27>APT_READY||window.APT_ERR</@v27>)return;
+  if(e instanceof ErrorEvent){ window.<@v28>APT_ERR</@v28>=e.message||'a script error'; return; }
+  var t=e&&e.target, u=t&&(t.src||(t.rel==='modulepreload'&&t.href)); if(u)window.<@v29>APT_ERR</@v29>='could not download '+u.replace(/^https:\/\/[^/]+\/npm\//,''); },true);
+setTimeout(function(){var l=document.getElementById('loadmsg');if(l&&!window.<@v30>APT_READY</@v30>)l.textContent='The 3D model could not start'+(window.<@v31>APT_ERR</@v31>?': '+window.<@v32>APT_ERR</@v32>:'')+'. Check your connection and reload; if it keeps happening, send me this message.';},20000);
 </script>
 <script type="module">
-// The apartment's 3D walkthrough, studio renderer. One model, built from the plan's centimetres, drawn in a few
+// <@v33>The apartment's</@v33> 3D walkthrough, studio renderer<@v34></@v34>. One model, built from the plan's centimetres, drawn in a few
 // dozen merged batches: physically based materials, soft sun shadows that only recompute when something changes,
 // ground-truth ambient occlusion, a gentle bloom on the light strips, neutral tone mapping that keeps the finishes'
 // true colours, rounded edges and frosted-glass walls.
@@ -534,14 +534,14 @@ T.BufferGeometry.prototype.computeBoundsTree=computeBoundsTree; T.BufferGeometry
 T.Mesh.prototype.raycast=acceleratedRaycast;
 
 var ALL=/*SCENE*/null;
-var LAYOUT=ALL.default; try{var saved=localStorage.getItem('apt3d-plan'); if(saved&&ALL.layouts[saved])LAYOUT=saved;}catch(e){}
+var LAYOUT=ALL.default; try{var saved=localStorage.getItem('<@v35>apt3d</@v35>-plan'); if(saved&&ALL.layouts[saved])LAYOUT=saved;}catch(e){}
 // a shared view: #v1~plan~e~x~y~z~yaw~pitch~zoom~hour (standing) or #v1~plan~o~x~y~z~tx~ty~tz~hour (from above), plan cm
 var SHARE=(function(){ var m=decodeURIComponent((location.hash||'').slice(1)).split('~'); return m[0]==='v1'&&ALL.layouts[m[1]]&&m.length>=10?m:null; })();
 var QP=new URLSearchParams(location.search).get('plan'); if(QP&&ALL.layouts[QP])LAYOUT=QP; if(SHARE)LAYOUT=SHARE[1];
 if(new URLSearchParams(location.search).get('embed')==='1')document.documentElement.classList.add('embed');
 var SCENE=ALL.layouts[LAYOUT];
-var BND=SCENE.bounds, CX=(BND[0]+BND[2])/2, CY=(BND[1]+BND[3])/2, SPAN=Math.max(BND[2]-BND[0],BND[3]-BND[1],600);   // the plan's extent (cm)
-var stage=document.getElementById('stage'), statusEl=document.getElementById('status'), z11=document.getElementById('z11'), appEl=document.querySelector('.app'), panelEl=document.querySelector('.panel');
+<@v36>var BND=SCENE.bounds, CX=(BND[0]+BND[2])/2, CY=(BND[1]+BND[3])/2, SPAN=Math.max(BND[2]-BND[0],BND[3]-BND[1],600);   // the plan's extent (cm)
+</@v36>var stage=document.getElementById('stage'), statusEl=document.getElementById('status'), z11=document.getElementById('z11'), appEl=document.querySelector('.app'), panelEl=document.querySelector('.panel');
 var S=0.01; // cm -> m
 function P(x,y,z){return new T.Vector3(x*S,z*S,y*S);}  // plan (x,y) + height z -> world
 // prototype switches (?ao=off&walls=solid&glass=clear&look=model&tone=agx&bevel=0&prog=0); the defaults are the chosen ones
@@ -620,7 +620,7 @@ var texKeys=canvasTex(128,16,function(g,w,h){g.fillStyle='#F7F7F4';g.fillRect(0,
 var nrmFlute=canvasTex(64,4,function(g,w,h){for(var x=0;x<w;x++){var nx=Math.sin(x/w*6.283*8)*.7, nz=Math.sqrt(1-nx*nx);
   g.fillStyle='rgb('+Math.round((nx*.5+.5)*255)+',128,'+Math.round((nz*.5+.5)*255)+')';g.fillRect(x,0,1,h);}},true);
 
-// cream stone and fluted oak, for a stone island
+// <@v37>cream stone and fluted oak, for a stone island</@v37>
 var texCstone=canvasTex(512,512,function(g,w,h){g.fillStyle='#DFC8A1';g.fillRect(0,0,w,h);blots(g,w,h,36,'202,180,143',40,150,.14,.32,23);blots(g,w,h,28,'239,215,172',30,120,.18,.36,77);
   for(var j=0;j<3000;j++){g.fillStyle='rgba(170,150,115,'+(.06+rnd(j+5)*.16)+')';g.fillRect(rnd(j+7)*w,rnd(j+8)*h,1,1);}});   // honed cream stone, softly clouded
 var texFlute=canvasTex(512,64,function(g,w,h){var n=16,fw=w/n;for(var i=0;i<n;i++){var gr=g.createLinearGradient(i*fw,0,(i+1)*fw,0);
@@ -682,7 +682,7 @@ M.cstone=std({map:texCstone,roughness:.45}); M.flute=std({map:texFlute,bumpMap:t
 texRattanW.repeat.set(18,5);     // round the dome's own coordinates: about 8 cm a weave
 M.rattan=std({map:texRattanW,emissive:0xFFB25E,emissiveMap:texRattanW,emissiveIntensity:0,roughness:.85,side:T.DoubleSide});                // a crisp white top on the glass walls, like the edge of a cut acrylic model
 var TEXM={cstone:.9,flute:.48,cane:.12,oak:.9,oakdark:.9,slats:.34,shutter:.045,oakfloor:1.2,porcelain:1.2,stone:.6,travertine:1.2,rug:2,grass:3,pave:1.2,fluted:.4,quartz:.8,wall:2,wallpaint:2,fabric:.25,linen:.25,leaf:1};
-// optional photo textures (scene.tex: oak, quartz): the oak tile is 0.70 m wide
+// <@v38>optional photo textures (scene.tex: oak, quartz</@v38>): the oak tile is 0.70 m wide
 // by 1.40 m of grain, the stone 0.80 m square. The drawn textures stay as a fallback until the photos load.
 function photoTex(uri){ var t=new T.TextureLoader().load(uri,function(){ dirty=true; }); t.colorSpace=T.SRGBColorSpace; t.wrapS=t.wrapT=T.RepeatWrapping; t.anisotropy=8; return t; }
 if(ALL.tex&&Q.get('photo')!=='0'){
@@ -691,7 +691,7 @@ if(ALL.tex&&Q.get('photo')!=='0'){
 }
 // finishes on trial: kitchen and joinery fronts take their own copy of the white, apart from the skirting,
 // and the fabrics can take a sheen. ?finishes=0 leaves the feature out.
-var FIN_ON=!!(ALL.fin&&ALL.fin.length)&&Q.get('finishes')!=='0';
+var FIN_ON=<@v39>!!(ALL.fin&&ALL.fin.length)&&</@v39>Q.get('finishes')!=='0';
 M.front=std({color:0xF5F4F0,roughness:.38}); TEXM.front=1;
 if(FIN_ON){ M.fabric=phys({color:0xE6DDCE,roughness:1,bumpMap:texWeave,bumpScale:.8}); M.linen=phys({color:0xF4F0E8,roughness:1,bumpMap:texWeave,bumpScale:.6}); }
 // the 'Model' look: a clean white architectural model, keeping the oak, the glass, the black details and the planting
@@ -874,12 +874,12 @@ function stageFor(ov){
 // ---------- light
 var hemi=new T.HemisphereLight(0xDDE8F0,0xB8A58A,1.2); scene.add(hemi);
 var sun=new T.DirectionalLight(0xFFF3E0,5); sun.castShadow=true; sun.shadow.mapSize.set(LOWEND?2048:4096,LOWEND?2048:4096);
-var SHR=Math.max(22,SPAN*S*.75), sc=sun.shadow.camera; sc.left=-SHR;sc.right=SHR;sc.top=SHR;sc.bottom=-SHR;sc.near=1;sc.far=320; sun.shadow.bias=-0.0002; sun.shadow.normalBias=0.025;
-var centre=P(CX,CY,0); sun.target.position.copy(centre); scene.add(sun); scene.add(sun.target);
-// the real sun for the site in apartment.json; plan "up" (-y) faces site.facing (a compass bearing)
-var SITE=ALL.site;
-var SEASONS={jun:{m:6,d:21,tz:ALL.tz.jun,name:'21 June'},mar:{m:3,d:21,tz:ALL.tz.mar,name:'21 March'},dec:{m:12,d:21,tz:ALL.tz.dec,name:'21 December'}};
-function sunAt(season,hour){ // elevation and azimuth (degrees) at the site's clock time (its UTC offset on that date, from apartment.json)
+var<@v40> SHR=Math.max(22,SPAN*S*.75),</@v40> sc=sun.shadow.camera; sc.left=-<@v41>SHR</@v41>;sc.right=<@v42>SHR</@v42>;sc.top=<@v43>SHR</@v43>;sc.bottom=-<@v44>SHR</@v44>;sc.near=1;sc.far=320; sun.shadow.bias=-0.0002; sun.shadow.normalBias=0.025;
+var centre=P(<@v45>CX,CY</@v45>,0); sun.target.position.copy(centre); scene.add(sun); scene.add(sun.target);
+// <@v46>the </@v46>real sun for the site<@v47> in apartment.json;</@v47> plan "up" (-y) <@v48>faces site.facing (a compass bearing)</@v48>
+var SITE=<@v49>ALL.site</@v49>;
+var SEASONS={jun:{m:6,d:21,tz:<@v50>ALL.tz.jun</@v50>,name:'21 June'},mar:{m:3,d:21,tz:<@v51>ALL.tz.mar</@v51>,name:'21 March'},dec:{m:12,d:21,tz:<@v52>ALL.tz.dec</@v52>,name:'21 December'}};
+function sunAt(season,hour){ // elevation and azimuth (degrees) at <@v53>the site's clock time (its UTC offset on that date, from apartment.json)</@v53>
   var q=SEASONS[season], t=Date.UTC(2026,q.m-1,q.d,0,0,0)+(hour-q.tz)*3600e3, n=(t-Date.UTC(2000,0,1,12))/864e5, R=Math.PI/180;
   var g=(357.529+0.98560028*n)*R, L=(280.459+0.98564736*n+1.915*Math.sin(g)+0.020*Math.sin(2*g))*R, e=(23.439-3.6e-7*n)*R;
   var ra=Math.atan2(Math.cos(e)*Math.sin(L),Math.cos(L)), dec=Math.asin(Math.sin(e)*Math.sin(L));
@@ -1038,7 +1038,7 @@ var LXRAMP=null;
 function lxRamp(g){ if(!LXRAMP)return 1; var i=LXRAMP.order.indexOf(g); if(i<0)i=LXRAMP.order.length;
   return Math.max(0,Math.min(1,(performance.now()-LXRAMP.t0-i*320)/500)); }
 function startLxRamp(delay){
-  var c={}, door=P(ALL.entry.pos[0],ALL.entry.pos[1],0); lxObjs.forEach(function(m){ var g=m.userData.g; if(!g)return; var p=new T.Vector3(); m.getWorldPosition(p); (c[g]=c[g]||[]).push(p.distanceTo(door)); });
+  var c={}, door=P(<@v54>ALL.entry.pos[0],ALL.entry.pos[1]</@v54>,0); lxObjs.forEach(function(m){ var g=m.userData.g; if(!g)return; var p=new T.Vector3(); m.getWorldPosition(p); (c[g]=c[g]||[]).push(p.distanceTo(door)); });
   lamps.forEach(function(l){ var p=l.parent.position, g=lxGroup(p.x/S,p.z/S); (c[g]=c[g]||[]).push(p.distanceTo(door)); });
   var order=Object.keys(c).sort(function(a,b){ var oa=/^out/.test(a), ob=/^out/.test(b); if(oa!==ob)return oa?1:-1;
     return Math.min.apply(null,c[a])-Math.min.apply(null,c[b]); });
@@ -1209,7 +1209,7 @@ function tickTod(now){
 todBtns.forEach(function(b){ b.addEventListener('click',function(){ todTo(b.getAttribute('data-p')); }); });
 function todPressed(){ if(!todBtns)return; var t=dvTimes(); todBtns.forEach(function(b){ b.setAttribute('aria-pressed',Math.abs(state.hour-t[b.getAttribute('data-p')])<.13?'true':'false'); }); }
 
-// ---------- numbered notes pinned in the model (scene.changes; none in this template)
+// ---------- <@v55>numbered notes</@v55> pinned in the model (<@v56>scene.changes; none in this template</@v56>)
 var chgEls=(ALL.changes||[]).map(function(c){ var b=document.createElement('button'); b.type='button'; b.className='chg'; b.textContent=c.n; b.hidden=true;
   b.setAttribute('aria-label','Change '+c.n+': '+c.h); b.title=c.n+'. '+c.h;
   b.addEventListener('click',function(e){ e.stopPropagation(); showCard(c.n+'. '+c.h,[c.d],null,P(c.x,c.y,150)); });
@@ -1222,7 +1222,7 @@ function drawChanges(){
     if(vis){ c.el.style.left=((v.x+1)/2*w)+'px'; c.el.style.top=((1-v.y)/2*h)+'px'; } });
 }
 
-// ---------- what changes between two plans: the removed walls lift away and fade, then the new ones rise (scene.ba)
+// ---------- what changes<@v57> between two plans: the removed walls</@v57> lift away and fade, then the new ones rise<@v58> (scene.ba)</@v58>
 // Drawn as a separate set of plain wall blocks measured from the two plans (build_3d.before_after); the model itself is
 // only hidden while it plays and is put back exactly as it was.
 var BA={on:false,own:false,dir:1,t0:0,grp:null,parts:{keep:[],gone:[],new:[]},vis:null};
@@ -1235,13 +1235,13 @@ function baBuild(){
     var m=new T.Mesh(BOX1,baM[k]); m.scale.set((r[2]-r[0])*S,BA_H*S,(r[3]-r[1])*S); m.position.set((r[0]+r[2])/2*S,BA_H/2*S,(r[1]+r[3])/2*S);
     m.receiveShadow=true; BA.grp.add(m); return m; }); });
 }
-function baPose(t){                            // t: 0 the first plan … 1 the second
+function baPose(t){                            // t: 0 <@v59>the first plan</@v59> … 1 <@v60>the second</@v60>
   var g=Math.max(0,Math.min(1,(t-.12)/.38)), n=Math.max(0,Math.min(1,(t-.55)/.38)), eg=g<.5?2*g*g:1-Math.pow(-2*g+2,2)/2, en=n<.5?2*n*n:1-Math.pow(-2*n+2,2)/2;
   if(RM){ eg=g>=.5?1:0; en=n>=.5?1:0; }
   BA.parts.gone.forEach(function(m){ m.position.y=(BA_H/2+eg*260)*S; m.visible=eg<.999; }); baM.gone.opacity=1-eg;
   BA.parts.new.forEach(function(m){ var h=Math.max(.001,en)*BA_H; m.scale.y=h*S; m.position.y=h/2*S; m.visible=en>.001; }); baM.new.opacity=.35+.65*en;
   statusEl.hidden=false;
-  statusEl.textContent=t<.12?'In red, the walls that are removed.':t<.55?'The red walls are removed.':'In green, the new walls.';
+  statusEl.textContent=t<.12?'<@v61></@v61>In red, the walls <@v62>that are removed</@v62>.':t<.55?'The red walls are removed<@v63>.':</@v63>'In green, the new walls<@v64></@v64>.';
   dirty=true;
 }
 function baStart(dir){
@@ -1270,7 +1270,7 @@ document.getElementById('baclose').addEventListener('click',baEnd);
 
 // ---------- the layered view: from above, the floor stays, the furniture and joinery lift 1 m, the walls, doors and
 // windows 3.4 m, the lighting plan 7 m. Only the pieces' positions in the view move; each is put back exactly where
-// it was (APT3D.layers.check() reports the largest difference, which should be 0).
+// it was (<@v65>APT3D</@v65>.layers.check() reports the largest difference, which should be 0).
 var LY={on:false,own:false,t0:0,dir:1,run:false,parts:null,els:[]}, LY_UP={furn:1.0,walls:3.4,lights:7.0};
 function lyParts(){
   var seen=new Set(), out={floor:[],furn:[],walls:[],lights:[]}, lampParents=lamps.map(function(l){ return l.parent; });
@@ -1303,7 +1303,7 @@ function lyStart(){
   stopPlay(); TOD=null; clearCard(); if(BA&&BA.on)baEnd(); if(ST&&ST.on)stEnd();
   if(!LY.on){ LY.on=true; LY.parts=lyParts(); lyLabels(); setLights();
     LY.own=true; goto('overview',RM?1:1400); LY.own=false;
-    if(anim){ anim.toP=P(CX+.08*SPAN,BND[3]+.85*SPAN,.59*SPAN); anim.toT=P(CX,CY-50,330); } }
+    if(anim){ anim.toP=P(<@v66>CX+.08*SPAN,BND[3]+.85*SPAN,.59*SPAN</@v66>); anim.toT=P(<@v67>CX,CY-50</@v67>,330); } }
   LY.dir=1; LY.t0=performance.now(); LY.run=true;
   document.getElementById('lyopen').disabled=true; document.getElementById('lyclose').disabled=false;
   statusEl.hidden=false; statusEl.textContent='The layers lift apart: floor, joinery and furniture, walls, and the lighting plan on top. Put back joins them again.';
@@ -1330,9 +1330,9 @@ function drawLy(){
 document.getElementById('lyopen').addEventListener('click',lyStart);
 document.getElementById('lyclose').addEventListener('click',function(){ lyEnd(false); });
 
-// ---------- a guided walkthrough: views with their own captions (STEPS; none in this template)
+// ---------- <@v68>a guided walkthrough: views</@v68> with their own captions<@v69> (STEPS; none in this template)</@v69>
 // Camera moves are slow and lift over the walls between rooms; Next or Play moves on; Explore freely leaves you there.
-var ST={on:false,own:false,i:0,auto:false,next:0,keep:null}, STEPS=[];
+var ST={on:false,own:false,i:0,auto:false,next:0,keep:null}, STEPS=[<@v70></@v70>];
 var stEl=document.getElementById('story');
 STEPS.forEach(function(){ document.getElementById('stdots').appendChild(document.createElement('i')); });
 function stShow(i){
@@ -1370,15 +1370,15 @@ window.addEventListener('keydown',function(e){ if(!ST.on||/input|textarea|select
 // true north on the ground beside the site
 (function(){var sh=new T.Shape(); sh.moveTo(0,1.1); sh.lineTo(-0.45,-0.6); sh.lineTo(0,-0.25); sh.lineTo(0.45,-0.6); sh.closePath();
   var m=new T.Mesh(new T.ShapeGeometry(sh),new T.MeshBasicMaterial({color:0x1D2125,side:T.DoubleSide}));
-  m.rotation.x=-Math.PI/2; m.rotation.z=SITE.facing*Math.PI/180; /* tip turned from plan-up (the garden) to true north */ var p=P(CX,BND[3]+120,1); m.position.copy(p); scene.add(m);})();
+  m.rotation.x=-Math.PI/2; m.rotation.z=SITE.facing*Math.PI/180; /* tip turned from plan-up (the garden) to true north */ var p=P(<@v71>CX,BND[3]+120</@v71>,1); m.position.copy(p); scene.add(m);})();
 
-// the floors above, if apartment.json gives them (site.floors_above: cm from your floor to the roof): they cast shade but are not drawn
-var UPPER=(function(){ var top=+((ALL.site||{}).floors_above||0); if(!top)return {visible:false};
-  var sh=new T.Shape(); [[BND[0],BND[1]],[BND[2],BND[1]],[BND[2],BND[3]],[BND[0],BND[3]]].forEach(function(q,i){if(i===0)sh.moveTo(q[0]*S,q[1]*S);else sh.lineTo(q[0]*S,q[1]*S);});
-  var g=new T.ExtrudeGeometry(sh,{depth:(top-CEIL_M/S)*S,bevelEnabled:false}); g.rotateX(Math.PI/2);
-  var m=new T.Mesh(g,new T.MeshBasicMaterial({colorWrite:false,depthWrite:false})); m.position.y=top*S; m.castShadow=true; m.receiveShadow=false; m.renderOrder=-1;
+// the <@v72>floors above, if apartment.json gives them (site.floors_above: cm from your floor to the roof)</@v72>: they cast shade but are not drawn<@v73></@v73>
+var UPPER=(function(){<@v74> var top=+((ALL.site||{}).floors_above||0); if(!top)return {visible:false}</@v74>;
+  var sh=new T.Shape(); <@v75>[[BND[0],BND[1]],[BND[2],BND[1]],[BND[2],BND[3]],[BND[0],BND[3]]]</@v75>.forEach(function(q,i){if(i===0)sh.moveTo(q[0]*S,q[1]*S);else sh.lineTo(q[0]*S,q[1]*S);});
+  var g=new T.ExtrudeGeometry(sh,{depth:<@v76>(top-CEIL_M/S)*S</@v76>,bevelEnabled:false}); g.rotateX(Math.PI/2);<@v77></@v77>
+  var m=new T.Mesh(g,new T.MeshBasicMaterial({colorWrite:false,depthWrite:false})); m.position.y=<@v78>top*S</@v78>; m.castShadow=true; m.receiveShadow=false; m.renderOrder=-1;
   m.userData={proxy:1}; scene.add(m); return m;})();
-// the neighbouring buildings from apartment.json (context). Plain massing when you walk,
+// the <@v79>neighbouring buildings from apartment.json (context)</@v79>. Plain massing when you walk,
 // shadow-only from above so they never hide the apartment
 var HIDDEN=new T.MeshBasicMaterial({colorWrite:false,depthWrite:false});
 var NEIGH=(ALL.context||[]).map(function(c){
@@ -1459,20 +1459,20 @@ function summarize(){
   document.getElementById('sum-fin').textContent=fin.join(' · ');
   var gsl={pergola:'pergola',awning:'shades '+state.aw,none:'no garden shade'}[state.gs];
   document.getElementById('sum-sun').textContent=[SEASON_SHORT[state.season]+' '+document.getElementById('sunclock').textContent, gsl, 'shutters '+state.sh].concat(state.up==='on'?[]:['no neighbours']).join(' · ');
-  document.getElementById('hint').textContent=state.fu==='none'?'Bare rooms: no furniture or doors. Pick All to bring them back.':'Furniture is what you place in the Furnish tab.';
+  document.getElementById('hint').textContent=<@v80></@v80>state.fu==='none'?'Bare rooms: no furniture<@v81> or doors</@v81>. Pick All <@v82>to bring them back.':'Furniture is what you place in the Furnish tab.'</@v82>;
   document.getElementById('wallrow').hidden=(mode==='eye');
 }
 
 // ---------- views
 var EYE=165;                                   // your eye height standing: 177 cm tall, eyes about 12 cm lower
 var SIT=120;                                   // seated on a sofa or at the desk
-// the overview looks from the garden side, so the garden is in front of the apartment
+<@v83>// the overview looks from the garden side, so the garden is in front of the apartment
 var GSIDE=(function(){ var g=SCENE.garden||[]; if(!g.length)return 1; var y=0; g.forEach(function(q){y+=q[1];}); return y/g.length<CY?-1:1; })();
-var VIEWS={
-  overview:{pos:[BND[2]+.06*SPAN,GSIDE<0?BND[1]-.3*SPAN:BND[3]+.3*SPAN,.75*SPAN],look:[CX,CY,0],mode:'overview',msg:'Overview. Drag to orbit.'},
-  entrance:{pos:[ALL.entry.pos[0],ALL.entry.pos[1],EYE],look:[ALL.entry.look[0],ALL.entry.look[1],120],msg:'Just inside the front door, at true size.'}
+</@v83>var VIEWS={
+  overview:{pos:[<@v84>BND[2]+.06*SPAN,GSIDE<0?BND[1]-.3*SPAN:BND[3]+.3*SPAN,.75*SPAN</@v84>],look:[<@v85>CX,CY</@v85>,0],mode:'overview',msg:'Overview. Drag to orbit.'},
+  entrance:{pos:[<@v86>ALL.entry.pos[0],ALL.entry.pos[1]</@v86>,EYE],look:[<@v87>ALL.entry.look[0],ALL.entry.look[1],120]</@v87>,msg:'Just inside the front door, <@v88>at</@v88> true size.'}<@v89></@v89>
 };
-(function(){   // one view per room, framed as a photographer would (composeRoom), and one from the garden
+<@v90>(function(){   // one view per room, framed as a photographer would (composeRoom), and one from the garden
   var host=document.getElementById('views');
   (SCENE.rooms||[]).forEach(function(r,i){ if(!r.r)return; var k='room'+i, cx=(r.r[0]+r.r[2])/2, cy=(r.r[1]+r.r[3])/2;
     VIEWS[k]={pos:[cx,cy,EYE],look:[cx+1,cy,100],room:r.n,compose:1,msg:r.n+', '+r.d+' m.'};
@@ -1483,13 +1483,13 @@ var VIEWS={
     t=Math.max(0,(t<1e8?t:0)-60); VIEWS.garden={pos:[gx+dx/L*t,gy+dy/L*t,EYE],look:[CX,CY,110],z:.55,msg:'At the far end of the garden, looking back at the apartment, wider than life. Press 1:1 for true size.'};
     var b=document.createElement('button'); b.type='button'; b.setAttribute('data-view','garden'); b.textContent='Garden'; host.appendChild(b); }
 })();
-var mode='overview', anim=null;
+</@v90>var mode='overview', anim=null;
 // Standing, 100% is true to life: the view spans exactly the angle the 3D panel covers in front of your eyes, so
 // everything looks its real size and distance. With your screen and distance set (True size), that angle is measured;
 // otherwise the whole screen is taken to span 40° (a laptop at arm's length). Zooming out widens the view to see more,
 // which makes rooms look bigger than they are.
 var EYEZ=1, TS={diag:0,dist:55}, VW=0;
-try{var tsv=JSON.parse(localStorage.getItem('apt3d-truesize')||'null'); if(tsv&&tsv.dist)TS=tsv;}catch(e){}
+try{var tsv=JSON.parse(localStorage.getItem('<@v91>apt3d</@v91>-truesize')||'null'); if(tsv&&tsv.dist)TS=tsv;}catch(e){}
 function trueHalfTan(){                                   // tan of half the horizontal view at 100%
   var sw=Math.max(screen.width||0,window.innerWidth,320), sh=screen.height||sw*0.625, cw=VW||stage.clientWidth||sw, f=cw/sw;
   if(TS.diag>0){ var wcm=TS.diag*2.54*sw/Math.hypot(sw,sh); return f*wcm/2/TS.dist; }
@@ -1508,7 +1508,7 @@ function tsShow(){
 }
 function tsSet(){
   TS={diag:+tsScreen.value,dist:+tsDist.value};
-  try{localStorage.setItem('apt3d-truesize',JSON.stringify(TS));}catch(e){}
+  try{localStorage.setItem('<@v92>apt3d</@v92>-truesize',JSON.stringify(TS));}catch(e){}
   if(mode==='eye')setEyeFov(); tsShow(); dirty=true;
 }
 tsScreen.value=String(TS.diag||0); if(tsScreen.selectedIndex<0)tsScreen.value='0'; tsDist.value=TS.dist;
@@ -1566,8 +1566,8 @@ function resolveView(name){
   var v=VIEWS[name]; if(v.mode==='overview')return v;
   var key=LAYOUT+'|'+state.d+'|'+state.isl+'|'+name; if(RESOLVED[key])return RESOLVED[key];
   var obs=viewObstacles(), rm=roomAt(v.pos[0],v.pos[1]), seated=v.pos[2]<EYE-10, out=null;
-  if(v.compose&&rm){ var cc=composeRoom(rm,obs); if(cc)return (RESOLVED[key]={pos:cc.pos,look:cc.look,z:.7,msg:rm.n+', '+rm.d+' m, from the spot that takes in the most of it. Press 1:1 for true size.'}); }
-  var fits=(!v.need||hasPiece(v.need,v.pos[0],v.pos[1],seated?70:220))&&(!v.room||(rm&&rm.n.indexOf(v.room)===0));
+<@v93>  if(v.compose&&rm){ var cc=composeRoom(rm,obs); if(cc)return (RESOLVED[key]={pos:cc.pos,look:cc.look,z:.7,msg:rm.n+', '+rm.d+' m, from the spot that takes in the most of it. Press 1:1 for true size.'}); }
+</@v93>  var fits=(!v.need||hasPiece(v.need,v.pos[0],v.pos[1],seated?70:220))&&(!v.room||(rm&&rm.n.indexOf(v.room)===0));
   if(fits){
     var pos=P(v.pos[0],v.pos[1],v.pos[2]), dir=P(v.look[0],v.look[1],v.look[2]).sub(pos).normalize(), fl=new T.Vector3(dir.x,0,dir.z).normalize(), rt=new T.Vector3(-fl.z,0,fl.x);
     var tight=rm&&Math.min(rm.r[2]-rm.r[0],rm.r[3]-rm.r[1])<160;
@@ -1657,7 +1657,7 @@ document.getElementById('zhome').addEventListener('click',toDoor);
 document.getElementById('z11').addEventListener('click',function(){if(mode==='eye'){setEyeZoom(1);dirty=true;}});
 renderer.domElement.addEventListener('wheel',function(e){ if(mode!=='eye')return; e.preventDefault(); zoomBy(e.deltaY>0?1.06:0.94); },{passive:false});
 
-// keyboard: arrows walk, A/D turn, W/S tilt up and down as a drag would, H back to the
+// keyboard<@v94></@v94>: arrows walk, A/D turn, W/S tilt up and down as a drag would, H back to the
 // door, M the tape measure, ? the guide. Option (Alt on Windows): + and − zoom, S shows or hides the controls, and
 // 1 to 0 step through the main switches, each press showing a note of what it changed. Keys are read by their
 // position (e.code), since Option turns letters and digits into symbols on a Mac.
@@ -1669,9 +1669,9 @@ function toast(k,txt){ toastEl.textContent=''; if(k){ var kb=document.createElem
   toastEl.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(function(){ toastEl.classList.remove('on'); },1600); }
 function nameOf(key,v){ var b=document.querySelector('.bt[data-state="'+key+'"] button[data-v="'+v+'"]'); return b?b.textContent:v; }
 function cycle(key,vals,label,num){ var i=vals.indexOf(state[key]), v=vals[(i+1)%vals.length]; setKey(key,v,true); if(key==='dim')makeLabels(); applyState(); toast(MODK+num,label+': '+nameOf(key,v)); }
-var LAYOUT_ORDER=Object.keys(ALL.layouts), lastEye=null;
+var LAYOUT_ORDER=<@v95>Object.keys(ALL.layouts)</@v95>, lastEye=null;
 var TOGGLES={
-  Digit1:function(){ var k=LAYOUT_ORDER[(LAYOUT_ORDER.indexOf(LAYOUT)+1)%LAYOUT_ORDER.length]; setLayout(k); toast(MODK+'1','Plan: '+SCENE.name); },
+  Digit1:function(){ var k=LAYOUT_ORDER[(LAYOUT_ORDER.indexOf(LAYOUT)+1)%<@v96>LAYOUT_ORDER.length</@v96>]; setLayout(k); toast(MODK+'1','Plan: '+SCENE.name); },
   Digit2:function(){ cycle('fu',['all','built','none'],'Furniture',2); },
   Digit3:function(){ cycle('wm',['auto','glass','solid'],'Walls',3); },
   Digit4:function(){ cycle('d',['open','closed','none'],'Doors and windows',4); },
@@ -1780,7 +1780,7 @@ function drawDims(){
 function makeLabels(){ makeDims(); labelEls.forEach(function(L){L.el.remove();});
   var src=state.dim==='on'&&SCENE.rooms&&SCENE.rooms.length?SCENE.rooms.map(function(r){return [r.n,r.at[0],r.at[1],r.d];}):SCENE.labels;
   labelEls=src.map(function(l){var d=document.createElement('div');d.className='lbl';d.textContent=l[0];if(l[3]){var sm=document.createElement('small');sm.textContent=l[3]+' m';d.appendChild(sm);}stage.appendChild(d);return {el:d,p:P(l[1],l[2],60)};});
-  var n=document.createElement('div');n.className='lbl';n.textContent='N';stage.appendChild(n);var na=(180-SITE.facing)*Math.PI/180; labelEls.push({el:n,p:P(CX-Math.sin(na)*190,BND[3]+120+Math.cos(na)*190,5)}); }
+  var n=document.createElement('div');n.className='lbl';n.textContent='N';stage.appendChild(n);<@v97>var na=(180-SITE.facing)*Math.PI/180; </@v97>labelEls.push({el:n,p:P(<@v98>CX-Math.sin(na)*190,BND[3]+120+Math.cos(na)</@v98>*190,5)}); }
 makeLabels();
 // layout switch: rebuild the model from the chosen plan
 function setLayout(k){
@@ -1788,7 +1788,7 @@ function setLayout(k){
   if(BA&&BA.on)baEnd();
   if(LY&&LY.on)lyEnd(true);
   if(ST&&ST.on)stEnd();
-  LAYOUT=k; SCENE=ALL.layouts[k]; try{ if(!document.documentElement.classList.contains('embed'))localStorage.setItem('apt3d-plan',k); }catch(e){}
+  LAYOUT=k; SCENE=ALL.layouts[k]; try{ if(!document.documentElement.classList.contains('embed'))localStorage.setItem('<@v99>apt3d</@v99>-plan',k); }catch(e){}<@v100></@v100>
   clearCard(); fSel=null; clearModel(); buildModel(); makeWindowLights(); makeLighting(); makeLabels(); syncLayoutUI(); applyState(); if(FIN_ON)finUI(); dirty=true;
 }
 function syncLayoutUI(){
@@ -1824,8 +1824,8 @@ window.addEventListener('resize',function(){resize();dirty=true;});
   function setHidden(hd,save){ appEl.classList.toggle('hidepanel',hd); tog.textContent=hd?'›':'‹';
     tog.setAttribute('aria-label',hd?'Show the controls':'Hide the controls'); tog.title=tog.getAttribute('aria-label')+' ('+(/Mac|iPhone|iPad/.test((navigator.platform||'')+' '+navigator.userAgent)?'⌥':'Alt+')+'S)';
     resize(); dirty=true; if(save)store(); }
-  function store(){ try{localStorage.setItem('apt3d-panel',JSON.stringify({w:pw,h:appEl.classList.contains('hidepanel')}));}catch(e){} }
-  var st=null; try{st=JSON.parse(localStorage.getItem('apt3d-panel')||'null');}catch(e){}
+  function store(){ try{localStorage.setItem('<@v101>apt3d</@v101>-panel',JSON.stringify({w:pw,h:appEl.classList.contains('hidepanel')}));}catch(e){} }
+  var st=null; try{st=JSON.parse(localStorage.getItem('<@v102>apt3d</@v102>-panel')||'null');}catch(e){}
   setW(st&&st.w||W0,false); setHidden(!!(st&&st.h),false);
   var drag=null;
   grip.addEventListener('pointerdown',function(e){ drag={x:e.clientX,w:pw}; grip.setPointerCapture(e.pointerId); grip.classList.add('drag'); e.preventDefault(); });
@@ -1844,7 +1844,7 @@ window.addEventListener('resize',function(){resize();dirty=true;});
   function peekH(){ var t=panelEl.querySelector('.tabs'); return t?Math.round(t.offsetTop+t.offsetHeight+16):190; }
   function hOf(k){ var H=appEl.clientHeight; return k==='full'?Math.round(H*.86):k==='half'?Math.round(H*.5):peekH(); }
   function setH(px){ appEl.style.setProperty('--sh',Math.round(Math.max(peekH(),Math.min(appEl.clientHeight*.9,px)))+'px'); resize(); dirty=true; }
-  function snap(k){ cur=k; setH(hOf(k)); g.setAttribute('aria-label',k==='full'?'Pull down for a bigger view':'Pull up for more controls'); try{localStorage.setItem('apt3d-sheet',k);}catch(e){} }
+  function snap(k){ cur=k; setH(hOf(k)); g.setAttribute('aria-label',k==='full'?'Pull down for a bigger view':'Pull up for more controls'); try{localStorage.setItem('<@v103>apt3d</@v103>-sheet',k);}catch(e){} }
   window.sheetOpen=function(){ if(mq.matches&&cur==='peek')snap('half'); };
   window.sheetPeek=function(){ if(mq.matches)snap('peek'); };   // the walkthrough wants the model, not the controls
   g.addEventListener('pointerdown',function(e){ drag={y:e.clientY,h:panelEl.offsetHeight,moved:false}; g.setPointerCapture(e.pointerId); e.preventDefault(); });
@@ -1854,7 +1854,7 @@ window.addEventListener('resize',function(){resize();dirty=true;});
     var h=panelEl.offsetHeight, best='peek'; ['peek','half','full'].forEach(function(k){ if(Math.abs(hOf(k)-h)<Math.abs(hOf(best)-h))best=k; }); snap(best); });
   g.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ snap(cur==='peek'?'half':cur==='half'?'full':'peek'); e.preventDefault(); } });
   [].forEach.call(document.querySelectorAll('.tabs button'),function(b){ b.addEventListener('click',function(){ window.sheetOpen(); }); });
-  function init(){ if(!mq.matches)return; var k='peek'; try{ k=localStorage.getItem('apt3d-sheet')||'peek'; }catch(e){} snap(k); }
+  function init(){ if(!mq.matches)return; var k='peek'; try{ k=localStorage.getItem('<@v104>apt3d</@v104>-sheet')||'peek'; }catch(e){} snap(k); }
   init(); if(mq.addEventListener)mq.addEventListener('change',init);
 })();
 
@@ -2077,7 +2077,7 @@ function fInfo(){
   if(window.innerWidth>760){ fbar.style.left=(panelCover()+12)+'px'; fbar.style.right='64px'; fbar.style.transform='none'; fbar.style.width='auto'; fbar.style.maxWidth='none'; }
 }
 function fSave(){ // this browser at once; the artifact's store a moment after the last change, one write at a time
-  try{ localStorage.setItem('apt3d-furnish',JSON.stringify(furn)); }catch(e){}
+  try{ localStorage.setItem('<@v105>apt3d</@v105>-furnish',JSON.stringify(furn)); }catch(e){}
   if(!fStore||!fCanWrite)return;
   var L=LAYOUT; clearTimeout(fSaveT); fSaveT=setTimeout(function go(){
     if(fSaving){ fDirtySave=true; return; } fSaving=true;
@@ -2144,7 +2144,7 @@ function setFurnish(on){
   fOn=on; var b=document.getElementById('fmode'); b.setAttribute('aria-pressed',on?'true':'false'); b.textContent=on?'Stop furnishing':'Start furnishing';
   if(on){ clearCard(); if(measuring)setMeasuring(false); selectTab('furnish'); if(appEl.classList.contains('hidepanel'))window.togglePanel();
     if(state.fu!=='all'){ setKey('fu','all',true); applyState(); }
-    var rm=mode==='eye'?roomAt(camera.position.x/S,camera.position.z/S):null, cx=rm?(rm.r[0]+rm.r[2])/2:CX, cy=rm?(rm.r[1]+rm.r[3])/2:CY, span=rm?Math.max(rm.r[2]-rm.r[0],rm.r[3]-rm.r[1]):SPAN;
+    var rm=mode==='eye'?roomAt(camera.position.x/S,camera.position.z/S):null, cx=rm?(rm.r[0]+rm.r[2])/2:<@v106>CX</@v106>, cy=rm?(rm.r[1]+rm.r[3])/2:<@v107>CY</@v107>, span=rm?Math.max(rm.r[2]-rm.r[0],rm.r[3]-rm.r[1]):<@v108>SPAN</@v108>;
     goto('overview'); if(anim){ anim.toT=P(cx,cy,0); anim.toP=P(cx,cy+span*.3,Math.max(700,span*1.3)); }
     statusEl.hidden=false; statusEl.textContent='Furnishing: pick a piece in the panel, drag it into place, R to turn it.';
   } else { fSel=null; }
@@ -2169,10 +2169,10 @@ document.getElementById('fclear').addEventListener('click',function(){ var b=thi
   if(!fclearArmed){ fclearArmed=true; b.textContent='Click again to clear'; setTimeout(function(){ fclearArmed=false; b.textContent='Clear all'; },3000); return; }
   fclearArmed=false; b.textContent='Clear all'; if(fList().length)fMark(); furn[LAYOUT]=[]; fSel=null; fSync(); fSave(); });
 document.getElementById('fcopy').addEventListener('click',function(){
-  var lines=['Furniture · '+SCENE.name+' · plan cm (x to the right, y down the plan), centre of each piece'].concat(fList().map(function(p){ var D=fDim(p), rm=roomAt(p.x,p.y);
+  var lines=['<@v109>Furniture</@v109> · '+SCENE.name+' · plan cm (x to the right, y down the plan), centre of each piece'].concat(fList().map(function(p){ var D=fDim(p), rm=roomAt(p.x,p.y);
     return D.n+' '+D.w+'×'+D.d+(D.h>2?'×'+D.h:'')+' cm at ('+p.x+', '+p.y+'), turned '+p.r+'°'+(rm?', '+rm.n:''); }));
-  lines.push('', 'For furnish.json: '+JSON.stringify({existing:{pieces:fList().map(function(p){ var o={t:p.t,x:p.x,y:p.y,r:p.r}; if(p.w)o.w=p.w; if(p.d)o.d=p.d; return o; })}}));
-  var txt=lines.join('\n'), b=this;
+<@v110>  lines.push('', 'For furnish.json: '+JSON.stringify({existing:{pieces:fList().map(function(p){ var o={t:p.t,x:p.x,y:p.y,r:p.r}; if(p.w)o.w=p.w; if(p.d)o.d=p.d; return o; })}}));
+</@v110>  var txt=lines.join('\n'), b=this;
   function done(ok){ b.textContent=ok?'Copied':'Copy the text below'; setTimeout(function(){ b.textContent='Copy list'; },2500);
     if(!ok){ var ta=document.getElementById('fcopyta'); if(!ta){ ta=document.createElement('textarea'); ta.id='fcopyta'; ta.rows=6; ta.style.width='100%'; b.parentNode.parentNode.appendChild(ta); } ta.value=txt; ta.select(); } }
   try{ navigator.clipboard.writeText(txt).then(function(){done(true);},function(){done(false);}); }catch(e){ done(false); }
@@ -2212,13 +2212,13 @@ window.addEventListener('keydown',function(e){
   else if(e.key==='Delete'||e.key==='Backspace'){ fRemove(); e.preventDefault(); e.stopImmediatePropagation(); }
 },{capture:true});
 // load: this browser's copy first, then the artifact's store (live) when the page runs inside Claude
-furn=JSON.parse(JSON.stringify(ALL.furnish||{}));   // the pieces saved in furnish.json, until you change them
-try{ var fl=JSON.parse(localStorage.getItem('apt3d-furnish')||'null'); if(fl&&typeof fl==='object'&&!Array.isArray(fl))Object.keys(fl).forEach(function(L){ if(Array.isArray(fl[L]))furn[L]=fl[L]; }); }catch(e){}
+furn=JSON.parse(JSON.stringify(ALL.furnish||{}));   // the <@v111>pieces saved in furnish.json</@v111>, until you change them
+try{ var fl=JSON.parse(localStorage.getItem('<@v112>apt3d</@v112>-furnish')||'null'); if(fl&&typeof fl==='object'&&!Array.isArray(fl))Object.keys(fl).forEach(function(L){ if(Array.isArray(fl[L]))furn[L]=fl[L]; }); }catch(e){}
 fSync();
 if(window.claude&&window.claude.use){
   window.claude.use('user').then(function(u){ if(u&&u.can)Promise.resolve(u.can('data.write')).then(function(c){ if(c===false)fCanWrite=false; }); }).catch(function(){});
   window.claude.use('db').then(function(db){ if(!db)return; fStore=db;
-    Object.keys(ALL.layouts).forEach(function(L){ db.doc('furnish/'+L).onSnapshot(function(sn){
+    <@v113>Object.keys(ALL.layouts)</@v113>.forEach(function(L){ db.doc('furnish/'+L).onSnapshot(function(sn){
       if(!sn.exists||sn.metadata.hasPendingWrites)return; var d=sn.data(); if(!d||!Array.isArray(d.pieces))return;
       if(fDrag&&L===LAYOUT)return; furn[L]=JSON.parse(JSON.stringify(d.pieces)).filter(function(q){ return q&&FDEF[q.t]&&isFinite(q.x)&&isFinite(q.y); });
       if(L===LAYOUT)fSync(); }, function(){}); });
@@ -2229,7 +2229,7 @@ if(window.claude&&window.claude.use){
 
 // ---------- finishes on trial: six surfaces take other finishes, by dragging a sample onto the model or clicking it.
 // The design stays the default: choices are kept apart (this browser) and Back to the design restores every one.
-// Every sample's colour comes from scene.fin (measured from reference photos and videos);
+// Every sample's colour <@v114>comes from scene.fin (measured from</@v114> reference photos and videos<@v115></@v115>);
 // the textures are drawn here in those colours. On unless the page is opened with ?finishes=0.
 var FIN_T={porcelain:['porcelain'],oakfloor:['oakfloor'],walls:['wall','wallpaint'],oak:['oak'],front:['front'],quartz:['quartz'],uphol:['linen','fabric']};
 var FIN_S=[{id:'floor',n:'Floor',t:['porcelain','oakfloor']},{id:'walls',n:'Walls',t:['walls']},{id:'oak',n:'Oak joinery',t:['oak']},
@@ -2302,12 +2302,12 @@ function finMake(s){ var c=parseInt(s.base.slice(1),16), R=s.rough;
   if(s.kind==='flat')return function(){ return {color:c,roughness:R}; };
   if(s.kind==='cloth')return cloth(c,{bump:/bouclé/.test(s.sub)?1.1:/linen/.test(s.sub)?.6:.8,r:R});
   return function(){ var x=ftex(s.id,function(){ return FIN_GEN[s.kind](s); }), o={map:x,roughness:R}; if(FIN_BUMP[s.kind]){ o.bumpMap=x; o.bumpScale=FIN_BUMP[s.kind]; } return o; }; }
-// where each sample's colour was measured: photos (by caption) and videos (file and second)
+// where each sample's colour was measured:<@v116></@v116> photos (by caption) and videos (file and second)
 function finFrom(x){ return (x.src||[]).map(function(r){ return r.v?'your video '+r.v+', at '+r.t+' s':'your photo “'+r.p.replace(/\.$/,'')+'”'; }).join('; '); }
 function finFromShort(x){ var p=0, v=0; (x.src||[]).forEach(function(r){ if(r.v)v++; else p++; });
   return [p?p+(p>1?' photos':' photo'):'',v?v+(v>1?' videos':' video'):''].filter(Boolean).join(' + '); }
 var FIN_DESIGN={porcelain:['Warm white porcelain','120 × 60','stone'],oakfloor:['Oak planks','20 cm boards','wood'],walls:['Off-white cream','limewash-effect'],
-  oak:['Natural oak','solid oak'],front:['Matt white','handleless lacquer'],quartz:['Grey stone','quartz'],uphol:['Cream','bouclé and linen']};
+  oak:['Natural oak','<@v117>solid oak</@v117>'],front:['Matt white','handleless lacquer'],quartz:['Grey stone','<@v118>quartz</@v118>'],uphol:['Cream','bouclé and linen']};
 var FIN_X=[];
 Object.keys(FIN_T).forEach(function(t){ var d=FIN_DESIGN[t]; FIN_X.push({id:t+':design',t:t,n:d[0],sub:d[1],d:1,fl:d[2]});
   (ALL.fin||[]).forEach(function(s){ if(s.t===t)FIN_X.push({id:s.id,t:t,n:s.n,sub:s.sub,fl:s.fl,src:s.src,p:finMake(s)}); }); });
@@ -2325,10 +2325,10 @@ function finApply(t,id){ var x=FIN_BY[id]; if(!x)return;
     var mats=[M[key]]; Object.keys(MC).forEach(function(k){ if(k.indexOf(key+'|')===0&&!/\|model$/.test(k)&&mats.indexOf(MC[k])<0)mats.push(MC[k]); });   // the cut copies of tall pieces follow
     mats.forEach(function(m){ finApplyMat(m,p); }); });
   renderer.shadowMap.needsUpdate=true; dirty=true; }
-var FIN={}; try{ FIN=JSON.parse(localStorage.getItem('apt3d-fin')||'{}')||{}; }catch(e){ FIN={}; }
+var FIN={}; try{ FIN=JSON.parse(localStorage.getItem('<@v119>apt3d</@v119>-fin')||'{}')||{}; }catch(e){ FIN={}; }
 function finCur(t){ var id=FIN[t]; return id&&FIN_BY[id]&&FIN_BY[id].t===t?id:t+':design'; }
 function finActive(s){ return s.id==='floor'?(state.fl==='wood'?'oakfloor':'porcelain'):s.t[0]; }
-function finSave(){ try{ localStorage.setItem('apt3d-fin',JSON.stringify(FIN)); }catch(e){} }
+function finSave(){ try{ localStorage.setItem('<@v120>apt3d</@v120>-fin',JSON.stringify(FIN)); }catch(e){} }
 function finShow(x,quiet){ // make the change visible: the floor takes its kind; painted walls show solid from above; the white model gives way
   var ch=false;
   if(x.fl&&state.fl!==x.fl){ setKey('fl',x.fl,true); ch=true; }
@@ -2402,7 +2402,7 @@ document.getElementById('ftclose').addEventListener('click',function(){ finTrayO
 document.getElementById('finreset').addEventListener('click',finReset);
 document.getElementById('finlbl').addEventListener('click',function(){ finLabels=!finLabels; this.setAttribute('aria-pressed',finLabels?'true':'false'); dirty=true; });
 document.getElementById('fincopy').addEventListener('click',function(){ var b=this;
-  var txt='Finishes on trial · '+SCENE.name+'\n'+FIN_S.filter(finPresent).map(function(s){ var x=FIN_BY[finCur(finActive(s))]; return s.n+': '+x.n+' ('+x.sub+')'+(x.d?' · the design':' · colour from '+finFrom(x)); }).join('\n');
+  var txt='<@v121>Finishes</@v121> on trial · '+SCENE.name+'\n'+FIN_S.filter(finPresent).map(function(s){ var x=FIN_BY[finCur(finActive(s))]; return s.n+': '+x.n+' ('+x.sub+')'+(x.d?' · the design':' · colour from '+finFrom(x)); }).join('\n');
   try{ navigator.clipboard.writeText(txt).then(function(){ b.textContent='Copied'; setTimeout(function(){ b.textContent='Copy my picks'; },2000); },function(){ toast('',txt.split('\n').slice(1).join(' · ')); }); }catch(e){ toast('',txt.split('\n').slice(1).join(' · ')); } });
 
 // which surface is under a point of the screen
@@ -2473,20 +2473,20 @@ if(FIN_ON){ document.getElementById('tb-fin').hidden=false; finUI(); }
 function selectTab(t){
   [].forEach.call(document.querySelectorAll('.tabs button'),function(b){ var on=b.getAttribute('data-tab')===t; b.setAttribute('aria-selected',on?'true':'false'); b.tabIndex=on?0:-1; });
   [].forEach.call(document.querySelectorAll('.tabp'),function(p){ p.hidden=p.id!=='tab-'+t; });
-  try{ localStorage.setItem('apt3d-tab',t); }catch(e){}
+  try{ localStorage.setItem('<@v122>apt3d</@v122>-tab',t); }catch(e){}
   if(typeof finTabSel==='function')finTabSel(t);
 }
 [].forEach.call(document.querySelectorAll('.tabs button'),function(b){ b.addEventListener('click',function(){ selectTab(b.getAttribute('data-tab')); }); });
-(function(){ var t=ALL.preview?'fin':'go'; try{ t=localStorage.getItem('apt3d-tab')||t; }catch(e){} if(!document.getElementById('tab-'+t))t='go'; selectTab(t); })();
+(function(){ var t=ALL.preview?'fin':'go'; try{ t=localStorage.getItem('<@v123>apt3d</@v123>-tab')||t; }catch(e){} if(!document.getElementById('tab-'+t))t='go'; selectTab(t); })();
 [].forEach.call(document.querySelectorAll('.sk[data-k]'),function(k){ k.textContent=MODK+k.getAttribute('data-k'); });
 document.getElementById('layout').title='Plan ('+MODK+'1 steps through them)';
 var kguide=document.getElementById('kguide');
 var GUIDE=[
   ['Move',[['Walk forward, back, sideways',['↑','↓','←','→']],['Turn left or right',['A','D']],['Tilt up or down',['W','S']],['Zoom in or out',[MODK+'+',MODK+'−']],
     ['Back to the front door, true size',['H']],['Overview, then back where you stood',[MODK+'0']]]],
-  ['Switch',[['Plan, when there are several',[MODK+'1']],['Furniture: all, built-in, none',[MODK+'2']],['Walls: auto, glass, solid',[MODK+'3']],
+  ['Switch',[['Plan<@v124>, when there are several</@v124>',[MODK+'1']],['Furniture: all, built-in, none',[MODK+'2']],['Walls: auto, glass, solid',[MODK+'3']],
     ['Doors and windows: open, closed, none',[MODK+'4']],['Look: finishes or white model',[MODK+'5']],['Midday or evening',[MODK+'6']],['Lighting scene, next',[MODK+'7']],
-    ['Dimensions on or off',[MODK+'8']],['Height from above: full or cut',[MODK+'9']],['Show or hide the controls',[MODK+'S']]]],
+    ['Dimensions on or off',[MODK+'8']],['Height from above: <@v125>full</@v125> or cut',[MODK+'9']],['Show or hide the controls',[MODK+'S']]]],
   ['Tools',[['Tape measure',['M']],['Close a card or clear measurements',['Esc']],['Furnishing: turn the piece 90° (15°)',['R','Shift R']],['Furnishing: remove the piece',['Delete']],['This guide',['?']]]]
 ];
 (function(){ var host=document.getElementById('kcols');
@@ -2501,7 +2501,7 @@ document.getElementById('kgclose').addEventListener('click',function(){ showGuid
 kguide.addEventListener('click',function(e){ if(e.target===kguide)showGuide(false); });
 
 // ---------- the plan, top right while you stand: where you are and which way you face. Click a spot to walk there.
-var mm=document.getElementById('minimap'), mmCtx=mm.getContext('2d'), mmBase=document.createElement('canvas'), mmKey='', MMB=[BND[0]-40,BND[1]-40,BND[2]+40,BND[3]+40];
+var mm=document.getElementById('minimap'), mmCtx=mm.getContext('2d'), mmBase=document.createElement('canvas'), mmKey='', MMB=[<@v126>BND[0]-40,BND[1]-40,BND[2]+40,BND[3]+40</@v126>];
 function mmSize(){ var w=mm.clientWidth||200, h=mm.clientHeight||182, d=Math.min(window.devicePixelRatio||1,2), W=Math.round(w*d), H=Math.round(h*d);
   if(mm.width!==W||mm.height!==H){ mm.width=W; mm.height=H; mmKey=''; } return {w:W,h:H,d:d}; }
 function mmK(W,H){ var k=Math.min(W/(MMB[2]-MMB[0]),H/(MMB[3]-MMB[1])); return {k:k,ox:(W-(MMB[2]-MMB[0])*k)/2,oy:(H-(MMB[3]-MMB[1])*k)/2}; }
@@ -2588,9 +2588,9 @@ function loop(now){
 var rig=new T.Group(); scene.add(rig); rig.add(camera);
 // ---------- shared views: a link that puts the next person exactly here. On the public site the link is this page's
 // own address; inside Claude it is the artifact's link (whose #anchor carries the same letters, digits, ~ . and -).
-var ON_SITE=true;
-var SITE_BASE=location.origin+location.pathname;
-document.getElementById('cmplink').hidden=true;   // the compare page lives on the public site, next to this one
+var ON_SITE=<@v127>true;</@v127>
+var SITE_BASE=<@v128></@v128>location.origin+location.pathname<@v129></@v129>;
+document.getElementById('cmplink').hidden=<@v130>true</@v130>;   // the compare page lives on the public site, next to this one
 function camToken(){ var r=function(v){ return Math.round(v*10)/10; }, c=camera.position, t=controls.target;
   if(mode==='eye'){ var d=t.clone().sub(c).normalize();
     return ['v1',LAYOUT,'e',r(c.x/S),r(c.z/S),r(c.y/S),r(Math.atan2(d.z,d.x)*180/Math.PI),r(Math.asin(Math.max(-1,Math.min(1,d.y)))*180/Math.PI),Math.round(EYEZ*100)/100,state.hour].join('~'); }
@@ -2608,7 +2608,7 @@ document.getElementById('sharebtn').addEventListener('click',function(){
     note.hidden=false; note.textContent=url; if(!ok){ var rg=document.createRange(); rg.selectNodeContents(note); var sel=getSelection(); sel.removeAllRanges(); sel.addRange(rg); } }
   try{ navigator.clipboard.writeText(url).then(function(){done(true);},function(){done(false);}); }catch(e){ done(false); }
 });
-window.APT3D={layers:{open:function(){ lyStart(); },close:function(){ lyEnd(false); },check:function(){ var m=0; if(!LY.parts)return 0; ['furn','walls','lights'].forEach(function(k){ LY.parts[k].forEach(function(q){ m=Math.max(m,Math.abs(q.o.position.y-q.y)); }); }); return m; },parts:function(){ return LY.parts&&{floor:LY.parts.floor.length,furn:LY.parts.furn.length,walls:LY.parts.walls.length,lights:LY.parts.lights.length}; }},walk:{start:function(){ stStart(); },go:function(i){ stShow(i); },state:function(){ return {on:ST.on,i:ST.i,dim:state.dim,hour:state.hour}; },end:function(){ stEnd(); }},ba:{pose:function(t){ if(!BA.on)baStart(1); BA.run=false; baPose(t); },end:function(){ baEnd(); }},rig:rig,camToken:camToken,finAt:function(x,y){ var s=finSurfaceAt(x,y); return s&&(s.id||'wet'); },
+window.<@v131>APT3D</@v131>={layers:{open:function(){ lyStart(); },close:function(){ lyEnd(false); },check:function(){ var m=0; if(!LY.parts)return 0; ['furn','walls','lights'].forEach(function(k){ LY.parts[k].forEach(function(q){ m=Math.max(m,Math.abs(q.o.position.y-q.y)); }); }); return m; },parts:function(){ return LY.parts&&{floor:LY.parts.floor.length,furn:LY.parts.furn.length,walls:LY.parts.walls.length,lights:LY.parts.lights.length}; }},walk:{start:function(){ stStart(); },go:function(i){ stShow(i); },state:function(){ return {on:ST.on,i:ST.i,dim:state.dim,hour:state.hour}; },end:function(){ stEnd(); }},ba:{pose:function(t){ if(!BA.on)baStart(1); BA.run=false; baPose(t); },end:function(){ baEnd(); }},rig:rig,camToken:camToken,finAt:function(x,y){ var s=finSurfaceAt(x,y); return s&&(s.id||'wet'); },
   setCam:function(t){ var m=String(t).split('~'), n=m.slice(3,9).map(Number); if(m[0]!=='v1'||n.some(function(v){ return !isFinite(v); }))return;   // follow another view (the compare page): camera only
     if((m[2]==='e')!==(mode==='eye')){ applyCam([m[0],LAYOUT].concat(m.slice(2))); return; }
     if(m[2]==='e'){ var pos=P(n[0],n[1],n[2]), ya=n[3]*Math.PI/180, pi=n[4]*Math.PI/180; camera.position.copy(pos);
@@ -2699,17 +2699,17 @@ vrBtn.addEventListener('click',function(){
 makeWindowLights(); makeLighting();
 var p0=VIEWS.overview; camera.position.copy(P(p0.pos[0],p0.pos[1],p0.pos[2])); controls.target.copy(P(p0.look[0],p0.look[1],p0.look[2]));
 var h0=(location.hash||'').slice(1);
-setKey('fu','all',false);
-if(!FIN_ON){ var tf=document.getElementById('tb-fin'); if(tf)tf.hidden=true; }
+setKey('fu',<@v132></@v132>'all',false);
+<@v133>if(!FIN_ON){ var tf=document.getElementById('tb-fin'); if(tf)tf.hidden=true; }
 if(!(ALL.context&&ALL.context.length)&&!(ALL.site||{}).floors_above)document.getElementById('uprow').hidden=true;
-resize();
+</@v133>resize();
 goto(VIEWS[h0]?h0:ALL.preview?'overview':'entrance');                          // opens standing at the main door, true size
 if(anim){camera.position.copy(anim.toP); controls.target.copy(anim.toT); anim=null;}
 if(SHARE)applyCam(SHARE);
 applyState();
 progress(1,'Ready');
 var ld=document.getElementById('loading'); if(ld){ ld.classList.add('done'); setTimeout(function(){ ld.remove(); },700); }
-window.APT_READY=true;
+window.<@v134>APT_READY</@v134>=true;
 renderer.setAnimationLoop(loop);
 </script>
 

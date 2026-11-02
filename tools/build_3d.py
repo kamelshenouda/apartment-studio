@@ -4,7 +4,8 @@ The plan page's drawing helpers record plain geometry while they draw (build_pla
 solids in centimetres: walls to the ceiling, lintels over doors, sills and glass in the windows, door leaves open and
 shut (the viewer's Doors switch picks), sliding glass doors, frames and roller shutters on every exterior opening,
 floors and ceilings per room, skirting, light fittings, and any furniture, joinery and garden the plan draws. The
-scene is inlined into tools/viewer.html, which draws it with three.js.
+scene is inlined into tools/viewer.html, which draws it with three.js. The viewer marks the places a project may word
+or set up differently as <@name>default</@name> (see viewer_html).
 
 A project with its own design layouts runs this file inside its own build_3d.py and replaces the hooks below
 (before, column_top, tv_wall, pendant_style, details, grounds, art, labels_for, lighting, garden, site_rect, finish).
@@ -809,6 +810,18 @@ def build(skip=(), doors_shut=False, layout='existing'):
            'lights': lighting(layout, rooms), 'garden': garden(), 'site': site_rect(), 'bounds': [x0, y0, x1, y1]}
     return finish(out, layout)
 
+_ENGINE = os.path.dirname(os.path.abspath(sys._getframe().f_code.co_filename))
+
+
+def viewer_html(overrides=None):
+    """The viewer page (tools/viewer.html). Places a project may word or set up differently are marked in it as
+    <@name>default</@name>; overrides maps a name to the project's own text, and every other mark keeps its default."""
+    import re
+    src = open(os.path.join(_ENGINE, 'viewer.html'), encoding='utf-8').read()
+    ov = overrides or {}
+    return re.sub(r'<@(v\d+)>(.*?)</@\1>', lambda m: ov.get(m.group(1), m.group(2)), src, flags=re.S)
+
+
 def entry():
     """Where the viewer opens: just inside the front door, looking into the apartment (or the middle of the
     biggest room if no door is marked as the entry)."""
@@ -864,7 +877,7 @@ if __name__ == '__main__':
     import plan_lock
     plan_lock.guard()        # the plan's measurements must match plan-lock.json, or nothing is built
     sc = scene()
-    tpl = open(os.path.join(HERE, 'viewer.html')).read()
+    tpl = viewer_html()
     html = tpl.replace('/*SCENE*/null', json.dumps(sc, separators=(',', ':')))
     html = html.replace('<!--BLUEPRINT-->', blueprint_svg(), 1)
     html = html.replace('{{NAME}}', apartment.NAME.replace('<', '&lt;'))
