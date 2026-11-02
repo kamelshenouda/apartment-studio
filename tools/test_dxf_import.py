@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Compare an imported apartment (dxf_import.py) with the locked as-built (apartment.json), element by element.
 
-  python3 tools/test_dxf_import.py IMPORTED/apartment.json [--shift DX DY]
+  python3 tools/test_dxf_import.py IMPORTED/apartment.json [--shift DX DY] [--ref apartment.json]
 
 Walls are compared as solid area on a 1 cm grid (the import may split them into different pieces); doors by hinge,
 leaf and closed end; windows, glazed doors and columns by their boxes; rooms by name and size. --shift moves the
@@ -85,7 +85,12 @@ def compare(imp, ref, shift=None):
 
 
 if __name__ == '__main__':
-    imp = json.load(open(sys.argv[1], encoding='utf-8'))
-    ref = json.load(open(os.path.join(HERE, '..', 'apartment.json'), encoding='utf-8'))
-    shift = (float(sys.argv[3]), float(sys.argv[4])) if len(sys.argv) > 4 and sys.argv[2] == '--shift' else None
-    print(json.dumps(compare(imp, ref, shift), indent=1, ensure_ascii=False, default=str))
+    import argparse
+    ap = argparse.ArgumentParser(description='Compare an imported apartment.json with the locked one.')
+    ap.add_argument('imported')
+    ap.add_argument('--shift', nargs=2, type=float, metavar=('DX', 'DY'))
+    ap.add_argument('--ref', default=os.path.join(HERE, '..', 'apartment.json'), help='the apartment.json to compare with')
+    a = ap.parse_args()
+    imp = json.load(open(a.imported, encoding='utf-8'))
+    ref = json.load(open(a.ref, encoding='utf-8'))
+    print(json.dumps(compare(imp, ref, tuple(a.shift) if a.shift else None), indent=1, ensure_ascii=False, default=str))
