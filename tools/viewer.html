@@ -163,6 +163,9 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .finsrc{display:grid;gap:4px;font:500 11px/1.4 var(--display);color:var(--muted);border-top:1px solid var(--btn-line);padding-top:8px;margin-top:2px}
 .finsrc b{font:600 9.5px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
 .finsrc p{margin:0}
+.finsrc .fsrow{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:2px 0 6px}
+.finsrc .fsrow canvas,.finsrc .fsrow img{width:44px;height:44px;border-radius:6px;object-fit:cover;border:1px solid var(--btn-line)}
+.finmeter{font-variant-numeric:tabular-nums}
 .finsrc span{color:var(--ink);font-weight:600}
 .ftile[aria-pressed="true"] canvas{box-shadow:0 0 0 2px #fff,0 0 0 4px #2E5A74}
 .finghost{position:fixed;z-index:60;width:60px;height:60px;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;background:#ddd center/cover;box-shadow:0 6px 18px rgba(0,0,0,.32);border:3px solid #fff;opacity:.8}
@@ -400,6 +403,7 @@ h3{font-weight:600}
       <div class="ctl"><div class="cl"><span>Floors</span></div><div class="bt" data-state="fl"><button type="button" data-v="stone" aria-pressed="true" title="Large porcelain in the living areas, oak in the bedrooms">Porcelain</button><button type="button" data-v="wood" aria-pressed="false" title="Oak wood flooring in every room except the bathrooms, WCs and utility">Oak</button></div></div>
       <div class="ctl"><div class="cl"><span>Dimensions</span><kbd class="sk" data-k="8"></kbd></div><div class="bt" data-state="dim"><button type="button" data-v="off" aria-pressed="true">Off</button><button type="button" data-v="on" aria-pressed="false" title="Room widths and lengths in metres, from the survey">On</button></div></div>
       <div class="ctl" id="wallrow"><div class="cl"><span>Height from above</span><kbd class="sk" data-k="9"></kbd></div><div class="bt" data-state="cut"><button type="button" data-v="full" aria-pressed="true" title="Real height: 2.80 m to the slab">2.80 m</button><button type="button" data-v="cut" aria-pressed="false" title="Cut at 1.25 m to see into the rooms">Cut at 1.25 m</button></div></div>
+      <div class="ctl" id="dofrow"><div class="cl"><span>Depth of field from above</span></div><div class="bt" data-state="dof"><button type="button" data-v="on" aria-pressed="true" title="From above, once the view settles: the model in focus, the far ground softening like a photograph">On</button><button type="button" data-v="off" aria-pressed="false">Off</button></div></div>
 <@v16></@v16>      <div class="ctl"><div class="cl"><span>Layers</span></div>
         <div class="ftools"><button type="button" id="lyopen" title="From above: the floor stays, the furniture and joinery, the walls and the lighting lift apart">Separate the layers</button><button type="button" id="lyclose" disabled>Put back</button></div></div>
 <@v17></@v17>      <span id="sum-fin" hidden></span>
@@ -409,6 +413,8 @@ h3{font-weight:600}
     <section class="tabp" id="tab-fin" role="tabpanel" aria-labelledby="tb-fin" hidden>
       <p class="hint">Try other finishes on each surface<@v19></@v19>. Your design stays the default: what you try is kept apart, and Back to the design restores it.</p>
       <div class="fboard" id="fboard"></div>
+      <div class="ftools" id="finschemes" hidden></div>
+      <p class="hint finmeter" id="finmeter" hidden></p>
       <div class="finsrc" id="finsrc" hidden></div>
       <div class="ftools"><button type="button" id="finlbl" aria-pressed="true" title="Cards above the model, with a line to each surface (from above)">Labels on the model</button><button type="button" id="finreset">Back to the design</button><button type="button" id="fincopy">Copy my picks</button></div>
       <p class="hint">Drag a sample onto the model to see it in place, then let go to keep it, or just click it. Click a surface in the model to see its samples.</p>
@@ -529,6 +535,8 @@ import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
 import {GTAOPass} from 'three/addons/postprocessing/GTAOPass.js';
 import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
+import {SMAAPass} from 'three/addons/postprocessing/SMAAPass.js';
+import {BokehPass} from 'three/addons/postprocessing/BokehPass.js';
 import {computeBoundsTree, disposeBoundsTree, acceleratedRaycast} from 'three-mesh-bvh';
 T.BufferGeometry.prototype.computeBoundsTree=computeBoundsTree; T.BufferGeometry.prototype.disposeBoundsTree=disposeBoundsTree;
 T.Mesh.prototype.raycast=acceleratedRaycast;
@@ -815,8 +823,25 @@ function buildModel(){
       eg.userData={edge:1}; glassEdges.push(eg); tagged(b.v,eg);
     }
   });
+  contactShadows();
   materialsForState(true);
   renderer.shadowMap.needsUpdate=true;
+}
+// contact shadows: a soft dark footprint under every piece standing on the floor, so furniture sits on it rather than
+// floating (merged per furniture group; hidden with the furniture). Rugs and very small pieces get none.
+var blobMat=new T.MeshBasicMaterial({color:0xFFFFFF,vertexColors:true,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,toneMapped:false});
+function blobGeo(x0,y0,x1,y1,pad){   // the footprint, darkest at its edge (alpha .5), fading to nothing pad cm outside it
+  var I=[[x0,y0],[x1,y0],[x1,y1],[x0,y1]], O=[[x0-pad,y0-pad],[x1+pad,y0-pad],[x1+pad,y1+pad],[x0-pad,y1+pad]], pos=[], col=[], idx=[];
+  I.concat(O).forEach(function(q,i){ pos.push(q[0]*S,.016,q[1]*S); col.push(0,0,0,i<4?.5:0); });   // just above a rug's top (1.5 cm)
+  idx.push(0,2,1, 0,3,2);
+  for(var i=0;i<4;i++){ var j=(i+1)%4; idx.push(i,4+j,4+i, i,j,4+j); }
+  var g=new T.BufferGeometry(); g.setAttribute('position',new T.Float32BufferAttribute(pos,3)); g.setAttribute('color',new T.Float32BufferAttribute(col,4)); g.setIndex(idx); return g; }
+function contactShadows(){
+  var by={};
+  (SCENE.pieces||[]).forEach(function(p){ var b=p.b; if(!p.f||b[2]>2||b[5]-b[2]<25||/^Rug/.test(p.n))return;
+    if(Math.min(b[3]-b[0],b[4]-b[1])<20)return; var k=p.f+'|'+(p.v||''); (by[k]=by[k]||{f:p.f,v:p.v,g:[]}).g.push(blobGeo(b[0],b[1],b[3],b[4],9)); });
+  Object.keys(by).forEach(function(k){ var q=by[k], m=new T.Mesh(mergeGeometries(q.g,false),blobMat); q.g.forEach(function(g){g.dispose();});
+    m.renderOrder=1; m.userData={f:q.f,blob:1}; furnMeshes.push(m); tagged(q.v,m); });
 }
 // Walls: Auto (the default) is washed glass from above and a calm wall when you stand in a room, where blur behind
 // a wall distracts; Frosted glass and Solid keep one look everywhere. ?eyewall=veil|solid picks the standing look.
@@ -841,7 +866,7 @@ function clearModel(){
 }
 
 // ---------- states (needed by the material factory, so declared before the first build)
-var state={chg:'on',sp:'on',isl:'design',k:'open',p:'open',d:'open',v:'now',season:'mar',hour:12,cut:'full',up:'on',sh:'open',gs:'pergola',aw:'out',fu:'all',fl:'stone',dim:'off',
+var state={dof:'on',chg:'on',sp:'on',isl:'design',k:'open',p:'open',d:'open',v:'now',season:'mar',hour:12,cut:'full',up:'on',sh:'open',gs:'pergola',aw:'out',fu:'all',fl:'stone',dim:'off',
            wm:Q.get('walls')==='solid'?'solid':Q.get('walls')==='glass'?'glass':'auto',look:Q.get('look')==='model'?'model':'natural'};
 progress(.3,'Building the rooms…'); await tick();
 buildModel();
@@ -895,8 +920,11 @@ var skyCanvas=document.createElement('canvas'); skyCanvas.width=4; skyCanvas.hei
 var skyTex=new T.CanvasTexture(skyCanvas); skyTex.colorSpace=T.SRGBColorSpace; skyTex.mapping=T.EquirectangularReflectionMapping;
 function paintSky(top,hor,gnd){ var g=skyCanvas.getContext('2d'), gr=g.createLinearGradient(0,0,0,256);
   gr.addColorStop(0,'#'+top.getHexString()); gr.addColorStop(.47,'#'+hor.getHexString()); gr.addColorStop(.5,'#'+hor.getHexString()); gr.addColorStop(.53,'#'+gnd.getHexString()); gr.addColorStop(1,'#'+gnd.getHexString());
-  g.fillStyle=gr; g.fillRect(0,0,4,256); skyTex.needsUpdate=true; }
+  g.fillStyle=gr; g.fillRect(0,0,4,256); skyTex.needsUpdate=true; skyEnvDirty=true; }
 scene.background=skyTex;
+var skyEnvDirty=true, skyRT=null;
+function updateSkyEnv(){ skyEnvDirty=false; var old=skyRT; skyRT=pmrem.fromEquirectangular(skyTex);
+  M.glass.envMap=skyRT.texture; M.glass.envMapIntensity=.9; M.glass.needsUpdate=true; if(old)old.dispose(); }
 scene.fog=new T.Fog(0xE8E4DC,45,160);              // distance haze: the site fades softly into the sky
 function setSun(){
   var s=sunAt(state.season,state.hour), R=Math.PI/180, el=s.el, rel=(s.az-SITE.facing)*R;
@@ -1381,6 +1409,8 @@ var UPPER=(function(){<@v74> var top=+((ALL.site||{}).floors_above||0); if(!top)
 // the <@v79>neighbouring buildings from apartment.json (context)</@v79>. Plain massing when you walk,
 // shadow-only from above so they never hide the apartment
 var HIDDEN=new T.MeshBasicMaterial({colorWrite:false,depthWrite:false});
+M.context.onBeforeCompile=function(sh){ sh.fragmentShader=sh.fragmentShader.replace('#include <fog_fragment>',
+  '#include <fog_fragment>\n#ifdef USE_FOG\n  gl_FragColor.rgb=mix(gl_FragColor.rgb,fogColor,smoothstep(8.0,90.0,vFogDepth)*.6);\n#endif'); };
 var NEIGH=(ALL.context||[]).map(function(c){
   var sh=new T.Shape(); c.p.forEach(function(q,i){if(i===0)sh.moveTo(q[0]*S,q[1]*S);else sh.lineTo(q[0]*S,q[1]*S);});
   var h=(c.z[1]-c.z[0])*S, g=new T.ExtrudeGeometry(sh,{depth:h,bevelEnabled:false}); g.rotateX(Math.PI/2);
@@ -1401,7 +1431,11 @@ if(FX.ao==='gtao'){
   composer.addPass(aoPass);
 }
 var bloomPass=new UnrealBloomPass(new T.Vector2(1,1),.32,.45,1.6); bloomPass.enabled=FX.bloom; composer.addPass(bloomPass);
+// depth of field from above: once the view settles, the model stays sharp and the far ground softens (BokehPass,
+// full-quality frames only); SMAA smooths the edges the finished frame has left after shading and bloom
+var dofPass=new BokehPass(scene,camera,{focus:20,aperture:.0003,maxblur:.004}); dofPass.enabled=false; composer.addPass(dofPass);
 composer.addPass(new OutputPass());
+var smaaPass=Q.get('smaa')==='0'?null:new SMAAPass(1,1); if(smaaPass){ smaaPass.enabled=false; composer.addPass(smaaPass); }
 progress(.75,'Lighting…'); await tick();
 
 function applyState(){
@@ -2031,6 +2065,7 @@ function fBuild(p){ // a simple model of each catalogue piece at its true size, 
   else if(t==='cot'){ A(fBox(w,d,15,25,M.linen)); A(fBox(w,4,90,0,M.oak,0,-(d/2-2))); A(fBox(w,4,90,0,M.oak,0,d/2-2)); A(fBox(4,d,90,0,M.oak,-(w/2-2),0)); A(fBox(4,d,90,0,M.oak,w/2-2,0)); }
   else if(t==='lounger'){ A(fBox(w,d,30,5,M.fabric)); legs(5,M.black,6,4); }
   else A(fBox(w,d,h,0,M.white));
+  if(!/^rug/.test(t)&&t!=='flamp'){ var cs=new T.Mesh(blobGeo(-w/2,-d/2,w/2,d/2,9),blobMat); cs.renderOrder=1; G.add(cs); }
   return G;
 }
 function fPlace(p){ var o=fObjs[p.id], D=fDim(p), key=p.t+'|'+D.w+'|'+D.d;
@@ -2295,12 +2330,15 @@ var FIN_GEN={
     for(var j=0;j<900;j++){ g.fillStyle='rgba('+cs[j%5]+',.9)'; var x=rnd(j+3)*w, y=rnd(j+4)*h, r=1.5+rnd(j+5)*6; g.beginPath();
       for(var a=0;a<6;a++){ var rr=r*(.6+rnd(j*7+a)*.6); g.lineTo(x+Math.cos(a*1.05)*rr,y+Math.sin(a*1.05)*rr); } g.fill(); } }); }
 };
-var FIN_BUMP={plank:.4,herring:.4,wood:.3,vgroove:1,fluted:1.2};
+var FIN_BUMP={plank:.4,herring:.4,wood:.3,vgroove:1,fluted:1.2,tile:.12,tilestone:.25,stone:.3,trav:.35,terrazzo:.2,plaster:.18,marble:.08,speckle:.15,seamless:.08};
 function plaster(base,dk,lt){ return canvasTex(512,512,function(g,w,h){ g.fillStyle=base;g.fillRect(0,0,w,h); blots(g,w,h,40,dk,40,160,.12,.3,13); blots(g,w,h,30,lt,30,120,.2,.4,90); }); }
 function cloth(c,o){ o=o||{}; return function(){ return {bumpMap:texWeave,bumpScale:o.bump||.7,color:c,roughness:o.r!==undefined?o.r:1,sheen:o.sheen||0,sheenColor:o.sc,sheenRoughness:o.sr}; }; }
 function finMake(s){ var c=parseInt(s.base.slice(1),16), R=s.rough;
   if(s.kind==='flat')return function(){ return {color:c,roughness:R}; };
-  if(s.kind==='cloth')return cloth(c,{bump:/bouclé/.test(s.sub)?1.1:/linen/.test(s.sub)?.6:.8,r:R});
+  var d=(s.n+' '+(s.sub||'')).toLowerCase(), sc=new T.Color(c).lerp(new T.Color(0xFFFFFF),.35);
+  if(/leather/.test(d))return function(){ return {color:c,roughness:Math.min(R,.45),clearcoat:.15,clearcoatRoughness:.5,sheen:0}; };
+  if(s.kind==='cloth'){ var sh=/velvet/.test(d)?[1,.35]:/boucl/.test(d)?[.45,.8]:/linen/.test(d)?[.2,.9]:[.3,.85];   // sheen, its roughness
+    return cloth(c,{bump:/bouclé/.test(s.sub)?1.1:/linen/.test(s.sub)?.6:/velvet/.test(d)?.25:.8,r:R,sheen:sh[0],sc:sc,sr:sh[1]}); }
   return function(){ var x=ftex(s.id,function(){ return FIN_GEN[s.kind](s); }), o={map:x,roughness:R}; if(FIN_BUMP[s.kind]){ o.bumpMap=x; o.bumpScale=FIN_BUMP[s.kind]; } return o; }; }
 // where each sample's colour was measured:<@v116></@v116> photos (by caption) and videos (file and second)
 function finFrom(x){ return (x.src||[]).map(function(r){ return r.v?'your video '+r.v+', at '+r.t+' s':'your photo “'+r.p.replace(/\.$/,'')+'”'; }).join('; '); }
@@ -2361,6 +2399,40 @@ function finPresent(s){ // which surfaces this plan has
   var keys=[].concat.apply([],s.t.map(function(t){ return FIN_T[t]; }));
   return SCENE.items.some(function(it){ var m=it.m; if(m==='white'&&it.f==='built')m='front'; return keys.indexOf(m)>-1||(s.id==='floor'&&it.g==='floor'); }); }
 function finNote(t){ ftnote.textContent=t; }
+// one-click schemes from the measured samples, and how much light each room's surfaces give back
+var FIN_BASE={}; (ALL.fin||[]).forEach(function(x){ FIN_BASE[x.id]=x.base; });
+function srgbLum(hex){ var c=parseInt(hex.replace('#',''),16), f=function(v){ v/=255; return v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4); };
+  return .2126*f(c>>16&255)+.7152*f(c>>8&255)+.0722*f(c&255); }
+function finColour(t){ var id=finCur(t); if(FIN_BASE[id])return FIN_BASE[id]; return finDesignColour(t)||'#cccccc'; }
+var SCHEMES=[['Light','the lightest sample on every surface',function(a,b){ return srgbLum(b)-srgbLum(a); }],
+  ['Warm','the warmest sample on every surface',function(a,b){ var w=function(h){ var c=parseInt(h.slice(1),16); return (c>>16&255)-(c&255); }; return w(b)-w(a); }],
+  ['Deep','the deepest sample on every surface',function(a,b){ return srgbLum(a)-srgbLum(b); }]];
+function finDesignColour(t){   // the design finish as seen: its colour times the average of its texture
+  var sn=FIN_SNAP[(FIN_T[t]||[t])[0]]; if(!sn)return null; var c=new T.Color(sn.color), img=sn.map&&sn.map.image;
+  if(img&&img.width){ try{ var cv=document.createElement('canvas'); cv.width=cv.height=8; var g=cv.getContext('2d'); g.drawImage(img,0,0,8,8);
+    var d=g.getImageData(0,0,8,8).data, r=0,gg=0,b=0; for(var i=0;i<d.length;i+=4){ r+=d[i]; gg+=d[i+1]; b+=d[i+2]; }
+    var avg=new T.Color().setRGB(r/64/255,gg/64/255,b/64/255,T.SRGBColorSpace); c.multiply(avg); }catch(e){} }
+  return '#'+c.getHexString(); }
+function finScheme(i){ var cmp=SCHEMES[i][2];
+  Object.keys(FIN_T).forEach(function(t){ var dc=finDesignColour(t), cand=(ALL.fin||[]).filter(function(x){ return x.t===t; }).map(function(x){ return {id:x.id,base:x.base}; });
+    if(dc)cand.push({id:t+':design',base:dc});                     // your design's own finish takes part too
+    var c=cand.sort(function(a,b){ return cmp(a.base,b.base); })[0]; if(!c||!FIN_BY[c.id])return;
+    if(FIN_BY[c.id].d)delete FIN[t]; else FIN[t]=c.id; finApply(t,c.id); });
+  finSave(); finUI(); toast('',SCHEMES[i][0]+': '+SCHEMES[i][1]+'. Back to the design restores yours.'); }
+function finExtras(){
+  var sc=document.getElementById('finschemes'), me=document.getElementById('finmeter'); if(!sc||!me)return;
+  if(!sc.childNodes.length){ var l=document.createElement('span'); l.className='hint'; l.textContent='Try a scheme:'; sc.appendChild(l);
+    SCHEMES.forEach(function(q,i){ var b=document.createElement('button'); b.type='button'; b.textContent=q[0]; b.title=q[1]+', from your measured samples'; b.addEventListener('click',function(){ finScheme(i); }); sc.appendChild(b); }); }
+  sc.hidden=false;
+  // each room's surfaces, weighted by area: floor and ceiling (its plan area each) and walls (perimeter × height)
+  var walls=srgbLum(finColour('walls')), ceil=.85, H=CEIL_M/S, rows=[];
+  (SCENE.rooms||[]).forEach(function(r){ if(!r.r)return; var w=r.r[2]-r.r[0], d=r.r[3]-r.r[1], A=w*d, Aw=2*(w+d)*H;
+    var wet=SCENE.items.some(function(it){ return it.zn==='wetz'&&it.b[0]<r.r[2]&&it.b[3]>r.r[0]&&it.b[1]<r.r[3]&&it.b[4]>r.r[1]&&(it.b[3]-it.b[0])*(it.b[4]-it.b[1])>A*.5; });
+    var fl=wet?srgbLum('#'+M.stone.color.getHexString()):srgbLum(finColour(state.fl==='wood'?'oakfloor':'porcelain'));
+    rows.push([r.n,Math.round(100*(A*fl+A*ceil+Aw*walls)/(2*A+Aw))]); });
+  me.hidden=!rows.length;
+  me.textContent=rows.length?'How much light the surfaces give back (walls, floor and ceiling, by area): '+rows.map(function(q){ return q[0]+' '+q[1]+'%'; }).join(' · ')+'. Above 60% reads bright; below 45% the room needs more light.':'';
+}
 function finUI(){ if(!FIN_ON)return;
   fboard.textContent='';
   FIN_S.forEach(function(s){ var t=finActive(s), id=finCur(t), x=FIN_BY[id], b=document.createElement('button'), here=finPresent(s);
@@ -2372,7 +2444,11 @@ function finUI(){ if(!FIN_ON)return;
   var fs=document.getElementById('finsrc'), on=FIN_S.filter(finPresent).map(function(s){ return {s:s,x:FIN_BY[finCur(finActive(s))]}; }).filter(function(q){ return !q.x.d; });
   fs.textContent=''; fs.hidden=!on.length;
   if(on.length){ var hd=document.createElement('b'); hd.textContent='Where these colours come from'; fs.appendChild(hd);
-    on.forEach(function(q){ var p=document.createElement('p'), k=document.createElement('span'); k.textContent=q.s.n+' · '+q.x.n+': '; p.appendChild(k); p.appendChild(document.createTextNode(finFrom(q.x))); fs.appendChild(p); }); }
+    on.forEach(function(q){ var p=document.createElement('p'), k=document.createElement('span'); k.textContent=q.s.n+' · '+q.x.n+': '; p.appendChild(k); p.appendChild(document.createTextNode(finFrom(q.x))); fs.appendChild(p);
+      var row=document.createElement('div'); row.className='fsrow'; var sw=finSw(q.x.id,88,88); sw.title='The sample, close up'; row.appendChild(sw);   // the sample beside the photos it was measured from
+      (q.x.src||[]).forEach(function(r){ var u=r.p&&ALL.finpics&&ALL.finpics[r.p]; if(!u)return; var im=document.createElement('img'); im.src=u; im.alt=r.p; im.title=r.p; row.appendChild(im); });
+      fs.appendChild(row); }); }
+  finExtras();
   fttabs.textContent='';
   FIN_S.forEach(function(s){ if(!finPresent(s))return; var b=document.createElement('button'); b.type='button'; b.textContent=s.n; b.setAttribute('aria-pressed',finSel===s.id?'true':'false');
     b.addEventListener('click',function(){ finOpen(s.id); }); fttabs.appendChild(b); });
@@ -2545,7 +2621,12 @@ var STATS={frames:0,ms:0,last:0,calls:0,tris:0,dpr:DPR,low:LOWEND};
 renderer.info.autoReset=false;
 function draw(full){
   var t0=performance.now();
+  sunArc.visible=arcOn();                       // decided before drawing, so a jump into a room never shows the guide for a frame
   if(aoPass)aoPass.enabled=full||!FX.prog;
+  var dofOn=full&&!LOWEND&&mode==='overview'&&state.dof!=='off'&&!renderer.xr.isPresenting;
+  if(dofOn){ var dist=camera.position.distanceTo(controls.target); dofPass.uniforms.focus.value=dist; dofPass.uniforms.aperture.value=.00035*20/Math.max(8,dist); }
+  dofPass.enabled=dofOn; if(smaaPass)smaaPass.enabled=full;
+  if(full&&skyEnvDirty&&mode==='eye')updateSkyEnv();
   renderer.info.reset(); composer.render();
   STATS.frames++; STATS.last=performance.now()-t0; STATS.ms+=STATS.last; STATS.calls=renderer.info.render.calls; STATS.tris=renderer.info.render.triangles;
 }
