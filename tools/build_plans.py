@@ -288,7 +288,10 @@ def as_built():
 
 
 # ---------------------------------------------------------------- pieces placed in the 3D (furnish.json)
-CATALOGUE = {p['t']: p for g in json.load(open(os.path.join(HERE, 'catalogue.json'))) for p in g['pieces']}
+# the furniture catalogue: the project's own (tools/catalogue.json) if it has one, else the engine's
+_ENGINE = os.path.dirname(os.path.abspath(__import__('sys')._getframe().f_code.co_filename))
+_CAT = next(p for p in (os.path.join(HERE, 'catalogue.json'), os.path.join(_ENGINE, 'catalogue.json')) if os.path.exists(p))
+CATALOGUE = {p['t']: p for g in json.load(open(_CAT)) for p in g['pieces']}
 
 
 def placed_symbol(t, w, d):
