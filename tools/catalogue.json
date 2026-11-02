@@ -1,0 +1,244 @@
+[
+ {
+  "group": "Living",
+  "pieces": [
+   {
+    "t": "sofa3",
+    "name": "Sofa, 3 seats",
+    "w": 220,
+    "d": 95,
+    "h": 80
+   },
+   {
+    "t": "sofa2",
+    "name": "Sofa, 2 seats",
+    "w": 170,
+    "d": 90,
+    "h": 80
+   },
+   {
+    "t": "corner",
+    "name": "Corner sofa",
+    "w": 280,
+    "d": 200,
+    "h": 80
+   },
+   {
+    "t": "arm",
+    "name": "Armchair",
+    "w": 85,
+    "d": 85,
+    "h": 80
+   },
+   {
+    "t": "coffee",
+    "name": "Coffee table",
+    "w": 120,
+    "d": 60,
+    "h": 40
+   },
+   {
+    "t": "coffeeR",
+    "name": "Round coffee table",
+    "w": 90,
+    "d": 90,
+    "h": 40
+   },
+   {
+    "t": "side",
+    "name": "Side table",
+    "w": 45,
+    "d": 45,
+    "h": 50
+   },
+   {
+    "t": "tvunit",
+    "name": "TV unit",
+    "w": 200,
+    "d": 45,
+    "h": 50
+   },
+   {
+    "t": "rugL",
+    "name": "Rug",
+    "w": 300,
+    "d": 200,
+    "h": 1.5
+   },
+   {
+    "t": "rugM",
+    "name": "Rug",
+    "w": 230,
+    "d": 160,
+    "h": 1.5
+   },
+   {
+    "t": "flamp",
+    "name": "Floor lamp",
+    "w": 40,
+    "d": 40,
+    "h": 160
+   },
+   {
+    "t": "books",
+    "name": "Bookcase",
+    "w": 90,
+    "d": 35,
+    "h": 200
+   }
+  ]
+ },
+ {
+  "group": "Dining",
+  "pieces": [
+   {
+    "t": "dt6",
+    "name": "Dining table, 6",
+    "w": 180,
+    "d": 90,
+    "h": 75
+   },
+   {
+    "t": "dt8",
+    "name": "Dining table, 8",
+    "w": 240,
+    "d": 100,
+    "h": 75
+   },
+   {
+    "t": "dtR",
+    "name": "Round table",
+    "w": 120,
+    "d": 120,
+    "h": 75
+   },
+   {
+    "t": "dchair",
+    "name": "Dining chair",
+    "w": 45,
+    "d": 52,
+    "h": 85
+   },
+   {
+    "t": "sideboard",
+    "name": "Sideboard",
+    "w": 180,
+    "d": 45,
+    "h": 80
+   }
+  ]
+ },
+ {
+  "group": "Bedroom",
+  "pieces": [
+   {
+    "t": "bedK",
+    "name": "King bed",
+    "w": 195,
+    "d": 215,
+    "h": 110
+   },
+   {
+    "t": "bedD",
+    "name": "Double bed",
+    "w": 175,
+    "d": 215,
+    "h": 110
+   },
+   {
+    "t": "bedS",
+    "name": "Single bed",
+    "w": 100,
+    "d": 210,
+    "h": 90
+   },
+   {
+    "t": "night",
+    "name": "Bedside table",
+    "w": 50,
+    "d": 40,
+    "h": 55
+   },
+   {
+    "t": "ward1",
+    "name": "Wardrobe",
+    "w": 100,
+    "d": 60,
+    "h": 240
+   },
+   {
+    "t": "ward2",
+    "name": "Wardrobe",
+    "w": 200,
+    "d": 60,
+    "h": 240
+   },
+   {
+    "t": "dresser",
+    "name": "Dresser",
+    "w": 120,
+    "d": 50,
+    "h": 80
+   },
+   {
+    "t": "cot",
+    "name": "Cot",
+    "w": 75,
+    "d": 140,
+    "h": 90
+   }
+  ]
+ },
+ {
+  "group": "Work and play",
+  "pieces": [
+   {
+    "t": "desk",
+    "name": "Desk",
+    "w": 140,
+    "d": 70,
+    "h": 75
+   },
+   {
+    "t": "ochair",
+    "name": "Office chair",
+    "w": 60,
+    "d": 60,
+    "h": 100
+   },
+   {
+    "t": "kdesk",
+    "name": "Kids desk",
+    "w": 100,
+    "d": 55,
+    "h": 65
+   },
+   {
+    "t": "toys",
+    "name": "Toy storage",
+    "w": 80,
+    "d": 40,
+    "h": 80
+   }
+  ]
+ },
+ {
+  "group": "Garden",
+  "pieces": [
+   {
+    "t": "lounger",
+    "name": "Lounger",
+    "w": 200,
+    "d": 70,
+    "h": 35
+   },
+   {
+    "t": "otable",
+    "name": "Outdoor table",
+    "w": 160,
+    "d": 90,
+    "h": 74
+   }
+  ]
+ }
+]

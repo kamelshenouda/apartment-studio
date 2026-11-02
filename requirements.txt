@@ -1,0 +1,10 @@
+# building the site needs nothing beyond Python 3.10+; pymupdf only if apartment.json names a survey PDF
+pymupdf
+# importing a drawing (tools/dxf_import.py, tools/pdf_import.py)
+ezdxf
+numpy
+scipy
+shapely
+pillow
+# optional: browser checks of the built pages
+playwright

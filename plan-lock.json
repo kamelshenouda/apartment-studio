@@ -1,0 +1,961 @@
+{
+ "about": "Fingerprint of the plan and measurements; see tools/plan_lock.py. Change it only with --accept and a reason.",
+ "data": {
+  "columns": [
+   [
+    0,
+    400,
+    30,
+    430
+   ],
+   [
+    1190,
+    1270,
+    1220,
+    1300
+   ]
+  ],
+  "garden-boundary": "M0 0 L1220 0 L1220 400 L0 400 Z",
+  "heights": {
+   "CEIL": 280,
+   "HEAD": 230
+  },
+  "layout:existing": [
+   {
+    "at": [
+     1075,
+     1125
+    ],
+    "ctx": [],
+    "dims": "2.50 \u00d7 3.10",
+    "kind": "room",
+    "name": "Bedroom 2",
+    "rect": [
+     950,
+     970,
+     1200,
+     1280
+    ]
+   },
+   {
+    "at": [
+     205,
+     1070
+    ],
+    "ctx": [],
+    "dims": "3.80 \u00d7 4.20",
+    "kind": "room",
+    "name": "Kitchen",
+    "rect": [
+     20,
+     860,
+     400,
+     1280
+    ]
+   },
+   {
+    "at": [
+     370,
+     630
+    ],
+    "ctx": [],
+    "dims": "7.00 \u00d7 4.30",
+    "kind": "room",
+    "name": "Living",
+    "rect": [
+     20,
+     420,
+     720,
+     850
+    ]
+   },
+   {
+    "at": [
+     565,
+     1070
+    ],
+    "ctx": [],
+    "dims": "3.10 \u00d7 4.20",
+    "kind": "room",
+    "name": "Hall",
+    "rect": [
+     410,
+     860,
+     720,
+     1280
+    ]
+   },
+   {
+    "at": [
+     840,
+     1125
+    ],
+    "ctx": [],
+    "dims": "2.10 \u00d7 3.10",
+    "kind": "room",
+    "name": "Bathroom",
+    "rect": [
+     730,
+     970,
+     940,
+     1280
+    ]
+   },
+   {
+    "at": [
+     965,
+     600
+    ],
+    "ctx": [],
+    "dims": "4.70 \u00d7 3.60",
+    "kind": "room",
+    "name": "Master Bedroom",
+    "rect": [
+     730,
+     420,
+     1200,
+     780
+    ]
+   },
+   {
+    "at": [
+     965,
+     875
+    ],
+    "ctx": [],
+    "dims": "4.70 \u00d7 1.70",
+    "kind": "room",
+    "name": "Corridor",
+    "rect": [
+     730,
+     790,
+     1200,
+     960
+    ]
+   },
+   {
+    "box": [
+     0,
+     1000,
+     20,
+     1150
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "opening"
+   },
+   {
+    "box": [
+     0,
+     1000,
+     20,
+     1150
+    ],
+    "ctx": [],
+    "kind": "window"
+   },
+   {
+    "box": [
+     0,
+     1150,
+     20,
+     1280
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     0,
+     1280,
+     520,
+     1300
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     0,
+     400,
+     120,
+     420
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     0,
+     400,
+     30,
+     430
+    ],
+    "cls": "col",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     0,
+     420,
+     20,
+     850
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     0,
+     850,
+     600,
+     860
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     0,
+     860,
+     20,
+     1000
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     1000,
+     960,
+     1090,
+     970
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "opening"
+   },
+   {
+    "box": [
+     1080,
+     400,
+     1220,
+     420
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     1090,
+     960,
+     1220,
+     970
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     1190,
+     1270,
+     1220,
+     1300
+    ],
+    "cls": "col",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     120,
+     400,
+     420,
+     420
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "opening"
+   },
+   {
+    "box": [
+     120,
+     400,
+     420,
+     420
+    ],
+    "ctx": [],
+    "kind": "slider"
+   },
+   {
+    "box": [
+     1200,
+     1050,
+     1220,
+     1200
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "opening"
+   },
+   {
+    "box": [
+     1200,
+     1050,
+     1220,
+     1200
+    ],
+    "ctx": [],
+    "kind": "window"
+   },
+   {
+    "box": [
+     1200,
+     1200,
+     1220,
+     1280
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     1200,
+     420,
+     1220,
+     780
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     1200,
+     790,
+     1220,
+     960
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     1200,
+     970,
+     1220,
+     1050
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     20,
+     420,
+     720,
+     850
+    ],
+    "cls": "z pub",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     20,
+     860,
+     400,
+     1280
+    ],
+    "cls": "z ser",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     400,
+     860,
+     410,
+     900
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     400,
+     900,
+     410,
+     990
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "opening"
+   },
+   {
+    "box": [
+     400,
+     990,
+     410,
+     1280
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     410,
+     860,
+     720,
+     1280
+    ],
+    "cls": "z cir",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     420,
+     400,
+     880,
+     420
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     520,
+     1280,
+     620,
+     1300
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "opening"
+   },
+   {
+    "box": [
+     600,
+     850,
+     690,
+     860
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "opening"
+   },
+   {
+    "box": [
+     620,
+     1280,
+     790,
+     1300
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     690,
+     850,
+     730,
+     860
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     720,
+     420,
+     730,
+     780
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     720,
+     780,
+     760,
+     790
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     720,
+     790,
+     730,
+     850
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     720,
+     860,
+     730,
+     870
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     720,
+     870,
+     730,
+     950
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "opening"
+   },
+   {
+    "box": [
+     720,
+     950,
+     730,
+     960
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     720,
+     960,
+     760,
+     970
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     720,
+     970,
+     730,
+     1280
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     730,
+     420,
+     1200,
+     780
+    ],
+    "cls": "z pri",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     730,
+     790,
+     1200,
+     960
+    ],
+    "cls": "z cir",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     730,
+     970,
+     940,
+     1280
+    ],
+    "cls": "z wetz",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     760,
+     780,
+     850,
+     790
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "opening"
+   },
+   {
+    "box": [
+     760,
+     960,
+     840,
+     970
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "opening"
+   },
+   {
+    "box": [
+     790,
+     1280,
+     880,
+     1300
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "opening"
+   },
+   {
+    "box": [
+     790,
+     1280,
+     880,
+     1300
+    ],
+    "ctx": [],
+    "kind": "window"
+   },
+   {
+    "box": [
+     840,
+     960,
+     1000,
+     970
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     850,
+     780,
+     1220,
+     790
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     880,
+     1280,
+     1220,
+     1300
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     880,
+     400,
+     1080,
+     420
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "opening"
+   },
+   {
+    "box": [
+     880,
+     400,
+     1080,
+     420
+    ],
+    "ctx": [],
+    "kind": "window"
+   },
+   {
+    "box": [
+     940,
+     970,
+     950,
+     1280
+    ],
+    "cls": "wall",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "box": [
+     950,
+     970,
+     1200,
+     1280
+    ],
+    "cls": "z pri",
+    "ctx": [],
+    "kind": "rect"
+   },
+   {
+    "cls": "door entry",
+    "ctx": [],
+    "hinge": [
+     520,
+     1280
+    ],
+    "kind": "door",
+    "leaf": [
+     520,
+     1180
+    ],
+    "shut": [
+     620,
+     1280
+    ]
+   },
+   {
+    "cls": "door",
+    "ctx": [],
+    "hinge": [
+     1090,
+     970
+    ],
+    "kind": "door",
+    "leaf": [
+     1090,
+     1060
+    ],
+    "shut": [
+     1000,
+     970
+    ]
+   },
+   {
+    "cls": "door",
+    "ctx": [],
+    "hinge": [
+     400,
+     990
+    ],
+    "kind": "door",
+    "leaf": [
+     310,
+     990
+    ],
+    "shut": [
+     400,
+     900
+    ]
+   },
+   {
+    "cls": "door",
+    "ctx": [],
+    "hinge": [
+     690,
+     860
+    ],
+    "kind": "door",
+    "leaf": [
+     690,
+     950
+    ],
+    "shut": [
+     600,
+     860
+    ]
+   },
+   {
+    "cls": "door",
+    "ctx": [],
+    "hinge": [
+     730,
+     870
+    ],
+    "kind": "door",
+    "leaf": [
+     810,
+     870
+    ],
+    "shut": [
+     730,
+     950
+    ]
+   },
+   {
+    "cls": "door",
+    "ctx": [],
+    "hinge": [
+     760,
+     780
+    ],
+    "kind": "door",
+    "leaf": [
+     760,
+     690
+    ],
+    "shut": [
+     850,
+     780
+    ]
+   },
+   {
+    "cls": "door",
+    "ctx": [],
+    "hinge": [
+     760,
+     970
+    ],
+    "kind": "door",
+    "leaf": [
+     760,
+     1050
+    ],
+    "shut": [
+     840,
+     970
+    ]
+   }
+  ],
+  "openings-schedule": [
+   [
+    "D01",
+    "Living",
+    [
+     120,
+     400,
+     420,
+     420
+    ],
+    0,
+    230,
+    [
+     0,
+     -1
+    ]
+   ],
+   [
+    "W01",
+    "Master Bedroom",
+    [
+     880,
+     400,
+     1080,
+     420
+    ],
+    100,
+    120,
+    [
+     0,
+     -1
+    ]
+   ],
+   [
+    "W02",
+    "Bedroom 2",
+    [
+     1200,
+     1050,
+     1220,
+     1200
+    ],
+    100,
+    120,
+    [
+     1,
+     0
+    ]
+   ],
+   [
+    "W03",
+    "Kitchen",
+    [
+     0,
+     1000,
+     20,
+     1150
+    ],
+    100,
+    120,
+    [
+     -1,
+     0
+    ]
+   ],
+   [
+    "W04",
+    "Bathroom",
+    [
+     790,
+     1280,
+     880,
+     1300
+    ],
+    100,
+    120,
+    [
+     0,
+     1
+    ]
+   ]
+  ],
+  "site": {
+   "facing": 160,
+   "lat": 51.5,
+   "lon": -0.12
+  }
+ },
+ "locked": "2026-11-02",
+ "parts": {
+  "columns": {
+   "items": 2,
+   "sha256": "b175d6db2b4aedbd17a9f95726c1ded89219140024afef06e4feed9b902dca2a"
+  },
+  "garden-boundary": {
+   "items": 31,
+   "sha256": "4c53166a669c40120f9fa18dabde6413b03029d0b82e2abd64068f19a22f16ad"
+  },
+  "heights": {
+   "items": 2,
+   "sha256": "1897e450527d4aa59347b999a89b9dc9fe22c7853271c55c806d76fec3ceb425"
+  },
+  "layout:existing": {
+   "items": 68,
+   "sha256": "130d082d68af3513536468fb9851dd61f77d6d0beef0e6b00657d5859da76130"
+  },
+  "openings-schedule": {
+   "items": 5,
+   "sha256": "91348561e030ad202595f7d35c6a1e301767a29de88f6cf8c323eaf2cb63a298"
+  },
+  "site": {
+   "items": 3,
+   "sha256": "22e02d1ab7e3449826e9868aff1e4d606ba3d3d6d4ebacb2d26082ca547559c6"
+  }
+ },
+ "reason": "first lock: the sample apartment, imported from drawings/sample-apartment.dxf"
+}

@@ -1,0 +1,6 @@
+site/
+drawings/import/
+drawings/**/converted/
+.private-words
+__pycache__/
+*.pyc

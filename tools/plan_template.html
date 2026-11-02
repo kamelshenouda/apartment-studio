@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>{{NAME}} · Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,400..700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#F2F1ED; --sheet:#FBFAF7; --ink:#1D2125; --ink2:#4A4F54; --muted:#666C71; --line:#D8D5CF;
+  --accent:#2E5A74; --accent-ink:#FFFFFF; --accent-soft:#DCE6EC; --blue:#5A8AB0; --pane:#CFE0EE;
+  --oak:#A87A4B; --oak-tint:#EBDDCB; --sofa:#E4DCCF; --col:#5B5249;
+  --garden:#E6EDDD; --garden-ink:#5E7550;
+  --z-pri:#EDF1EA; --z-pub:#F4EDE3; --z-ser:#EEEDF3; --z-cir:#EFEDE8; --z-wet:#E6EEF4;
+  --sun-jun:#D9822B; --sun-mar:#B9A33A; --sun-dec:#4F7FA8;
+  --display:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --paper:#131517; --sheet:#1A1D20; --ink:#E8E6E1; --ink2:#BFC2C4; --muted:#979DA2; --line:#34383C;
+  --accent:#8DB6D1; --accent-ink:#0F1418; --accent-soft:#1F2F3A; --blue:#7FA9CB; --pane:#2A3B49;
+  --oak:#CDA06E; --oak-tint:#3A2E22; --sofa:#3A352E; --col:#8C8178;
+  --garden:#1F2A1B; --garden-ink:#A3BC90;
+  --z-pri:#1E241E; --z-pub:#28221B; --z-ser:#22212A; --z-cir:#232220; --z-wet:#1C242B;
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#131517; --sheet:#1A1D20; --ink:#E8E6E1; --ink2:#BFC2C4; --muted:#979DA2; --line:#34383C;
+  --accent:#8DB6D1; --accent-ink:#0F1418; --accent-soft:#1F2F3A; --blue:#7FA9CB; --pane:#2A3B49;
+  --oak:#CDA06E; --oak-tint:#3A2E22; --sofa:#3A352E; --col:#8C8178;
+  --garden:#1F2A1B; --garden-ink:#A3BC90;
+  --z-pri:#1E241E; --z-pub:#28221B; --z-ser:#22212A; --z-cir:#232220; --z-wet:#1C242B;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font:16px/1.55 var(--display)}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:20px 56px;display:grid;gap:28px}
+header.top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 24px}
+.eyebrow{font:500 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1{margin:2px 0 0;font-size:clamp(28px,4vw,40px);font-stretch:85%;line-height:1.1;text-wrap:balance}
+h2{margin:0 0 10px;font-size:20px;font-stretch:90%;text-wrap:balance}
+p{margin:0;max-width:68ch}
+.facts{display:flex;flex-wrap:wrap;gap:6px 22px;font:14px var(--mono);color:var(--ink2)}
+.facts b{color:var(--ink);font-weight:500}
+nav.links{display:flex;flex-wrap:wrap;gap:8px}
+a.btn,button.btn{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:8px 14px;border-radius:8px;border:1px solid var(--line);
+  background:var(--sheet);color:var(--ink);font:500 14px var(--display);text-decoration:none;cursor:pointer}
+a.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.viewer{border:1.5px solid var(--ink);background:var(--sheet);min-width:0}
+.states{display:flex;flex-wrap:wrap;gap:10px 22px;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--paper)}
+.ctl{display:flex;align-items:center;gap:8px;font:500 13px var(--mono);color:var(--ink2)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:var(--sheet);color:var(--ink2);font:500 13px var(--display);padding:8px 12px;min-height:36px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.stage{overflow:auto;max-height:80vh;background:var(--sheet);touch-action:pan-x pan-y pinch-zoom}
+.stage svg{display:block;width:100%;height:auto}
+.stage[data-zoom="1"] svg{max-height:calc(80vh - 24px);margin:0 auto}
+.stage[data-zoom="2"] svg{width:200%}
+.stage[data-zoom="3"] svg{width:300%}
+/* the plan */
+.garden{fill:var(--garden);stroke:var(--garden-ink);stroke-width:1.5;stroke-dasharray:14 8}
+.wall{fill:var(--ink)} .wall.neww,.neww{fill:var(--oak)} .col{fill:var(--col)}
+.z.pri{fill:var(--z-pri)} .z.pub{fill:var(--z-pub)} .z.liv{fill:var(--z-pub)} .z.ser{fill:var(--z-ser)} .z.cir{fill:var(--z-cir)} .z.wetz{fill:var(--z-wet)}
+.fur,.pil,.fix,.app{fill:var(--sheet);stroke:var(--ink2);stroke-width:1.4}
+.furd{fill:var(--ink2)} .furl{fill:none;stroke:var(--ink2);stroke-width:1.1}
+.table{fill:var(--oak-tint);stroke:var(--oak);stroke-width:1.6}
+.sofa{fill:var(--sofa);stroke:var(--ink2);stroke-width:1.4}
+.rug{fill:none;stroke:var(--muted);stroke-width:1;stroke-dasharray:3 5}
+.door{fill:none;stroke:var(--ink);stroke-width:2} .door.entry{stroke:var(--accent);stroke-width:3}
+.swing{fill:none;stroke:var(--muted);stroke-width:1;stroke-dasharray:4 4}
+.win{fill:var(--sheet);stroke:var(--ink);stroke-width:1} .winl{stroke:var(--blue);stroke-width:2}
+.shut{stroke:var(--ink2);stroke-width:2;stroke-dasharray:6 4}
+.sill,.sillg{fill:var(--sheet);stroke:var(--ink);stroke-width:1} .pane{fill:var(--pane);stroke:var(--blue);stroke-width:.8}
+.rl{font:600 21px var(--display);font-stretch:85%;letter-spacing:.06em;text-transform:uppercase;fill:var(--ink);text-anchor:middle}
+.rdim{font:500 15px var(--mono);fill:var(--ink2);text-anchor:middle}
+.ra{font:14px var(--mono);fill:var(--muted);text-anchor:middle;display:none}
+.viewer.show-area .ra{display:inline}
+.dl{stroke:var(--accent);stroke-width:1} .dt{stroke:var(--accent);stroke-width:1.6}
+.dimt{font:500 15px var(--mono);fill:var(--accent);text-anchor:middle;paint-order:stroke;stroke:var(--sheet);stroke-width:5px}
+.sdl{stroke:#B0472E;stroke-width:.9} .sdt{stroke:#B0472E;stroke-width:1.6}
+.sdtext{font:600 12.5px var(--mono);fill:#B0472E;text-anchor:middle;paint-order:stroke;stroke:var(--sheet);stroke-width:3.5px}
+.nc{fill:var(--sheet);stroke:var(--ink);stroke-width:1.5} .na{fill:var(--ink)} .nt{font:700 20px var(--display);fill:var(--ink);text-anchor:middle}
+.sb1{fill:var(--ink)} .sb2{fill:var(--sheet);stroke:var(--ink);stroke-width:1.5} .st{font:14px var(--mono);fill:var(--ink2)}
+.gh{font:14px var(--mono);fill:var(--muted);text-anchor:middle}
+.gl{font:600 30px var(--display);letter-spacing:8px;fill:var(--garden-ink);text-anchor:middle} .ga{font:17px var(--mono);fill:var(--garden-ink);text-anchor:middle}
+.stage[data-furn="none"] .furn,.stage.no-zones .zones,.stage.no-dims .dims,.stage.no-dims .survey,.stage.no-sizes .rdim{display:none}
+/* tables and the sun */
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
+.cols > *{min-width:0}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--sheet)}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);font-size:14px;white-space:nowrap}
+th{font:500 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+tr:last-child td{border-bottom:0}
+.sunbox{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+.sunpath{width:100%;max-width:520px;height:auto;display:block;margin:0 auto}
+.sp-lit{fill:var(--accent-soft)} .sp-hor{fill:none;stroke:var(--ink2);stroke-width:1.2} .sp-ring{fill:none;stroke:var(--line);stroke-width:1}
+.sp-el,.sp-h{font:11px var(--mono);fill:var(--muted)} .sp-tick{stroke:var(--ink2);stroke-width:1}
+.sp-dir{font:600 13px var(--display);fill:var(--ink2);text-anchor:middle} .sp-n{fill:#B0472E}
+.sp-facade{stroke:var(--ink);stroke-width:2} .sp-side{font:600 11px var(--mono);letter-spacing:.08em;fill:var(--ink2);text-anchor:middle}
+.sp-arc{fill:none;stroke-width:2.5} .sp-dot{stroke:none}
+.sp-jun.sp-arc{stroke:var(--sun-jun)} .sp-mar.sp-arc{stroke:var(--sun-mar)} .sp-dec.sp-arc{stroke:var(--sun-dec)}
+.sp-jun.sp-dot,.sp-jun.sp-h{fill:var(--sun-jun)} .sp-mar.sp-dot,.sp-mar.sp-h{fill:var(--sun-mar)} .sp-dec.sp-dot,.sp-dec.sp-h{fill:var(--sun-dec)}
+.key{display:flex;flex-wrap:wrap;gap:6px 16px;font:13px var(--mono);color:var(--ink2);margin-top:8px}
+.key i{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.hint{font-size:14px;color:var(--muted)}
+footer{font-size:13px;color:var(--muted)}
+@media (max-width:760px){
+  .cols,.sunbox{grid-template-columns:1fr}
+  .stage{max-height:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Plan · as drawn by the architect</div>
+      <h1>{{NAME}}</h1>
+      <div class="facts"><span>Rooms <b>{{AREA}} m²</b></span><span>Top of the plan faces <b>{{FACING}}</b></span></div>
+    </div>
+    <nav class="links"><a class="btn" href="index.html">Home</a><a class="btn primary" href="3d.html">Walk through it in 3D</a></nav>
+  </header>
+
+  <section class="viewer" id="viewer" aria-label="Plan">
+    <div class="states">
+      <div class="ctl">Furniture <span class="seg" data-k="furn"><button type="button" data-v="all" aria-pressed="true">Shown</button><button type="button" data-v="none" aria-pressed="false">Hidden</button></span></div>
+      <div class="ctl">Room sizes <span class="seg" data-k="sizes"><button type="button" data-v="on" aria-pressed="true">On</button><button type="button" data-v="off" aria-pressed="false">Off</button></span></div>
+      <div class="ctl">Areas <span class="seg" data-k="area"><button type="button" data-v="off" aria-pressed="true">Off</button><button type="button" data-v="on" aria-pressed="false">On</button></span></div>
+      <div class="ctl">Dimensions <span class="seg" data-k="dims"><button type="button" data-v="on" aria-pressed="true">On</button><button type="button" data-v="off" aria-pressed="false">Off</button></span></div>
+      <div class="ctl">Zoom <span class="seg" data-k="zoom"><button type="button" data-v="1" aria-pressed="true">1×</button><button type="button" data-v="2" aria-pressed="false">2×</button><button type="button" data-v="3" aria-pressed="false">3×</button></span></div>
+    </div>
+    <div class="stage" id="stage" data-zoom="1" data-furn="all">{{PLAN}}</div>
+  </section>
+  <p class="hint">Measurements in centimetres on the drawing, metres in the labels. Furniture placed in the 3D (its Furnish tab) is drawn here once it is saved into furnish.json.</p>
+
+  <div class="cols">
+    <section><h2>Rooms</h2><div class="tablewrap"><table><thead><tr><th>Room</th><th>Size</th><th>Area</th></tr></thead><tbody>{{ROOMS}}</tbody></table></div></section>
+    <section><h2>Windows and glazed doors</h2><div class="tablewrap"><table><thead><tr><th>Code</th><th>Room</th><th>Width</th><th>Faces</th><th>Sun 21 Jun</th><th>21 Mar</th><th>21 Dec</th></tr></thead><tbody>{{OPENINGS}}</tbody></table></div>
+      <p class="hint">Hours of direct sun on the middle of the glass.</p></section>
+  </div>
+
+  <section>
+    <h2>Sun and orientation</h2>
+    <div class="sunbox">
+      <div>{{SUNPATH}}
+        <div class="key"><span><i style="background:var(--sun-jun)"></i>21 June</span><span><i style="background:var(--sun-mar)"></i>21 March</span><span><i style="background:var(--sun-dec)"></i>21 December</span></div>
+      </div>
+      <div class="tablewrap"><table><thead><tr><th></th><th>21 Jun</th><th>21 Mar</th><th>21 Dec</th></tr></thead><tbody>
+        <tr><td>Sunrise</td><td>{{SUN.jun.rise}}</td><td>{{SUN.mar.rise}}</td><td>{{SUN.dec.rise}}</td></tr>
+        <tr><td>Sunset</td><td>{{SUN.jun.set}}</td><td>{{SUN.mar.set}}</td><td>{{SUN.dec.set}}</td></tr>
+        <tr><td>Sun at noon</td><td>{{SUN.jun.noon}}°</td><td>{{SUN.mar.noon}}°</td><td>{{SUN.dec.noon}}°</td></tr>
+        <tr><td>On the top side</td><td>{{SUN.jun.lit_from}}–{{SUN.jun.lit_to}}</td><td>{{SUN.mar.lit_from}}–{{SUN.mar.lit_to}}</td><td>{{SUN.dec.lit_from}}–{{SUN.dec.lit_to}}</td></tr>
+      </tbody></table></div>
+    </div>
+  </section>
+  <footer>Built from apartment.json with the apartment studio template.</footer>
+</div>
+<script>
+(function(){
+  var stage=document.getElementById('stage'), viewer=document.getElementById('viewer');
+  function set(k,v){
+    [].forEach.call(document.querySelectorAll('.seg[data-k="'+k+'"] button'),function(b){ b.setAttribute('aria-pressed',b.dataset.v===v?'true':'false'); });
+    if(k==='furn')stage.dataset.furn=v;
+    if(k==='sizes')stage.classList.toggle('no-sizes',v==='off');
+    if(k==='area')viewer.classList.toggle('show-area',v==='on');
+    if(k==='dims')stage.classList.toggle('no-dims',v==='off');
+    if(k==='zoom')stage.dataset.zoom=v;
+    try{ localStorage.setItem('plan-'+k,v); }catch(e){}
+  }
+  [].forEach.call(document.querySelectorAll('.seg'),function(seg){
+    seg.addEventListener('click',function(e){ var b=e.target.closest('button'); if(b)set(seg.dataset.k,b.dataset.v); });
+    try{ var v=localStorage.getItem('plan-'+seg.dataset.k); if(v&&seg.querySelector('[data-v="'+v+'"]'))set(seg.dataset.k,v); }catch(e){}
+  });
+})();
+</script>
+</body>
+</html>

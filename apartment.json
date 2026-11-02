@@ -1,0 +1,471 @@
+{
+ "about": "A made-up two-bedroom ground-floor flat (about 100 m², garden 49 m²), drawn by tools/make_sample.py and imported by tools/dxf_import.py. Replace it with your own: put your drawing in drawings/ and ask Claude Code to \"build my apartment\".",
+ "name": "Sample apartment",
+ "site": {
+  "lat": 51.5,
+  "lon": -0.12,
+  "facing": 160,
+  "tz": 0,
+  "tz_summer": 1,
+  "facing_note": "compass bearing the plan's top edge (-y) faces; tz and tz_summer are the site's UTC offsets"
+ },
+ "heights": {
+  "ceiling": 280,
+  "door_head": 230
+ },
+ "survey": {
+  "pdf": null,
+  "note": "No survey PDF: the dimensions come from the DXF (the \"dim\" elements)."
+ },
+ "garden": "M0 0 L1220 0 L1220 400 L0 400 Z",
+ "openings": [
+  {
+   "code": "D01",
+   "room": "Living",
+   "box": [120, 400, 420, 420],
+   "sill": 0,
+   "height": 230,
+   "normal": [0, -1]
+  },
+  {
+   "code": "W01",
+   "room": "Master Bedroom",
+   "box": [880, 400, 1080, 420],
+   "sill": 100,
+   "height": 120,
+   "normal": [0, -1]
+  },
+  {
+   "code": "W02",
+   "room": "Bedroom 2",
+   "box": [1200, 1050, 1220, 1200],
+   "sill": 100,
+   "height": 120,
+   "normal": [1, 0]
+  },
+  {
+   "code": "W03",
+   "room": "Kitchen",
+   "box": [0, 1000, 20, 1150],
+   "sill": 100,
+   "height": 120,
+   "normal": [-1, 0]
+  },
+  {
+   "code": "W04",
+   "room": "Bathroom",
+   "box": [790, 1280, 880, 1300],
+   "sill": 100,
+   "height": 120,
+   "normal": [0, 1]
+  }
+ ],
+ "plan": [
+  {
+   "k": "group",
+   "cls": "zones"
+  },
+  {
+   "k": "zone",
+   "use": "pub",
+   "box": [20, 420, 720, 850]
+  },
+  {
+   "k": "zone",
+   "use": "pri",
+   "box": [730, 420, 1200, 780]
+  },
+  {
+   "k": "zone",
+   "use": "cir",
+   "box": [730, 790, 1200, 960]
+  },
+  {
+   "k": "zone",
+   "use": "wetz",
+   "box": [730, 970, 940, 1280]
+  },
+  {
+   "k": "zone",
+   "use": "pri",
+   "box": [950, 970, 1200, 1280]
+  },
+  {
+   "k": "zone",
+   "use": "ser",
+   "box": [20, 860, 400, 1280]
+  },
+  {
+   "k": "zone",
+   "use": "cir",
+   "box": [410, 860, 720, 1280]
+  },
+  {
+   "k": "end"
+  },
+  {
+   "k": "group",
+   "cls": "struct"
+  },
+  {
+   "k": "wall",
+   "box": [0, 400, 120, 420]
+  },
+  {
+   "k": "wall",
+   "box": [420, 400, 880, 420]
+  },
+  {
+   "k": "wall",
+   "box": [1080, 400, 1220, 420]
+  },
+  {
+   "k": "wall",
+   "box": [0, 420, 20, 850]
+  },
+  {
+   "k": "wall",
+   "box": [720, 420, 730, 780]
+  },
+  {
+   "k": "wall",
+   "box": [1200, 420, 1220, 780]
+  },
+  {
+   "k": "wall",
+   "box": [720, 780, 760, 790]
+  },
+  {
+   "k": "wall",
+   "box": [850, 780, 1220, 790]
+  },
+  {
+   "k": "wall",
+   "box": [720, 790, 730, 850]
+  },
+  {
+   "k": "wall",
+   "box": [1200, 790, 1220, 960]
+  },
+  {
+   "k": "wall",
+   "box": [0, 850, 600, 860]
+  },
+  {
+   "k": "wall",
+   "box": [690, 850, 730, 860]
+  },
+  {
+   "k": "wall",
+   "box": [0, 860, 20, 1000]
+  },
+  {
+   "k": "wall",
+   "box": [400, 860, 410, 900]
+  },
+  {
+   "k": "wall",
+   "box": [720, 860, 730, 870]
+  },
+  {
+   "k": "wall",
+   "box": [720, 950, 730, 960]
+  },
+  {
+   "k": "wall",
+   "box": [720, 960, 760, 970]
+  },
+  {
+   "k": "wall",
+   "box": [840, 960, 1000, 970]
+  },
+  {
+   "k": "wall",
+   "box": [1090, 960, 1220, 970]
+  },
+  {
+   "k": "wall",
+   "box": [720, 970, 730, 1280]
+  },
+  {
+   "k": "wall",
+   "box": [940, 970, 950, 1280]
+  },
+  {
+   "k": "wall",
+   "box": [1200, 970, 1220, 1050]
+  },
+  {
+   "k": "wall",
+   "box": [400, 990, 410, 1280]
+  },
+  {
+   "k": "wall",
+   "box": [0, 1150, 20, 1280]
+  },
+  {
+   "k": "wall",
+   "box": [1200, 1200, 1220, 1280]
+  },
+  {
+   "k": "wall",
+   "box": [0, 1280, 520, 1300]
+  },
+  {
+   "k": "wall",
+   "box": [620, 1280, 790, 1300]
+  },
+  {
+   "k": "wall",
+   "box": [880, 1280, 1220, 1300]
+  },
+  {
+   "k": "wall",
+   "box": [520, 1280, 620, 1300],
+   "openings": [
+    [520, 620]
+   ]
+  },
+  {
+   "k": "wall",
+   "box": [760, 780, 850, 790],
+   "openings": [
+    [760, 850]
+   ]
+  },
+  {
+   "k": "wall",
+   "box": [760, 960, 840, 970],
+   "openings": [
+    [760, 840]
+   ]
+  },
+  {
+   "k": "wall",
+   "box": [1000, 960, 1090, 970],
+   "openings": [
+    [1000, 1090]
+   ]
+  },
+  {
+   "k": "wall",
+   "box": [720, 870, 730, 950],
+   "openings": [
+    [870, 950]
+   ]
+  },
+  {
+   "k": "wall",
+   "box": [400, 900, 410, 990],
+   "openings": [
+    [900, 990]
+   ]
+  },
+  {
+   "k": "wall",
+   "box": [600, 850, 690, 860],
+   "openings": [
+    [600, 690]
+   ]
+  },
+  {
+   "k": "wall",
+   "box": [120, 400, 420, 420],
+   "openings": [
+    [120, 420]
+   ]
+  },
+  {
+   "k": "wall",
+   "box": [880, 400, 1080, 420],
+   "openings": [
+    [880, 1080]
+   ]
+  },
+  {
+   "k": "wall",
+   "box": [1200, 1050, 1220, 1200],
+   "openings": [
+    [1050, 1200]
+   ]
+  },
+  {
+   "k": "wall",
+   "box": [0, 1000, 20, 1150],
+   "openings": [
+    [1000, 1150]
+   ]
+  },
+  {
+   "k": "wall",
+   "box": [790, 1280, 880, 1300],
+   "openings": [
+    [790, 880]
+   ]
+  },
+  {
+   "k": "column",
+   "box": [0, 400, 30, 430]
+  },
+  {
+   "k": "column",
+   "box": [1190, 1270, 1220, 1300]
+  },
+  {
+   "k": "slider",
+   "box": [120, 400, 420, 420],
+   "set": "openings",
+   "panels": 2
+  },
+  {
+   "k": "window",
+   "box": [880, 400, 1080, 420],
+   "set": "openings"
+  },
+  {
+   "k": "window",
+   "box": [1200, 1050, 1220, 1200],
+   "set": "openings"
+  },
+  {
+   "k": "window",
+   "box": [0, 1000, 20, 1150],
+   "set": "openings"
+  },
+  {
+   "k": "window",
+   "box": [790, 1280, 880, 1300],
+   "set": "openings"
+  },
+  {
+   "k": "shutters",
+   "set": "openings"
+  },
+  {
+   "k": "door",
+   "hinge": [520, 1280],
+   "leaf": [520, 1180],
+   "end": [620, 1280],
+   "cls": "door entry"
+  },
+  {
+   "k": "door",
+   "hinge": [760, 780],
+   "leaf": [760, 690],
+   "end": [850, 780]
+  },
+  {
+   "k": "door",
+   "hinge": [760, 970],
+   "leaf": [760, 1050],
+   "end": [840, 970]
+  },
+  {
+   "k": "door",
+   "hinge": [1090, 970],
+   "leaf": [1090, 1060],
+   "end": [1000, 970]
+  },
+  {
+   "k": "door",
+   "hinge": [730, 870],
+   "leaf": [810, 870],
+   "end": [730, 950]
+  },
+  {
+   "k": "door",
+   "hinge": [400, 990],
+   "leaf": [310, 990],
+   "end": [400, 900]
+  },
+  {
+   "k": "door",
+   "hinge": [690, 860],
+   "leaf": [690, 950],
+   "end": [600, 860]
+  },
+  {
+   "k": "end"
+  },
+  {
+   "k": "group",
+   "cls": "labels"
+  },
+  {
+   "k": "room",
+   "name": "Living",
+   "label": [370, 630],
+   "rect": [20, 420, 720, 850]
+  },
+  {
+   "k": "room",
+   "name": "Master Bedroom",
+   "label": [965, 600],
+   "rect": [730, 420, 1200, 780]
+  },
+  {
+   "k": "room",
+   "name": "Corridor",
+   "label": [965, 875],
+   "rect": [730, 790, 1200, 960]
+  },
+  {
+   "k": "room",
+   "name": "Bathroom",
+   "label": [840, 1125],
+   "rect": [730, 970, 940, 1280]
+  },
+  {
+   "k": "room",
+   "name": "Bedroom 2",
+   "label": [1075, 1125],
+   "rect": [950, 970, 1200, 1280]
+  },
+  {
+   "k": "room",
+   "name": "Kitchen",
+   "label": [205, 1070],
+   "rect": [20, 860, 400, 1280]
+  },
+  {
+   "k": "room",
+   "name": "Hall",
+   "label": [565, 1070],
+   "rect": [410, 860, 720, 1280]
+  },
+  {
+   "k": "end"
+  },
+  {
+   "k": "group",
+   "cls": "dims"
+  },
+  {
+   "k": "dim",
+   "from": [20, 470],
+   "to": [720, 470],
+   "text": "7.00"
+  },
+  {
+   "k": "dim",
+   "from": [730, 470],
+   "to": [1200, 470],
+   "text": "4.70"
+  },
+  {
+   "k": "dim",
+   "from": [60, 860],
+   "to": [60, 1280],
+   "text": "4.20"
+  },
+  {
+   "k": "dim",
+   "from": [1150, 970],
+   "to": [1150, 1280],
+   "text": "3.10"
+  },
+  {
+   "k": "end"
+  }
+ ]
+}
