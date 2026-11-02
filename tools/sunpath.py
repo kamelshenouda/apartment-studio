@@ -94,8 +94,8 @@ def facts():
     return out
 
 
-def svg():
-    """Polar sun-path chart, turned so the plan's top edge is at the top."""
+def svg(top=None, bottom=None):
+    """Polar sun-path chart, turned so the plan's top edge is at the top. top and bottom name the two sides."""
     W, C, R = 560, 280, 220
     back = (FACING + 180) % 360
 
@@ -121,8 +121,10 @@ def svg():
         x, y = C + (R + 26) * math.sin(a), C - (R + 26) * math.cos(a)
         s.append(f'<text x="{x:.1f}" y="{y + 5:.1f}" class="sp-dir{" sp-n" if n == "N" else ""}">{n}</text>')
     s.append(f'<line x1="{C - R}" y1="{C}" x2="{C + R}" y2="{C}" class="sp-facade"/>')
-    s.append(f'<text x="{C}" y="-6" class="sp-side">↑ TOP OF THE PLAN · FACES {round(FACING)}° {compass(FACING)}</text>')
-    s.append(f'<text x="{C}" y="{W + 16}" class="sp-side">↓ BOTTOM OF THE PLAN · FACES {round(back)}° {compass(back)}</text>')
+    top = top or f'↑ TOP OF THE PLAN · FACES {round(FACING)}° {compass(FACING)}'
+    bottom = bottom or f'↓ BOTTOM OF THE PLAN · FACES {round(back)}° {compass(back)}'
+    s.append(f'<text x="{C}" y="-6" class="sp-side">{top}</text>')
+    s.append(f'<text x="{C}" y="{W + 16}" class="sp-side">{bottom}</text>')
     for key, label, date, tz, cls in DAYS:
         pts = day(date, tz)
         d = ' '.join(('M' if i == 0 else 'L') + '%.1f %.1f' % xy(az, el) for i, (m, el, az) in enumerate(pts))
@@ -131,7 +133,8 @@ def svg():
             if m % 60 == 0 and el > 0:
                 x, y = xy(az, el)
                 s.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="3.2" class="sp-dot {cls}"/>')
-                if (m // 60) % 2 == 0 and el > 3:
+                if (m // 60) % 2 == 0 and not (el < 3 and az > 180):   # a sunset dot sits on the W label
+                    # label on the side of the arc away from the centre
                     dx, dy = x - C, y - C
                     L = math.hypot(dx, dy) or 1
                     s.append(f'<text x="{x + dx / L * 13:.1f}" y="{y + dy / L * 13 + 4:.1f}" class="sp-h {cls}">{m // 60}</text>')

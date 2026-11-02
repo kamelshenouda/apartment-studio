@@ -19,9 +19,12 @@ import datetime, hashlib, json, os, re, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, '..'))
-LOCK = os.path.join(ROOT, 'plan-lock.json')
+LOCK = os.path.join(ROOT, 'plan-lock.json')          # next to apartment.json
 LOG = os.path.join(ROOT, 'plan-lock-log.md')
+# the layouts whose walls, doors and rooms are locked: build_plans.LOCK_LAYOUTS if a project draws more than the
+# apartment as built (its own design layouts), else just that
 LAYOUTS = [('existing', 'as_built')]
+ME = os.path.relpath(os.path.abspath(__file__), os.getcwd())
 CORE = {'door', 'opening', 'room', 'slider', 'window'}
 CORE_RECT = {'wall', 'col', 'z'}          # walls (existing and new), concrete columns, room outlines
 
@@ -61,7 +64,7 @@ def snapshot():
             else:
                 sys.modules[k] = v
     parts = {}
-    for key, fn in LAYOUTS:
+    for key, fn in getattr(bp, 'LOCK_LAYOUTS', LAYOUTS):
         keep, bp.REC = bp.REC, []
         try:
             getattr(bp, fn)()
@@ -118,7 +121,7 @@ def check(quiet=False):
     new = snapshot()
     if not os.path.exists(LOCK):
         print('Plan lock: not locked yet. When the plan is checked and right, lock it with:\n'
-              '  python3 tools/plan_lock.py --accept "first lock: checked against the drawing"')
+              '  python3 ' + ME + ' --accept "first lock: checked against the drawing"')
         return None
     lock = json.load(open(LOCK))
     old = lock['data']
@@ -131,7 +134,7 @@ def check(quiet=False):
     for k in bad:
         print('\n'.join(_diff(k, old.get(k), new.get(k))))
     print('If you meant to change the plan, record it with:\n'
-          '  python3 tools/plan_lock.py --accept "what changed and why"')
+          '  python3 ' + ME + ' --accept "what changed and why"')
     return False
 
 

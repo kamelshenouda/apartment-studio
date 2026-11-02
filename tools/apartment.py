@@ -25,7 +25,8 @@ TZ = SITE.get('tz', round(LON / 15))
 TZ_SUMMER = SITE.get('tz_summer', TZ)
 CEIL, HEAD = A['heights']['ceiling'], A['heights']['door_head']
 SURVEY = A.get('survey') or {}
-SURVEY = dict(SURVEY, pdf=os.path.join(ROOT, SURVEY['pdf']) if SURVEY.get('pdf') else None)
+# a survey PDF named in apartment.json is found relative to apartment.json itself
+SURVEY = dict(SURVEY, pdf=os.path.normpath(os.path.join(os.path.dirname(PATH), SURVEY['pdf'])) if SURVEY.get('pdf') else None)
 GARDEN = A.get('garden') or ''
 PLAN = A['plan']
 # code, room, box (x0, y0, x1, y1), sill, height, outward normal
