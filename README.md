@@ -4,7 +4,8 @@ Turn your architect's floor plan into your own website: the plan with every room
 through at true size, and the sun crossing your rooms at any hour of the year. You give it the drawing; it gives you
 a site on GitHub Pages.
 
-Open the sample to see what you get: build it (below) and open `site/index.html`.
+See what you get: the sample apartment, published by this repository itself, is at
+**https://kamelshenouda.github.io/apartment-studio/** (the plan, and the 3D walkthrough).
 
 ## What you get
 
