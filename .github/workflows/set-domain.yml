@@ -1,22 +1,59 @@
-name: Check the Pages custom domain (one-off)
+name: Check the live studio (one-off)
 on:
   push:
     branches: [set-pages-domain]
 permissions:
-  pages: read
   contents: read
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - name: Pages settings and the live site
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -q playwright && python -m playwright install --with-deps chromium > /dev/null
+      - name: Headers
         run: |
-          curl -sS -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/${{ github.repository }}/pages
-          dig +short apartment.kamelnabil.com || true
-          for u in http://apartment.kamelnabil.com/ https://apartment.kamelnabil.com/ https://apartment.kamelnabil.com/3d.html https://kamelshenouda.github.io/apartment-studio/; do
-            echo "== $u"; curl -sS -o /tmp/p -w 'HTTP %{http_code} -> %{redirect_url} (%{size_download} bytes)\n' "$u" || true
-            grep -o '<title>[^<]*' /tmp/p || true
-          done
+          curl -sI https://apartment.kamelnabil.com/studio.html | grep -iE "^HTTP|content-type"
+          curl -sI https://apartment.kamelnabil.com/lib/three@0.169.0/build/three.module.min.js | grep -iE "^HTTP|access-control"
+          curl -sI https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js | grep -iE "^HTTP|access-control"
+      - name: Drop the sample drawing into the live studio
+        run: |
+          cat > t.py <<'PY'
+          import time, zipfile, os
+          from playwright.sync_api import sync_playwright
+          with sync_playwright() as p:
+              b = p.chromium.launch(args=['--use-angle=swiftshader', '--enable-unsafe-swiftshader'])
+              ctx = b.new_context(viewport={'width': 1300, 'height': 900}, accept_downloads=True); pg = ctx.new_page()
+              errs = []; pg.on('pageerror', lambda e: errs.append(str(e)[:300]))
+              t0 = time.time(); pg.goto('https://apartment.kamelnabil.com/studio.html')
+              pg.set_input_files('#file', 'drawings/sample-apartment.dxf')
+              pg.fill('#lat', '51.5074'); pg.fill('#lon', '-0.1278'); pg.fill('#facing', '160')
+              pg.evaluate("document.getElementById('readbtn').click()")
+              pg.wait_for_function("!document.getElementById('found').hidden || [].some.call(document.querySelectorAll('#log li'),function(l){return l.className==='bad'})", timeout=300000)
+              print('read after %.1f s' % (time.time() - t0), pg.eval_on_selector_all('#log li', 'e=>e.map(x=>x.className+": "+x.textContent)'))
+              print('counts:', pg.text_content('#counts'))
+              pg.evaluate("document.getElementById('buildbtn').click()")
+              pg.wait_for_function("!document.getElementById('built').hidden || [].some.call(document.querySelectorAll('#log li'),function(l){return l.className==='bad'})", timeout=300000)
+              print('built after %.1f s' % (time.time() - t0), pg.eval_on_selector_all('#log li', 'e=>e.slice(-2).map(x=>x.className+": "+x.textContent)'))
+              pg.evaluate("document.querySelector('.seg button[data-p=\"3d\"]').click()")
+              ok = False
+              for k in range(90):
+                  pg.wait_for_timeout(1000)
+                  for f in pg.frames:
+                      try:
+                          ok = ok or f.evaluate('window.APT_READY===true')
+                      except Exception: pass
+                  if ok: break
+              print('3D preview ready:', ok, 'after %.1f s' % (time.time() - t0))
+              with pg.expect_download(timeout=120000) as d:
+                  pg.evaluate("document.getElementById('zipbtn').click()")
+              z = d.value; z.save_as('site.zip'); n = zipfile.ZipFile('site.zip').namelist()
+              print('zip:', z.suggested_filename, os.path.getsize('site.zip'), 'bytes,', len(n), 'files')
+              print('page errors:', errs or 'none')
+              b.close()
+          PY
+          python t.py
