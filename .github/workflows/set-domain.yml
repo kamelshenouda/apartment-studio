@@ -1,20 +1,22 @@
-name: Set the Pages custom domain (one-off)
+name: Check the Pages custom domain (one-off)
 on:
   push:
     branches: [set-pages-domain]
 permissions:
-  pages: write
+  pages: read
   contents: read
 jobs:
-  set:
+  check:
     runs-on: ubuntu-latest
     steps:
-      - name: Set apartment.kamelnabil.com
+      - name: Pages settings and the live site
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          set -x
-          curl -sS -X PUT -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/${{ github.repository }}/pages -d '{"cname":"apartment.kamelnabil.com"}' -w '\nHTTP %{http_code}\n'
           curl -sS -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
             https://api.github.com/repos/${{ github.repository }}/pages
+          dig +short apartment.kamelnabil.com || true
+          for u in http://apartment.kamelnabil.com/ https://apartment.kamelnabil.com/ https://apartment.kamelnabil.com/3d.html https://kamelshenouda.github.io/apartment-studio/; do
+            echo "== $u"; curl -sS -o /tmp/p -w 'HTTP %{http_code} -> %{redirect_url} (%{size_download} bytes)\n' "$u" || true
+            grep -o '<title>[^<]*' /tmp/p || true
+          done
