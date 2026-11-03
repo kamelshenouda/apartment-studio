@@ -2,7 +2,7 @@
 
   python3 tools/build_site.py
 """
-import html as htmlmod, os, sys
+import datetime, html as htmlmod, json, os, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -29,7 +29,12 @@ def facts():
 def page():
     tpl = open(os.path.join(HERE, 'index_template.html')).read()
     f = ''.join(f'<div><dt>{k}</dt><dd>{v}</dd></div>' for k, v in facts())
+    day = lambda d: f'{d.day} {d:%b %Y}'
+    lock = os.path.join(ROOT, 'plan-lock.json')                      # where tools/plan_lock.py keeps it
+    locked = (f"Plan measurements approved {day(datetime.date.fromisoformat(json.load(open(lock))['locked']))}"
+              if os.path.exists(lock) else 'The plan is not locked yet')
     return (tpl.replace('{{NAME}}', htmlmod.escape(apartment.NAME))
+               .replace('{{BUILT}}', day(datetime.date.today())).replace('{{LOCKED}}', locked)
                .replace('{{FACTS}}', f)
                .replace('{{PLAN}}', bp.svg(bp.with_placed(bp.as_built(), 'existing'))))
 

@@ -114,6 +114,11 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .pcard .pl span:first-child{color:#1D2125;font-weight:600}
 .pcard .px{position:absolute;top:3px;right:3px;width:26px;height:26px;border:0;border-radius:6px;background:transparent;font:500 18px/1 var(--display);color:#666C71;cursor:pointer}
 .pcard .px:hover{background:rgba(0,0,0,.06)}
+.picdlg{max-width:min(960px,calc(100vw - 32px));width:100%;border:0;border-radius:10px;padding:14px;background:#FBFAF7;color:#1D2125;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.picdlg::backdrop{background:rgba(20,22,24,.55)}
+.picdlg img{display:block;width:100%;height:auto;border-radius:6px;margin-bottom:10px}
+.picdlg .ftools a{display:inline-flex;align-items:center;border:1px solid #2E5A74;background:#2E5A74;color:#fff;font:600 13px var(--display);padding:8px 12px;border-radius:6px;text-decoration:none}
+.picdlg .hint{margin:8px 0 0;color:#4A4F54}
 .pcard .pa{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
 .pcard .pa button{appearance:none;border:1px solid #2E5A74;background:#2E5A74;color:#fff;font:600 12px var(--display);padding:5px 9px;border-radius:6px;cursor:pointer}
 .pcard .pa button:focus-visible{outline:2px solid #2E5A74;outline-offset:2px}
@@ -392,7 +397,7 @@ h3{font-weight:600}
         <button type="button" data-view="entrance"><@v14>Front</@v14> door</button><@v15></@v15>
       </div>
       <p class="hint">Click anything in the model for its name and real size. Standing, double-click the floor or the small plan to walk there. On a phone, double-tap the floor or use the thumb pad.</p>
-      <div class="ftools"><button type="button" id="sharebtn" title="A link that opens this plan, standing where you stand, looking where you look, at this time of day">Copy a link to this view</button><a class="cmplink" id="cmplink" href="compare.html" hidden>Compare two plans side by side ↗</a></div>
+      <div class="ftools"><button type="button" id="sharebtn" title="A link that opens this plan, standing where you stand, looking where you look, at this time of day">Copy a link to this view</button><button type="button" id="picbtn" title="This view at full quality, with a strip naming each finish in it">Save as a picture</button><a class="cmplink" id="cmplink" href="compare.html" hidden>Compare two plans side by side ↗</a></div>
       <p class="hint" id="sharenote" hidden></p>
       <button type="button" class="vrbtn" id="vrbtn" hidden>Enter VR · walk at true scale</button>
     </section>
@@ -482,6 +487,7 @@ h3{font-weight:600}
     <div class="aim" id="aim" hidden aria-hidden="true"></div>
     <canvas class="minimap" id="minimap" hidden tabindex="0" aria-label="Plan of the apartment showing where you stand and which way you face. Click a spot to walk there."></canvas>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <dialog class="picdlg" id="picdlg" aria-label="Picture of this view"><img id="picimg" alt="This view, with its finishes"><div class="ftools"><a id="picdl" download>Download</a><button type="button" id="picshare" hidden>Share</button><button type="button" id="picclose">Close</button></div><p class="hint">If Download does nothing here, right-click or long-press the picture to save it.</p></dialog>
     <div class="story" id="story" hidden role="region" aria-label="Walkthrough"><div class="sk2" id="stk"></div><h2 id="sth"></h2><p id="stp"></p><div class="sdots" id="stdots" aria-hidden="true"></div>
       <div class="sbtns"><button type="button" id="stexit">Explore freely</button><button type="button" id="stprev">‹ Back</button><button type="button" id="stauto" aria-pressed="false">▶ Play</button><button type="button" class="pri" id="stnext">Next ›</button></div></div>
     <div class="sunh" id="sunh" hidden role="slider" tabindex="0" aria-label="The sun: drag it along its path to change the time of day" aria-valuemin="5" aria-valuemax="22.5" aria-valuenow="12"></div>
@@ -2698,6 +2704,43 @@ function loop(now){
 // ---------- VR (WebXR): stand in the rooms at true scale with a headset. The headset's own floor tracking sets
 // your eye height; a controller pointed at the floor moves you there (trigger); thumbsticks turn and walk.
 var rig=new T.Group(); scene.add(rig); rig.add(camera);
+// ---------- save the view as a picture: this frame at full quality, with a strip under it that names the plan, the
+// place, the time and each finish in view, with its swatch (the design's, or the sample on trial and where its colour
+// came from). Shown in a dialog to download or share; nothing is uploaded.
+function picture(cb){
+  var src=renderer.domElement; draw(true);                     // a full-quality frame, read in the same task
+  var W=src.width, H=src.height, k=Math.max(1,W/1300), surf=FIN_ON?FIN_S.filter(finPresent):[];
+  var pad=Math.round(18*k), head=Math.round(30*k), row=Math.round(50*k), cols=Math.max(1,Math.min(3,Math.floor(W/(380*k))));
+  var rows=Math.ceil(surf.length/cols), SH=pad*2+head+rows*row;
+  var cv=document.createElement('canvas'); cv.width=W; cv.height=H+SH; var g=cv.getContext('2d');
+  g.drawImage(src,0,0); g.fillStyle='#FBFAF7'; g.fillRect(0,H,W,SH); g.fillStyle='#D9D6CF'; g.fillRect(0,H,W,Math.max(1,k));
+  var place=mode==='eye'?(hudRoom.textContent||'Standing in the rooms'):'From above', when=hhmm(state.hour)+' · '+(SEASON_SHORT[state.season]||'');
+  g.textBaseline='middle'; g.fillStyle='#1D2125'; g.font='600 '+Math.round(16*k)+'px Montserrat,"Helvetica Neue",Arial,sans-serif';
+  g.fillText(SCENE.name+' · '+place,pad,H+pad+head/2);
+  g.textAlign='right'; g.fillStyle='#4A4F54'; g.font='500 '+Math.round(13*k)+'px Montserrat,"Helvetica Neue",Arial,sans-serif'; g.fillText(when+' · true size from the plan',W-pad,H+pad+head/2); g.textAlign='left';
+  var cw=(W-pad*2)/cols;
+  surf.forEach(function(s,i){ var x=FIN_BY[finCur(finActive(s))], X=pad+(i%cols)*cw, Y=H+pad+head+Math.floor(i/cols)*row, sw=Math.round(row*.78);
+    g.drawImage(finSw(x.id,96,96),X,Y+(row-sw)/2-2*k,sw,sw); g.strokeStyle='rgba(0,0,0,.12)'; g.lineWidth=k; g.strokeRect(X+.5,Y+(row-sw)/2-2*k+.5,sw-1,sw-1);
+    var tx=X+sw+Math.round(10*k), mw=cw-sw-Math.round(22*k);
+    g.fillStyle='#6A6F74'; g.font='600 '+Math.round(10.5*k)+'px Montserrat,"Helvetica Neue",Arial,sans-serif'; g.fillText(s.n.toUpperCase(),tx,Y+row*.28,mw);
+    g.fillStyle='#1D2125'; g.font='600 '+Math.round(13.5*k)+'px Montserrat,"Helvetica Neue",Arial,sans-serif'; g.fillText(x.n,tx,Y+row*.52,mw);
+    g.fillStyle='#4A4F54'; g.font='400 '+Math.round(11.5*k)+'px Montserrat,"Helvetica Neue",Arial,sans-serif'; g.fillText(x.d?'The design':'On trial · colour from '+finFromShort(x),tx,Y+row*.76,mw); });
+  dirty=true;
+  cv.toBlob(function(b){ cb(b,cv); },'image/jpeg',.92);
+}
+var picDlg=document.getElementById('picdlg'), picUrl=null;
+document.getElementById('picbtn').addEventListener('click',function(){
+  picture(function(b){ if(!b){ toast('','The picture could not be made in this browser'); return; }
+    if(picUrl)URL.revokeObjectURL(picUrl); picUrl=URL.createObjectURL(b);
+    var name=(SCENE.name+' '+hhmm(state.hour).replace(':','')).replace(/[^\w]+/g,'-').replace(/^-|-$/g,'').toLowerCase()+'.jpg';
+    document.getElementById('picimg').src=picUrl; var dl=document.getElementById('picdl'); dl.href=picUrl; dl.setAttribute('download',name);
+    var sh=document.getElementById('picshare'), file=null; try{ file=new File([b],name,{type:'image/jpeg'}); }catch(e){}
+    sh.hidden=!(file&&navigator.canShare&&navigator.canShare({files:[file]}));
+    sh.onclick=function(){ navigator.share({files:[file],title:SCENE.name}).catch(function(){}); };
+    try{ picDlg.showModal(); }catch(e){ picDlg.setAttribute('open',''); } });
+});
+document.getElementById('picclose').addEventListener('click',function(){ picDlg.close(); });
+
 // ---------- shared views: a link that puts the next person exactly here. On the public site the link is this page's
 // own address; inside Claude it is the artifact's link (whose #anchor carries the same letters, digits, ~ . and -).
 var ON_SITE=<@v127>true;</@v127>
@@ -2743,7 +2786,7 @@ document.getElementById('sharebtn').addEventListener('click',function(){
     note.hidden=false; note.textContent=(with_.length?'This view, with '+with_.join(', ')+': ':'')+url; if(!ok){ var rg=document.createRange(); rg.selectNodeContents(note); var sel=getSelection(); sel.removeAllRanges(); sel.addRange(rg); } }
   try{ navigator.clipboard.writeText(url).then(function(){done(true);},function(){done(false);}); }catch(e){ done(false); }
 });
-window.<@v131>APT3D</@v131>={shareToken:function(){ return shareToken(); },pieces:function(){ return SCENE.pieces||[]; },lights:function(){ return lxObjs.filter(function(m){ return m.userData.kind==='fit'; }).map(function(m){ m.geometry.computeBoundingBox(); var c=new T.Vector3(); m.geometry.boundingBox.getCenter(c); return {g:m.userData.g,k:m.userData.k,c:[c.x/S,c.z/S,c.y/S],vis:m.visible,e:m.material.emissiveIntensity}; }); },card:function(){ return cardEl.hidden?null:{t:cardT.textContent,l:cardL.textContent,a:[].map.call(cardA.querySelectorAll('button'),function(b){ return b.textContent; })}; },
+window.<@v131>APT3D</@v131>={shareToken:function(){ return shareToken(); },fly:function(n){ if(VIEWS[n])goto(n); },frame:function(q){ draw(true); return renderer.domElement.toDataURL('image/jpeg',q||.92); },picture:function(){ return new Promise(function(r){ picture(function(b,cv){ r({w:cv.width,h:cv.height,bytes:b?b.size:0,url:cv.toDataURL('image/jpeg',.8)}); }); }); },pieces:function(){ return SCENE.pieces||[]; },lights:function(){ return lxObjs.filter(function(m){ return m.userData.kind==='fit'; }).map(function(m){ m.geometry.computeBoundingBox(); var c=new T.Vector3(); m.geometry.boundingBox.getCenter(c); return {g:m.userData.g,k:m.userData.k,c:[c.x/S,c.z/S,c.y/S],vis:m.visible,e:m.material.emissiveIntensity}; }); },card:function(){ return cardEl.hidden?null:{t:cardT.textContent,l:cardL.textContent,a:[].map.call(cardA.querySelectorAll('button'),function(b){ return b.textContent; })}; },
   cardAct:function(i){ var b=cardA.querySelectorAll('button')[i||0]; if(b)b.click(); },pick:function(cx,cy){ pickAt(cx,cy); },
   screen:function(x,y,z){ camera.updateMatrixWorld(); var r=renderer.domElement.getBoundingClientRect(), v=P(x,y,z).project(camera); return v.z>1?null:[r.left+(v.x+1)/2*r.width,r.top+(1-v.y)/2*r.height]; },doors:function(){ return JSON.parse(JSON.stringify(DOORS)); },lightsOff:function(){ return Object.keys(LXOFF); },layers:{open:function(){ lyStart(); },close:function(){ lyEnd(false); },check:function(){ var m=0; if(!LY.parts)return 0; ['furn','walls','lights'].forEach(function(k){ LY.parts[k].forEach(function(q){ m=Math.max(m,Math.abs(q.o.position.y-q.y)); }); }); return m; },parts:function(){ return LY.parts&&{floor:LY.parts.floor.length,furn:LY.parts.furn.length,walls:LY.parts.walls.length,lights:LY.parts.lights.length}; }},walk:{start:function(){ stStart(); },go:function(i){ stShow(i); },state:function(){ return {on:ST.on,i:ST.i,dim:state.dim,hour:state.hour}; },end:function(){ stEnd(); }},ba:{pose:function(t){ if(!BA.on)baStart(1); BA.run=false; baPose(t); },end:function(){ baEnd(); }},rig:rig,camToken:camToken,finAt:function(x,y){ var s=finSurfaceAt(x,y); return s&&(s.id||'wet'); },
   setCam:function(t){ var m=String(t).split('~'), n=m.slice(3,9).map(Number); if(m[0]!=='v1'||n.some(function(v){ return !isFinite(v); }))return;   // follow another view (the compare page): camera only

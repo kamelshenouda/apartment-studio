@@ -108,6 +108,11 @@ tr:last-child td{border-bottom:0}
 .key i{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
 .hint{font-size:14px;color:var(--muted)}
 footer{font-size:13px;color:var(--muted)}
+footer.foot{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 28px;border-top:1px solid var(--line);padding-top:20px;margin-top:8px}
+footer.foot b{display:block;font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);margin-bottom:6px}
+footer.foot a{color:var(--ink2)} footer.foot a:hover,footer.foot a:focus-visible{color:var(--accent)}
+footer.foot span,footer.foot nav a{display:block;line-height:1.7}
+@media (max-width:760px){ footer.foot{grid-template-columns:1fr} }
 @media (max-width:760px){
   .cols,.sunbox{grid-template-columns:1fr}
   .stage{max-height:none}
@@ -142,7 +147,11 @@ dl.facts2 dd{margin:2px 0 0;font-size:22px;font-stretch:90%;font-variant-numeric
     <a class="card" href="3d.html"><b>Walk through it in 3D →</b><span>Stand in every room at true size, open the doors, see the sun at any hour, measure and furnish.</span></a>
     <a class="card" href="plan.html"><b>The plan →</b><span>Room sizes and areas, the windows with their hours of sun, and the sun's path over the site.</span></a>
   </nav>
-  <footer>Made with the apartment studio template: your drawing in, a site out.</footer>
+  <footer class="foot">
+    <nav aria-label="Pages"><b>This site</b><a href="3d.html">3D walkthrough</a><a href="plan.html">The plan</a></nav>
+    <div><b>Up to date</b><span>Built {{BUILT}}</span><span>{{LOCKED}}</span></div>
+    <div><b>Made with</b><span><a href="https://github.com/kamelshenouda/apartment-studio">Apartment studio</a>, an open template: your drawing in, a site out.</span></div>
+  </footer>
 </div>
 </body>
 </html>

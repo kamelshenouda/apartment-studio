@@ -18,7 +18,8 @@ See what you get: the sample apartment, published by this repository itself, is 
   - drag the sun along its real path for your site, or play the day;
   - measure anything with the tape;
   - place real-size furniture and see the gap on every side;
-  - share a link that opens the same view, with the furniture you placed and the finishes you tried.
+  - share a link that opens the same view, with the furniture you placed and the finishes you tried;
+  - save the view as a picture, with a strip naming each finish in it.
   It works on a phone too.
 - **A plan lock**, so nothing moves your walls by accident: every build checks the measurements against the ones you
   approved.
