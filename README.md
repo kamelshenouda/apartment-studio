@@ -17,7 +17,8 @@ See what you get: the sample apartment, published by this repository itself, is 
     room;
   - drag the sun along its real path for your site, or play the day;
   - measure anything with the tape;
-  - place real-size furniture and see the gap on every side;
+  - place real-size furniture and see the gap on every side, and move the designed furniture as a trial;
+  - undo and redo any change;
   - share a link that opens the same view, with the furniture you placed and the finishes you tried;
   - save the view as a picture, with a strip naming each finish in it.
   It works on a phone too.

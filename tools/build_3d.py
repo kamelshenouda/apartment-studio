@@ -508,6 +508,9 @@ def build(skip=(), doors_shut=False, layout='existing'):
                 pc['v'] = v
             if its[0].get('f'):
                 pc['f'] = its[0]['f']
+            if pc.get('f') == 'loose' and v != 'st-on' and r['kind'] != 'opening':   # loose furniture can be moved in the viewer, as a trial
+                for it in its:
+                    it['pc'] = len(pieces)
             dn = [str(it.get('v'))[9:] for it in new if str(it.get('v')).startswith('d-closed.')]
             if r['kind'] == 'opening' and dn:              # a garden door: its sliding leaf can be opened on its own
                 pc['dn'] = int(dn[0])
