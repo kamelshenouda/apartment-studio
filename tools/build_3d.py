@@ -103,15 +103,21 @@ def window_spec(b):
 ART = []           # framed art: (image, axis, wall face, side, from, to, bottom, top) in plan cm; images in ASSETS
 ASSETS = os.path.join(HERE, 'assets')
 
+def webp_uri(im, quality=80):
+    """A picture as a WebP data URI: about a third the size of the same picture as JPEG, at the same look."""
+    import io
+    buf = io.BytesIO(); im.convert('RGB').save(buf, 'WEBP', quality=quality, method=6)
+    return 'data:image/webp;base64,' + base64.b64encode(buf.getvalue()).decode()
+
+
 def art_uris():
-    """Small JPEG data URIs of the artworks for the web viewer."""
-    import base64, io
+    """Small data URIs of the artworks for the web viewer."""
     from PIL import Image
     out = {}
     for name in sorted({a[0] for a in ART}):
         im = Image.open(os.path.join(ASSETS, f'art_{name}.jpg')).convert('RGB')
-        im.thumbnail((384, 384)); buf = io.BytesIO(); im.save(buf, 'JPEG', quality=80)
-        out[name] = 'data:image/jpeg;base64,' + base64.b64encode(buf.getvalue()).decode()
+        im.thumbnail((384, 384))
+        out[name] = webp_uri(im, 80)
     return out
 
 LAYOUTS = {'existing': ('as_built', 'As built')}   # key: (plan function in build_plans, label shown in the viewer)
