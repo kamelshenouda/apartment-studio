@@ -5,7 +5,7 @@ through at true size, and the sun crossing your rooms at any hour of the year. Y
 a site on GitHub Pages.
 
 See what you get: the sample apartment, published by this repository itself, is at
-**https://kamelshenouda.github.io/apartment-studio/** (the plan, and the 3D walkthrough).
+**https://apartment.kamelnabil.com/** (the plan, and the 3D walkthrough).
 
 ## What you get
 
