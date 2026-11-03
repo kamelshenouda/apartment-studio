@@ -9,6 +9,10 @@ sys.path.insert(0, HERE)
 import apartment  # noqa: E402
 import build_plans as bp  # noqa: E402
 import sunpath  # noqa: E402
+import build_studio  # noqa: E402
+
+STUDIO_CARD = ('    <a class="card wide" href="studio.html"><b>Make one from your own drawing →</b><span>Drop your floor plan as DXF and get its plan '
+               'and 3D, built in your browser. Nothing is uploaded.</span></a>\n')
 
 ROOT = apartment.ROOT
 
@@ -35,6 +39,7 @@ def page():
               if os.path.exists(lock) else 'The plan is not locked yet')
     return (tpl.replace('{{NAME}}', htmlmod.escape(apartment.NAME))
                .replace('{{BUILT}}', day(datetime.date.today())).replace('{{LOCKED}}', locked)
+               .replace('{{STUDIO}}', STUDIO_CARD if build_studio.wanted() else '')
                .replace('{{FACTS}}', f)
                .replace('{{PLAN}}', bp.svg(bp.with_placed(bp.as_built(), 'existing'))))
 

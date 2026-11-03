@@ -124,6 +124,7 @@ dl.facts2 div{border-top:1px solid var(--line);padding-top:8px}
 dl.facts2 dt{font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 dl.facts2 dd{margin:2px 0 0;font-size:22px;font-stretch:90%;font-variant-numeric:tabular-nums}
 .cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.card.wide{grid-column:1/-1}
 .card{display:flex;flex-direction:column;gap:6px;padding:18px;border:1px solid var(--line);border-radius:10px;background:var(--sheet);color:var(--ink);text-decoration:none}
 .card:hover{border-color:var(--accent)}
 .card b{font-size:19px;font-stretch:90%} .card span{color:var(--muted);font-size:14px}
@@ -146,7 +147,7 @@ dl.facts2 dd{margin:2px 0 0;font-size:22px;font-stretch:90%;font-variant-numeric
   <nav class="cards" aria-label="Pages">
     <a class="card" href="3d.html"><b>Walk through it in 3D →</b><span>Stand in every room at true size, open the doors, see the sun at any hour, measure and furnish.</span></a>
     <a class="card" href="plan.html"><b>The plan →</b><span>Room sizes and areas, the windows with their hours of sun, and the sun's path over the site.</span></a>
-  </nav>
+{{STUDIO}}  </nav>
   <footer class="foot">
     <nav aria-label="Pages"><b>This site</b><a href="3d.html">3D walkthrough</a><a href="plan.html">The plan</a></nav>
     <div><b>Up to date</b><span>Built {{BUILT}}</span><span>{{LOCKED}}</span></div>

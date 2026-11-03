@@ -71,3 +71,4 @@ When the owner asks for this (or anything like it), go through these steps in or
 | `tools/build_3d.py`, `tools/viewer.html` | the 3D (three.js, served from `tools/vendor`); places a project words or sets up differently are marked `<@name>default</@name>` in the viewer, and a project can give its own text for them (`build_3d.viewer_html(overrides)`) |
 | `tools/build_site.py`, `tools/index_template.html` | the home page |
 | `tools/plan_lock.py`, `plan-lock.json`, `plan-lock-log.md` | the plan lock and its history |
+| `tools/build_studio.py`, `tools/studio_template.html`, `tools/studio_driver.py`, `tools/studio/` | the studio page (`site/studio.html`): the importer and the builders run in the visitor's browser through Pyodide. Built only for the sample (or with `APT_STUDIO=1`), so an apartment's own site leaves it out |

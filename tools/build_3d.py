@@ -991,11 +991,13 @@ if __name__ == '__main__':
     # three.js and three-mesh-bvh (MIT) are served from the site itself (tools/vendor -> site/lib), so no CDN is needed
     import re, shutil
     CDN = 'https://cdn.jsdelivr.net/npm/'
+    copy = os.environ.get('APT_VENDOR') != 'skip'      # the in-browser studio adds site/lib to the download itself
     for url in set(re.findall(re.escape(CDN) + r'[^"\']+', html)):
         local = os.path.join(HERE, 'vendor', url[len(CDN):])
-        if not url.endswith('/') and not os.path.exists(local):
+        if copy and not url.endswith('/') and not os.path.exists(local):
             sys.exit(f'{url} is not in tools/vendor')
     html = html.replace(CDN, './lib/').replace(' crossorigin>', '>')
-    shutil.copytree(os.path.join(HERE, 'vendor'), os.path.join(ROOT, 'site', 'lib'), dirs_exist_ok=True)
+    if copy:
+        shutil.copytree(os.path.join(HERE, 'vendor'), os.path.join(ROOT, 'site', 'lib'), dirs_exist_ok=True)
     open(out, 'w').write(html)
     print('wrote', os.path.relpath(out, ROOT), len(html), 'bytes,', len(sc['layouts']['existing']['items']), 'items')

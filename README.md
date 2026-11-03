@@ -25,6 +25,13 @@ See what you get: the sample apartment, published by this repository itself, is 
 - **A plan lock**, so nothing moves your walls by accident: every build checks the measurements against the ones you
   approved.
 
+## Or just drop a drawing
+
+**https://apartment.kamelnabil.com/studio.html** builds the plan and the 3D from your floor plan (a DXF) inside your
+browser: the same tools as this repository, running in the page, so your drawing is never uploaded. It checks the
+drawing with you, shows the site, and gives it to you as a zip, with its `apartment.json`. Reading DWG and PDF there
+comes next; until then, save the plan as DXF from your CAD program.
+
 ## Start
 
 1. Click **Use this template** on GitHub to make your own copy, and open it in
