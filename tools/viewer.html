@@ -2728,10 +2728,10 @@ function picture(cb){
   dirty=true;
   cv.toBlob(function(b){ cb(b,cv); },'image/jpeg',.92);
 }
-var picDlg=document.getElementById('picdlg'), picUrl=null;
+var picDlg=document.getElementById('picdlg'), picUrl=null, picBlob=null;
 document.getElementById('picbtn').addEventListener('click',function(){
   picture(function(b){ if(!b){ toast('','The picture could not be made in this browser'); return; }
-    if(picUrl)URL.revokeObjectURL(picUrl); picUrl=URL.createObjectURL(b);
+    if(picUrl)URL.revokeObjectURL(picUrl); picUrl=URL.createObjectURL(b); picBlob=b;
     var name=(SCENE.name+' '+hhmm(state.hour).replace(':','')).replace(/[^\w]+/g,'-').replace(/^-|-$/g,'').toLowerCase()+'.jpg';
     document.getElementById('picimg').src=picUrl; var dl=document.getElementById('picdl'); dl.href=picUrl; dl.setAttribute('download',name);
     var sh=document.getElementById('picshare'), file=null; try{ file=new File([b],name,{type:'image/jpeg'}); }catch(e){}
@@ -2740,6 +2740,14 @@ document.getElementById('picbtn').addEventListener('click',function(){
     try{ picDlg.showModal(); }catch(e){ picDlg.setAttribute('open',''); } });
 });
 document.getElementById('picclose').addEventListener('click',function(){ picDlg.close(); });
+// inside Claude a page cannot start a download itself: the Download button hands the picture over through the
+// viewer's downloads capability (the viewer confirms); on the public site it stays an ordinary download link
+var picSaver=null;
+if(window.claude&&window.claude.use)window.claude.use('downloads').then(function(d){ picSaver=d; }).catch(function(){});
+document.getElementById('picdl').addEventListener('click',function(e){ if(!picSaver)return; e.preventDefault();
+  picSaver.save({filename:this.getAttribute('download'),data:picBlob})
+    .then(function(){ toast('','Picture saved'); },function(err){ var c=err&&err.code;
+      if(c==='declined')return; toast('',c==='rate_limited'?'A save is already waiting for an answer':'Saving is not available here: right-click or long-press the picture'); }); });
 
 // ---------- shared views: a link that puts the next person exactly here. On the public site the link is this page's
 // own address; inside Claude it is the artifact's link (whose #anchor carries the same letters, digits, ~ . and -).
