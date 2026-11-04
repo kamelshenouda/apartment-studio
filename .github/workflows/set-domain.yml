@@ -15,27 +15,38 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install -q playwright && python -m playwright install --with-deps chromium > /dev/null
+      - name: Wait for the new studio to be published
+        run: |
+          for i in $(seq 1 60); do curl -s https://apartment.kamelnabil.com/studio/files.json | grep -q '"dwg"' && break; sleep 10; done
+          curl -s https://apartment.kamelnabil.com/studio/files.json | grep '"dwg"'
       - name: Headers
         run: |
+          curl -sI -H 'Accept-Encoding: gzip, br' https://apartment.kamelnabil.com/studio/libredwg/dwg2dxf.wasm | grep -iE "^HTTP|content-type|content-encoding|content-length"
           curl -sI https://apartment.kamelnabil.com/studio.html | grep -iE "^HTTP|content-type"
           curl -sI https://apartment.kamelnabil.com/lib/three@0.169.0/build/three.module.min.js | grep -iE "^HTTP|access-control"
           curl -sI https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js | grep -iE "^HTTP|access-control"
+      - uses: actions/checkout@v4
+        with:
+          ref: set-pages-domain
+          path: here
       - name: Drop the sample drawing into the live studio
         run: |
           cat > t.py <<'PY'
-          import time, zipfile, os
+          import time, zipfile, os, sys
+          DRAWING = sys.argv[1]
           from playwright.sync_api import sync_playwright
           with sync_playwright() as p:
               b = p.chromium.launch(args=['--use-angle=swiftshader', '--enable-unsafe-swiftshader'])
               ctx = b.new_context(viewport={'width': 1300, 'height': 900}, accept_downloads=True); pg = ctx.new_page()
               errs = []; pg.on('pageerror', lambda e: errs.append(str(e)[:300]))
               t0 = time.time(); pg.goto('https://apartment.kamelnabil.com/studio.html')
-              pg.set_input_files('#file', 'drawings/sample-apartment.dxf')
+              pg.set_input_files('#file', DRAWING)
               pg.fill('#lat', '51.5074'); pg.fill('#lon', '-0.1278'); pg.fill('#facing', '160')
               pg.evaluate("document.getElementById('readbtn').click()")
               pg.wait_for_function("!document.getElementById('found').hidden || [].some.call(document.querySelectorAll('#log li'),function(l){return l.className==='bad'})", timeout=300000)
               print('read after %.1f s' % (time.time() - t0), pg.eval_on_selector_all('#log li', 'e=>e.map(x=>x.className+": "+x.textContent)'))
               print('counts:', pg.text_content('#counts'))
+              print('read log:', (pg.text_content('#readout') or '')[:300].replace(chr(10), ' | '))
               pg.evaluate("document.getElementById('buildbtn').click()")
               pg.wait_for_function("!document.getElementById('built').hidden || [].some.call(document.querySelectorAll('#log li'),function(l){return l.className==='bad'})", timeout=300000)
               print('built after %.1f s' % (time.time() - t0), pg.eval_on_selector_all('#log li', 'e=>e.slice(-2).map(x=>x.className+": "+x.textContent)'))
@@ -53,7 +64,10 @@ jobs:
                   pg.evaluate("document.getElementById('zipbtn').click()")
               z = d.value; z.save_as('site.zip'); n = zipfile.ZipFile('site.zip').namelist()
               print('zip:', z.suggested_filename, os.path.getsize('site.zip'), 'bytes,', len(n), 'files')
+              pg.set_viewport_size({'width': 390, 'height': 844}); pg.wait_for_timeout(500)
+              print('at 390 px wide, the page is', pg.evaluate('document.documentElement.scrollWidth'), 'px wide')
               print('page errors:', errs or 'none')
               b.close()
           PY
-          python t.py
+          echo '== DWG'; python t.py here/check/sample-apartment.dwg
+          echo '== DXF'; python t.py drawings/sample-apartment.dxf
