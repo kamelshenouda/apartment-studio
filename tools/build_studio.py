@@ -1,7 +1,8 @@
-"""The studio page (site/studio.html): anyone drops a floor plan as DXF and gets the plan, the 3D and the home page,
+"""The studio page (site/studio.html): anyone drops a floor plan as DWG or DXF and gets the plan, the 3D and the home page,
 built inside their own browser by these same tools (Python in the page, through Pyodide). Nothing is uploaded.
 
-  python3 tools/build_studio.py      -> site/studio.html and site/studio/ (the tools, the ezdxf wheel, a file list)
+  python3 tools/build_studio.py      -> site/studio.html and site/studio/ (the tools, the ezdxf wheel, LibreDWG's
+                                         dwg2dxf for the browser, a file list)
 """
 import glob, json, os, shutil
 
@@ -36,10 +37,11 @@ def main():
     shutil.copy(os.path.join(HERE, 'studio_driver.py'), os.path.join(out, 'driver.py'))
     wheel = sorted(glob.glob(os.path.join(HERE, 'studio', 'ezdxf-*.whl')))[-1]
     shutil.copy(wheel, out)
+    shutil.copytree(os.path.join(HERE, 'studio', 'libredwg'), os.path.join(out, 'libredwg'))   # GPL-3: see its README
     vendor = os.path.join(HERE, 'vendor')
     lib = sorted(os.path.relpath(os.path.join(r, f), vendor).replace(os.sep, '/')
                  for r, _, fs in os.walk(vendor) for f in fs if not f.startswith('.') and f != 'README.md')
-    json.dump({'tools': TOOLS, 'wheel': os.path.basename(wheel), 'lib': lib}, open(os.path.join(out, 'files.json'), 'w'), indent=1)
+    json.dump({'tools': TOOLS, 'wheel': os.path.basename(wheel), 'dwg': 'libredwg/dwg2dxf.js', 'lib': lib}, open(os.path.join(out, 'files.json'), 'w'), indent=1)
     shutil.copy(os.path.join(HERE, 'studio_template.html'), os.path.join(SITE, 'studio.html'))
     print('wrote site/studio.html and site/studio/:', len(TOOLS), 'tools,', len(lib), 'library files')
 
