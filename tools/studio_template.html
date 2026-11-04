@@ -90,15 +90,19 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
     <h1>Your floor plan, as a website</h1>
     <p class="lead">Drop the floor plan your architect gave you. You get its plan page with every room's size, a 3D you can walk through at true size, and the sun crossing your rooms, ready to put online.</p>
     <div class="private"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z" fill="none" stroke="currentColor" stroke-width="2"/><path d="m8.5 12 2.5 2.5 4.5-5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-      <span><b>Your drawing stays on your computer.</b> Everything happens in this page, with the same tools that built the sample: the drawing is read and the site is built by your own browser, and nothing is uploaded. The first time, the page loads its Python tools (about 35 MB, and 9 MB more to open a DWG); your browser keeps them for next time.</span></div>
+      <span><b>Your drawing stays on your computer.</b> Everything happens in this page, with the same tools that built the sample: the drawing is read and the site is built by your own browser, and nothing is uploaded. The first time, the page loads its Python tools (about 35 MB, and 9 MB more to open a DWG or 17 MB to read a PDF); your browser keeps them for next time.</span></div>
   </header>
 
   <section class="step" id="s1">
     <div class="n">1</div>
     <div class="body">
       <h2>Your drawing</h2>
-      <label class="drop" id="drop"><input type="file" id="file" accept=".dxf,.dwg,.pdf"><b>Drop the plan here, or choose it</b><span class="chip" id="fname">A DWG or DXF file: the floor plan, as your architect drew it</span></label>
-      <p class="hint">The DWG straight from AutoCAD, or a DXF from Revit, ArchiCAD or most other CAD programs (Save As or Export, then DXF). Reading a PDF comes next; until then, ask for the DWG. A scan or a photo of a plan can't be read.</p>
+      <label class="drop" id="drop"><input type="file" id="file" accept=".dxf,.dwg,.pdf"><b>Drop the plan here, or choose it</b><span class="chip" id="fname">A DWG, DXF or PDF: the floor plan, as your architect drew it</span></label>
+      <p class="hint">The DWG straight from AutoCAD; a DXF from Revit, ArchiCAD or most other CAD programs (Save As or Export, then DXF); or a PDF printed from CAD, with the walls filled in. A scan or a photo of a plan can't be read.</p>
+      <div class="fields" id="pdfopts" hidden>
+        <label>Page of the PDF<input id="pdfpage" inputmode="numeric" placeholder="1"></label>
+        <label>Scale, if the sheet doesn't say<input id="pdfscale" autocomplete="off" placeholder="e.g. 1:50"></label>
+      </div>
     </div>
   </section>
 
@@ -157,13 +161,13 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
     </div>
   </section>
 
-  <footer><span>Apartment studio: your drawing in, a site out. The drawing tools run in your browser through Pyodide; three.js draws the 3D. DWG files are opened by <a href="studio/libredwg/README.md">LibreDWG</a>, free software under the <a href="studio/libredwg/COPYING">GNU GPL v3</a> (<a href="https://github.com/LibreDWG/libredwg/releases/tag/0.13.3">source</a>).</span></footer>
+  <footer><span>Apartment studio: your drawing in, a site out. The drawing tools run in your browser through Pyodide; three.js draws the 3D. DWG files are opened by <a href="studio/libredwg/README.md">LibreDWG</a>, free software under the <a href="studio/libredwg/COPYING">GNU GPL v3</a> (<a href="https://github.com/LibreDWG/libredwg/releases/tag/0.13.3">source</a>); PDFs by <a href="https://github.com/pymupdf/PyMuPDF">PyMuPDF</a>, under the GNU AGPL v3, as Pyodide packages it.</span></footer>
 </div>
 <script>
 (function(){
-  var PYO='https://cdn.jsdelivr.net/pyodide/v0.26.4/full/';
+  var PYO='https://cdn.jsdelivr.net/pyodide/v0.29.5/full/';
   var $=function(id){ return document.getElementById(id); };
-  var py=null, FILES=null, upload=null, draft=null, site=null, booting=null, filesP=null, dwgP=null, drawing=null;
+  var py=null, FILES=null, upload=null, draft=null, site=null, booting=null, filesP=null, dwgP=null, drawing=null, pdfLoaded=false;
   function say(t,cls){ var li=document.createElement('li'); li.textContent=t; li.className=cls||'now'; [].forEach.call($('log').children,function(x){ if(x.className==='now')x.className='ok'; }); $('log').appendChild(li); return li; }
   function done(){ [].forEach.call($('log').children,function(x){ if(x.className==='now')x.className='ok'; }); }
   function fail(t,out,where){ [].forEach.call($('log').children,function(x){ if(x.className==='now')x.className='bad'; }); say(t,'bad'); if(out!==undefined){ $(where+'log').hidden=false; $(where+'out').textContent=out; $(where+'log').open=true; } }
@@ -197,8 +201,8 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
     try{ dxf=m.FS.readFile('/out.dxf'); }catch(e){}
     return {dxf:dxf&&dxf.length>200?dxf:null,rc:rc,out:said.join('\n')}; }
   function pick(f){ if(!f)return; var ext=(f.name.split('.').pop()||'').toLowerCase();
-    if(ext==='pdf'){ upload=null; $('fname').textContent=f.name+': a PDF is not read here yet. Ask for the DWG, or save the plan as DXF from the CAD program, then drop that.'; $('readbtn').disabled=true; return; }
-    if(ext!=='dxf'&&ext!=='dwg'){ upload=null; $('fname').textContent=f.name+': not a DWG or DXF file'; $('readbtn').disabled=true; return; }
+    $('pdfopts').hidden=ext!=='pdf';
+    if(ext!=='dxf'&&ext!=='dwg'&&ext!=='pdf'){ upload=null; $('fname').textContent=f.name+': not a DWG, DXF or PDF file'; $('readbtn').disabled=true; return; }
     if(ext==='dwg')dwgLoad().catch(function(){});
     upload=f; $('fname').textContent=f.name+' · '+(f.size/1024/1024).toFixed(1)+' MB';
     if(!$('aname').value.trim()){ var nm=f.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').replace(/\s+/g,' ').trim(); $('aname').value=nm.charAt(0).toUpperCase()+nm.slice(1); }
@@ -214,8 +218,14 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
       await boot();
       var lat=num('lat'), lon=num('lon'), fac=num('facing');
       if([lat,lon,fac].some(function(v){ return v!==null&&isNaN(v); })){ fail('Latitude, longitude and the facing must be numbers'); b.disabled=false; return; }
-      var data=new Uint8Array(await upload.arrayBuffer()), stem=upload.name.replace(/\.[^.]+$/,'').replace(/[^A-Za-z0-9._ -]+/g,'_')||'plan', conv='';
-      if(/\.dwg$/i.test(upload.name)){
+      var data=new Uint8Array(await upload.arrayBuffer()), stem=upload.name.replace(/\.[^.]+$/,'').replace(/[\/\\\0]+/g,'_')||'plan', conv='', tool='dxf_import.py', ext='.dxf';
+      if(/\.pdf$/i.test(upload.name)){
+        var page=num('pdfpage'), scale=$('pdfscale').value.trim().replace(/\s+/g,'').replace('/',':');
+        if(page!==null&&!(page>=1&&page%1===0)){ fail('The page must be a whole number: 1 for the first page'); b.disabled=false; return; }
+        if(scale&&!/^1:\d+(\.\d+)?$/.test(scale)){ fail('Write the scale as 1:50'); b.disabled=false; return; }
+        say('Loading the PDF reader, PyMuPDF'+(pdfLoaded?'':' (about 17 MB the first time)')); await py.loadPackage(['pymupdf']); pdfLoaded=true;
+        tool='pdf_import.py'; ext='.pdf';
+      } else if(/\.dwg$/i.test(upload.name)){
         say('Opening the DWG with LibreDWG'); await new Promise(function(r){ setTimeout(r,30); });
         var t0=performance.now(), d=await dwgToDxf(data);
         if(!d.dxf){ fail('The DWG could not be opened. What LibreDWG said is below. Saving the plan as DXF from the CAD program and dropping that may work.',d.out,'read'); b.disabled=false; return; }
@@ -223,11 +233,15 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
       }
       say('Reading '+upload.name);
       if(drawing){ try{ py.FS.unlink(drawing); }catch(e){} }
-      drawing='/app/drawings/'+stem+'.dxf'; py.FS.writeFile(drawing,data);
+      drawing='/app/drawings/'+stem+ext; py.FS.writeFile(drawing,data);
+      py.runPython("import shutil; shutil.rmtree('/app/drawings/import', ignore_errors=True)");
       await new Promise(function(r){ setTimeout(r,30); });
       var args=[drawing,'/app/drawings/import']; if(lat!==null)args.push('--lat',String(lat)); if(lon!==null)args.push('--lon',String(lon)); if(fac!==null)args.push('--facing',String(fac));
-      var r=step('dxf_import.py',args);
-      if(!r.ok){ fail('The drawing could not be read. What the importer said is below.',conv+r.out,'read'); b.disabled=false; return; }
+      if(tool==='pdf_import.py'){ if(page!==null)args.push('--page',String(page)); if(scale)args.push('--scale',scale); }
+      var r=step(tool,args);
+      if(!r.ok){
+        var why=tool!=='pdf_import.py'?'The drawing could not be read.':/scale could not be found|scale is wrong/i.test(r.out)?'The scale could not be worked out from the sheet: write it under the drawing (Scale, e.g. 1:50) and read it again.':/No solid dark fills/i.test(r.out)?'This PDF does not show its walls filled in, or it is a scan: print the plan from CAD with the walls hatched solid, or use the DWG.':'The PDF could not be read.';
+        fail(why+' What the importer said is below.',conv+r.out,'read'); b.disabled=false; return; }
       $('readout').textContent=conv+r.out; $('readlog').hidden=false;
       draft=JSON.parse(py.FS.readFile('/app/drawings/import/apartment.json',{encoding:'utf8'}));
       var c=(draft['import']||{}).counts||{}, names={walls:'walls',doors:'doors',windows:'windows','glazed doors':'glazed doors',columns:'columns',rooms:'rooms'};

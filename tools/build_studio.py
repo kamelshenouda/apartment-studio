@@ -1,4 +1,4 @@
-"""The studio page (site/studio.html): anyone drops a floor plan as DWG or DXF and gets the plan, the 3D and the home page,
+"""The studio page (site/studio.html): anyone drops a floor plan as DWG, DXF or PDF and gets the plan, the 3D and the home page,
 built inside their own browser by these same tools (Python in the page, through Pyodide). Nothing is uploaded.
 
   python3 tools/build_studio.py      -> site/studio.html and site/studio/ (the tools, the ezdxf wheel, LibreDWG's
@@ -10,7 +10,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, '..'))
 SITE = os.path.join(ROOT, 'site')
 TOOLS = ['apartment.py', 'sunpath.py', 'openings.py', 'plan_lock.py', 'build_plans.py', 'plan_template.html', 'build_3d.py',
-         'viewer.html', 'build_site.py', 'build_studio.py', 'index_template.html', 'dxf_import.py', 'catalogue.json']
+         'viewer.html', 'build_site.py', 'build_studio.py', 'index_template.html', 'dxf_import.py', 'pdf_import.py', 'catalogue.json']
 
 
 def wanted():

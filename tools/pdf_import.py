@@ -3,8 +3,10 @@
 a check page, through the same importer as DWG and DXF.
 
 A PDF has no layers, so the plan is read from how it is drawn:
-  scale        the title block's "1 : 50" (or --scale 1:50), checked against the dimensions' own numbers
-  walls        solid dark fills (wall hatches); a small copy of the plan elsewhere on the sheet (a key plan) is left out
+  scale        the title block's "1 : 50" (or --scale 1:50), checked against the dimensions' own numbers; a sheet without
+               one takes it from the dimensions (in mm, cm or m: whichever gives a usual scale, 1:20 to 1:200)
+  walls        solid dark fills (wall hatches), with the pieces of one wall on either side of an opening kept together;
+               a small copy of the plan elsewhere on the sheet (a key plan) is left out
   columns      compact solid fills at least 18 cm across both ways, or light fills hatched with slanted lines
   openings     the frame CAD draws for each door and window: a jamb line across the wall at each end and the wall's
                faces drawn between them (dashed for a door, a full line for glass); the tag beside it (W03, D06)
@@ -156,10 +158,15 @@ def read_pdf(path, page=1, scale=None):
     boxes = [g['rect'] for g in fills]
     parent = list(range(len(fills)))
     find = lambda i: i if parent[i] == i else find(parent[i])
+    near = lambda a, b, d: a.x0 - d <= b.x1 and b.x0 - d <= a.x1 and a.y0 - d <= b.y1 and b.y0 - d <= a.y1
     for i, a in enumerate(boxes):
         for j in range(i):
             b = boxes[j]
-            if a.x0 - 30 <= b.x1 and b.x0 - 30 <= a.x1 and a.y0 - 30 <= b.y1 and b.y0 - 30 <= a.y1:
+            # touching, or two pieces of one wall either side of an opening: the same thickness on the same line,
+            # up to 150 pt apart (2.6 m at 1:50)
+            inline = near(a, b, 150) and any(abs(a[k] - b[k]) < .5 and abs(a[k + 2] - b[k + 2]) < .5 and a[k + 2] - a[k] < 25
+                                             for k in (0, 1))
+            if near(a, b, 30) or inline:
                 parent[find(i)] = find(j)
     groups = {}
     for i in range(len(fills)):
@@ -233,9 +240,23 @@ def read_pdf(path, page=1, scale=None):
                 unit_cm = 1 / f; report.append(f'The dimensions are written in {u} and agree with the scale.'); break
         else:
             report.append(f'The dimensions do not agree with the title block\'s scale (ratio {r:.3f}); the title block was used.')
+    if k_dims and not k_title:
+        # no scale on the sheet: the dimensions give it, written in mm, cm or m; the one that makes a drawing scale
+        # architects use (1:20 to 1:200) is taken
+        std = (20, 25, 50, 75, 100, 125, 200)
+        f, u = min(((f, u) for f, u in ((1, 'cm'), (.1, 'mm'), (100, 'm'))),
+                   key=lambda fu: min(abs(k_dims * fu[0] / PT_CM / n - 1) for n in std))
+        n = k_dims * f / PT_CM
+        if min(abs(n / m - 1) for m in std) < .03:
+            unit_cm = f; k_dims *= f
+            report.append(f'No scale on the sheet: the dimensions, written in {u}, give 1:{round(n)}.')
     k = k_title or (k_dims * 1 if k_dims else None)
     if not k:
         raise SystemExit('The scale could not be found: give it with --scale 1:50.')
+    across = max(region[2] - region[0], region[3] - region[1]) * k / 100
+    if not 2 <= across <= 200:
+        raise SystemExit(f'At 1:{round(k / PT_CM)} the plan would be {across:.0f} m across, so the scale is wrong: '
+                         'give it with --scale 1:50.')
     for v, L, seg in ratios:
         if abs(v * unit_cm / (L * k) - 1) < .02:
             dims.append((seg, v * unit_cm))
