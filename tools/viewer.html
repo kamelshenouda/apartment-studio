@@ -450,6 +450,7 @@ h3{font-weight:600}
       <div class="ctl"><div class="cl"><span>Lighting scene</span><kbd class="sk" data-k="7"></kbd></div>
         <select id="lxscene" class="sel" aria-label="Lighting scene"><option value="evening">Evening, all on</option><option value="cooking">Cooking</option><option value="dinner">Dinner / hosting</option><option value="film">Film</option><option value="night">Night path</option><option value="off">All off</option></select></div>
       <div class="ctl"<@v20> hidden</@v20>><div class="cl"><span>Garden shade</span></div><div class="bt" data-state="gs"><button type="button" data-v="pergola" aria-pressed="true">Pergola</button><button type="button" data-v="awning" aria-pressed="false" title="Two motorised shades: A over the living and reception terrace, B over the bedrooms">Motorised</button><button type="button" data-v="none" aria-pressed="false">None</button></div></div>
+      <div class="ctl" id="plrow" hidden><div class="cl"><span>Planting</span></div><div class="bt" data-state="pl"><button type="button" data-v="design" aria-pressed="true" title="The garden as designed">Design</button><button type="button" data-v="prop" aria-pressed="false" title="A planting proposal for the beds, to choose from: not part of the design yet">Proposal</button></div></div>
       <div class="ctl" id="awrow"><div class="cl"><span>Shades A + B</span></div><div class="bt" data-state="aw"><button type="button" data-v="out" aria-pressed="true">Out</button><button type="button" data-v="in" aria-pressed="false">In</button></div></div>
       <div class="ctl"><div class="cl"><span>Shutters</span></div><div class="bt" data-state="sh"><button type="button" data-v="open" aria-pressed="true">Open</button><button type="button" data-v="half" aria-pressed="false">Half</button><button type="button" data-v="closed" aria-pressed="false">Closed</button></div></div>
       <div class="ctl<@v21>" id="uprow</@v21>"><div class="cl"><span>Neighbours</span></div><div class="bt" data-state="up"><button type="button" data-v="on" aria-pressed="true" title="The <@v22>neighbouring buildings in apartment.json</@v22> cast their shade">Shade on</button><button type="button" data-v="off" aria-pressed="false">None</button></div></div>
@@ -690,7 +691,13 @@ var M={
   rug:std({map:texRug,roughness:1}), keys:std({map:texKeys,roughness:.4}),
   grass:std({map:texGrass,roughness:1,side:T.DoubleSide}), pave:std({map:texPave,roughness:.9}),
   lamp:std({color:0xF3E6CF,emissive:0xFFD9A0,emissiveIntensity:.2,roughness:.6}),
-  leaf:std({color:0x5E7F4A,roughness:.9,flatShading:true}), soil:std({color:0x6B5A45,roughness:1}), trunk:std({color:0x6A5038,roughness:.9}),
+  leaf:std({color:0x5E7F4A,roughness:.9,flatShading:true}),
+  // a planting scheme's leaves and flowers
+  leafdark:std({color:0x3F5A34,roughness:.6,flatShading:true}), leafgrey:std({color:0x8A977C,roughness:.95,flatShading:true}),
+  leaflight:std({color:0x6F8F45,roughness:.85,flatShading:true}), grassleaf:std({color:0x7E8C5E,roughness:.95,flatShading:true}),
+  bloomwhite:std({color:0xF6F2E6,roughness:.7}), bloommagenta:std({color:0xC0287A,roughness:.7}), bloomblue:std({color:0x93B4E0,roughness:.7}),
+  bloompurple:std({color:0x7C62A8,roughness:.75}), bloompink:std({color:0xD8A3BE,roughness:.95,transparent:true,opacity:.8}),
+  soil:std({color:0x6B5A45,roughness:1}), trunk:std({color:0x6A5038,roughness:.9}),
   gravel:std({color:0xDCD5C8,roughness:1}), fin:std({color:0x9C7048,roughness:.55,metalness:.15}), context:std({color:0xE3DDD3,roughness:1}), bronze:std({color:0x4A443D,roughness:.45,metalness:.55})
 };
 // frosted ('washed') glass for the walls: the rooms beyond show as soft, light-filled blur
@@ -735,7 +742,7 @@ var FIN_ON=<@v39>!!(ALL.fin&&ALL.fin.length)&&</@v39>Q.get('finishes')!=='0';
 M.front=std({color:0xF5F4F0,roughness:.38}); TEXM.front=1;
 if(FIN_ON){ M.fabric=phys({color:0xE6DDCE,roughness:1,bumpMap:texWeave,bumpScale:.8}); M.linen=phys({color:0xF4F0E8,roughness:1,bumpMap:texWeave,bumpScale:.6}); }
 // the 'Model' look: a clean white architectural model, keeping the oak, the glass, the black details and the planting
-var MODEL_KEEP={flute:1,cane:1,oak:1,oakdark:1,slats:1,glass:1,fluted:1,satin:1,glasswall:1,glassveil:1,black:1,frame:1,steel:1,led:1,lamp:1,leaf:1,grass:1,soil:1,trunk:1,fin:1,bronze:1,keys:1};
+var MODEL_KEEP={flute:1,cane:1,oak:1,oakdark:1,slats:1,glass:1,fluted:1,satin:1,glasswall:1,glassveil:1,black:1,frame:1,steel:1,led:1,lamp:1,leaf:1,leafdark:1,leafgrey:1,leaflight:1,grassleaf:1,bloomwhite:1,bloommagenta:1,bloomblue:1,bloompurple:1,bloompink:1,grass:1,soil:1,trunk:1,fin:1,bronze:1,keys:1};
 var MM={white:std({color:0xF2F0EB,roughness:.85}),floor:std({color:0xE9E6E0,roughness:.75}),ground:std({color:0xE6E3DC,roughness:1})};
 function modelBase(k){ if(MODEL_KEEP[k])return M[k];
   if(k==='porcelain'||k==='oakfloor'||k==='stone'||k==='pave'||k==='gravel')return MM.floor; return MM.white; }
@@ -787,7 +794,7 @@ function itemShape(it){ var geo=null, tall=false;
     geo=new T.ExtrudeGeometry(sh,flat||!FX.bevel?{depth:dep,bevelEnabled:false}:{depth:dep-.03,bevelEnabled:true,bevelThickness:.015,bevelSize:.02,bevelOffset:-.02,bevelSegments:3});   // the bevel stays inside the true outline
     geo.rotateX(Math.PI/2); geo.translate(0,it.z[1]*S-(flat||!FX.bevel?0:.015),0);
   }else if(it.t==='s'){
-    geo=new T.IcosahedronGeometry(it.r*S,2); geo.scale(1,it.sy||1,1); geo.translate(it.c[0]*S,it.z*S,it.c[1]*S);
+    geo=new T.IcosahedronGeometry(it.r*S,it.dt!=null?it.dt:2); geo.scale(1,it.sy||1,1); geo.translate(it.c[0]*S,it.z*S,it.c[1]*S);
   }
   return geo&&{geo:geo,tall:tall}; }
 function buildModel(){ PCR={}; PCMOVED={}; PCREG=true; (SCENE.pieces||[]).forEach(function(p){ delete p._moved; });
@@ -910,7 +917,7 @@ function clearModel(){
 }
 
 // ---------- states (needed by the material factory, so declared before the first build)
-var state={st:'off',pw:'off',dof:'on',chg:'on',sp:'on',isl:'design',k:'open',p:'open',d:'open',v:'now',season:'mar',hour:12,cut:'full',up:'on',sh:'open',gs:'pergola',aw:'out',fu:'all',fl:'stone',dim:'off',
+var state={pl:Q.get('planting')==='proposal'?'prop':'design',st:'off',pw:'off',dof:'on',chg:'on',sp:'on',isl:'design',k:'open',p:'open',d:'open',v:'now',season:'mar',hour:12,cut:'full',up:'on',sh:'open',gs:'pergola',aw:'out',fu:'all',fl:'stone',dim:'off',
            wm:Q.get('walls')==='solid'?'solid':Q.get('walls')==='glass'?'glass':'auto',look:Q.get('look')==='model'?'model':'natural'};
 // designed furniture moved as a trial: the piece's triangles in the merged model fold to a point (nothing is rebuilt)
 // and an exact copy becomes a Furnish piece ('@' and its number) that drags, turns and measures like the others
@@ -1504,6 +1511,7 @@ function applyState(){
     if(g==='d-open')on=state.d==='open'; if(g==='d-closed')on=state.d==='closed'; if(g==='d-hidden')on=state.d!=='none';
     var dm=/^d-(open|closed)\.(\d+)$/.exec(g); if(dm)on=state.d!=='none'&&(DOORS[dm[2]]||state.d)===dm[1];   // one door, or the switch
     if(g==='st-on')on=state.st==='on'; if(g==='pw')on=state.pw==='on';
+    if(g==='pl-design')on=state.pl!=='prop'; if(g==='pl-prop')on=state.pl==='prop';   // the garden as designed, or a planting proposal
     if(g==='w-open')on=state.d==='open'; if(g==='w-closed')on=state.d!=='open';   // windows open with the doors
     if(g==='v-now')on=state.v==='now'; if(g==='v-later')on=state.v==='later';
     if(g==='i-design')on=state.isl==='design'; if(g==='i-trial')on=state.isl==='trial';
@@ -1519,6 +1527,7 @@ function applyState(){
   NEIGH.forEach(function(m){m.visible=state.up==='on';m.material=mode==='eye'?M.context:HIDDEN;m.renderOrder=mode==='eye'?0:-1;});
   document.getElementById('awrow').hidden=state.gs!=='awning';
   document.getElementById('strow').hidden=!groups['st-on']; document.getElementById('pwrow').hidden=!groups['pw'];
+  document.getElementById('plrow').hidden=!groups['pl-prop'];
   setSun();
   var cut=state.cut==='cut'&&mode==='overview';
   cutPlane.constant=cut?1.25:1e5;
@@ -1545,7 +1554,7 @@ function setKey(key,val,user){
   [].forEach.call(grp.querySelectorAll('button'),function(b){b.addEventListener('click',function(){ var was=state[key], dw=JSON.stringify(DOORS), v=b.getAttribute('data-v');
     setKey(key,v,true); if(key==='dim')makeLabels(); applyState(); if(was!==v)hKey(key,was,v,dw); });});
 });
-press('wm',state.wm); press('look',state.look);
+press('wm',state.wm); press('look',state.look); press('pl',state.pl);
 var SEASON_SHORT={jun:'21 Jun',mar:'21 Mar',dec:'21 Dec'};
 function summarize(){
   var fin=[state.fl==='wood'?'Oak floors':'Porcelain floors', {open:'doors open',closed:'doors closed',none:'no doors'}[state.d]];

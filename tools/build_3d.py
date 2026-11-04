@@ -78,11 +78,75 @@ def poly(pts, z0, z1, mat, ctx=None):
         d['f'] = FURN[0]
     items.append(d)
 
-def sphere(cx, cy, z, r, mat, sy=1.0):
+def sphere(cx, cy, z, r, mat, sy=1.0, ctx=None, dt=None):
     d = {'t': 's', 'c': [round(cx, 1), round(cy, 1)], 'z': z, 'r': r, 'sy': sy, 'm': mat}
+    if ctx:
+        d['v'] = ctx
+    if dt is not None:                                  # fewer facets for small pieces (blooms)
+        d['dt'] = dt
     if FURN[0]:
         d['f'] = FURN[0]
     items.append(d)
+
+def shrub(r, ctx=None):
+    """A garden plant built from small leafy lobes: 'mound' (low and rounded), 'grass' (a clump of blades under a haze
+    of plumes), 'shrub' (upright, clipped), 'climber' (trained flat against a wall or fins; n: the way it faces).
+    spike: the flowers stand above the leaves (lavender); z0: the soil it grows from (a raised bed). Blooms, if any, are dotted over the outside. Placed the same
+    way every build: the random numbers come from where the plant stands."""
+    import math, random
+    (cx, cy), rr, h, form, leaf, bloom = r['c'], r['r'], r['h'], r['form'], r['leaf'], r.get('bloom')
+    rnd = random.Random(int(cx * 7919 + cy * 104729 + h))
+    R1 = lambda v: round(v, 1)                          # where a lobe sits is drawn, not measured: to the mm
+    hf = h * (.62 if r.get('spike') else 1)             # the leaves' height
+    lobes = []                                          # (x, y, z, radius, squash)
+    if form == 'mound':
+        for _ in range(5):
+            a, d, q = rnd.uniform(0, 2 * math.pi), rr * rnd.uniform(0, .45), rr * rnd.uniform(.52, .66)
+            q = min(q, hf / 1.75)
+            lobes.append((cx + d * math.cos(a), cy + d * math.sin(a), rnd.uniform(q * .85, max(q * .85, hf - q * .85)), q, .85))
+    elif form == 'shrub':
+        for f in (.2, .42, .64, .84):
+            for _ in range(2):
+                a, q = rnd.uniform(0, 2 * math.pi), rr * rnd.uniform(.55, .7) * (1 - f * .25)
+                lobes.append((cx + rr * .3 * math.cos(a), cy + rr * .3 * math.sin(a), h * f, q, .9))
+    elif form == 'grass':
+        for i in range(5):
+            a, d = i * 2 * math.pi / 5 + rnd.uniform(0, .5), rr * rnd.uniform(.15, .45)
+            lobes.append((cx + d * math.cos(a), cy + d * math.sin(a), h * .3, rr * .22, h * .3 / (rr * .22)))
+    elif form == 'climber':
+        nx, ny = r.get('n', (0, 1)); ax, ay = -ny, nx       # along the wall
+        z = 28
+        while z < h - 12:
+            for t in (-.62, 0, .62):
+                q = rr * rnd.uniform(.32, .4)
+                lobes.append((cx + ax * rr * t + nx * 9 + rnd.uniform(-3, 3), cy + ay * rr * t + ny * 9 + rnd.uniform(-3, 3),
+                              z + rnd.uniform(-7, 7), q, .9))
+            z += rr * .5
+        cyl(cx, cy, 3, r.get('z0', 0), r.get('z0', 0) + 30, 'trunk', ctx)
+    z0 = r.get('z0', 0)
+    lobes = [(x, y, R1(z0 + z), R1(q), round(sy, 3)) for x, y, z, q, sy in lobes]
+    for x, y, z, q, sy in lobes:
+        sphere(x, y, z, q, leaf, sy, ctx, 1)
+    if not bloom:
+        return
+    bs = r.get('bs', 3)
+    if form == 'grass':                                 # the plumes: a light haze of small tufts over the blades
+        for i in range(12):
+            a, d = rnd.uniform(0, 2 * math.pi), rr * rnd.uniform(.1, .6)
+            sphere(cx + d * math.cos(a), cy + d * math.sin(a), R1(z0 + h * rnd.uniform(.62, .98)), R1(rr * .13), bloom, 1.5, ctx, 0)
+        return
+    n = {'mound': 12, 'shrub': 16, 'climber': len(lobes)}[form]
+    for _ in range(n):
+        if r.get('spike'):                              # flower spikes standing above the leaves
+            a, d = rnd.uniform(0, 2 * math.pi), rr * rnd.uniform(0, .75)
+            sphere(cx + d * math.cos(a), cy + d * math.sin(a), R1(z0 + rnd.uniform(hf, h)), bs, bloom, 1.6, ctx, 0)
+            continue
+        x, y, z, q, sy = lobes[rnd.randrange(len(lobes))]
+        a, e = rnd.uniform(0, 2 * math.pi), rnd.uniform(.05, 1.0)
+        if form == 'climber':                           # on the face away from the wall
+            nx, ny = r.get('n', (0, 1)); a = math.atan2(ny, nx) + rnd.uniform(-1.2, 1.2); e = rnd.uniform(-.6, .9)
+        sphere(x + q * math.cos(a) * math.cos(e), y + q * math.sin(a) * math.cos(e), R1(z + q * sy * math.sin(e)), bs, bloom, 1.0, ctx, 0)
+
 
 def overlaps(a, b):
     return a[0] < b[2] and b[0] < a[2] and a[1] < b[3] and b[1] < a[3]
@@ -849,9 +913,11 @@ def build(skip=(), doors_shut=False, layout='existing'):
             poly(r['pts'], -12, 0 if r['surf'] != 'gravel' else -9, mat)
         elif k == 'plantbed':
             x0, y0, x1, y1 = r['box']
-            box(x0, y0, x1, y1, -12, 25, 'soil')
+            box(x0, y0, x1, y1, -12, 25, 'soil', ctx)
             if r['hedge']:
-                box(x0 + 10, y0 + 10, x1 - 10, y1 - 10, 25, r['hedge'], 'leaf')
+                box(x0 + 10, y0 + 10, x1 - 10, y1 - 10, 25, r['hedge'], 'leaf', ctx)
+        elif k == 'shrub':                                  # a garden plant (a planting scheme)
+            shrub(r, ctx)
         elif k == 'plant':                                  # indoor plant: stoneware pot and a leafy head
             cx, cy = r['c']; rr = r['r']; h = r['h']
             cyl(cx, cy, rr, 0, 48, 'ceramic', ctx)
