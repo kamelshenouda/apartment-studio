@@ -25,8 +25,10 @@ When the owner asks for this (or anything like it), go through these steps in or
    go through it with them:
    - the red dashed outlines are the drawing's own walls: they must sit on the black;
    - every door, window and room name; read out the "Assumed" and "Could not be read" lists;
-   - fix what they say by editing `drawings/import/apartment.json`. Door swings, window sills and heights, the ceiling
-     and door-head heights are assumed: ask for the real ones.
+   - door swings, window sills and heights, the ceiling and door-head heights are assumed: ask for the real ones. The
+     owner can correct them on `check.html` itself (click a door to turn it or move its hinge; type sills and heights)
+     and save the corrected `apartment.json`: put it in place of `drawings/import/apartment.json`. Anything else they
+     say, fix by editing `drawings/import/apartment.json`.
    Never round or "tidy" a coordinate: keep the drawing's values exactly.
 5. **Make it the apartment.** When the owner says it is right, copy the draft to `apartment.json` at the top of the
    repository, set `name`, put `tz` and `tz_summer` in `site`, remove the `import` block, and lock it:

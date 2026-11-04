@@ -132,7 +132,8 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
       <div id="found" hidden>
         <div class="counts" id="counts"></div>
         <div class="notes" id="notes"></div>
-        <p class="hint">On the check page below, the red dashed outlines are the drawing's own walls: they should sit on the black. Then look at every door, window and room name.</p>
+        <p class="hint">On the check page below, the red dashed outlines are the drawing's own walls: they should sit on the black. Then look at every door, window and room name. Under the plan, click a door to change which way it opens, and give the real window sills and heights and the ceiling: the drawing can't say them.</p>
+        <p class="hint" id="fixed" role="status"></p>
         <div class="frame"><iframe id="checkframe" title="What was found in the drawing" sandbox="allow-scripts"></iframe></div>
       </div>
       <details id="readlog" hidden><summary>What the importer printed</summary><pre id="readout"></pre></details>
@@ -157,7 +158,7 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
     <div class="body">
       <h2>Take it with you</h2>
       <div class="row"><button type="button" class="btn primary" id="zipbtn" disabled>Download the site (.zip)</button><button type="button" class="btn" id="jsonbtn" disabled>Download apartment.json</button></div>
-      <p class="hint">The zip is the whole website: upload the folder to any web host, or to GitHub Pages. To correct what the drawing could not say (door swings, window sills and heights, the ceiling) and keep the site up to date, use the <a href="https://github.com/kamelshenouda/apartment-studio">template with Claude Code</a>: put apartment.json in your copy and ask it to "build my apartment".</p>
+      <p class="hint">The zip is the whole website: upload the folder to any web host, or to GitHub Pages. The corrections made on the check page are in both. To change anything else (a wall, a room's name) and keep the site up to date, use the <a href="https://github.com/kamelshenouda/apartment-studio">template with Claude Code</a>: put apartment.json in your copy and ask it to "build my apartment".</p>
     </div>
   </section>
 
@@ -212,7 +213,7 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
   ['dragleave','drop'].forEach(function(k){ $('drop').addEventListener(k,function(e){ e.preventDefault(); $('drop').classList.remove('over'); }); });
   $('drop').addEventListener('drop',function(e){ var f=e.dataTransfer&&e.dataTransfer.files[0]; if(f)pick(f); });
 
-  $('readbtn').addEventListener('click',async function(){ if(!upload)return; var b=this; b.disabled=true; $('found').hidden=true; $('log').textContent=''; $('readlog').hidden=true;
+  $('readbtn').addEventListener('click',async function(){ if(!upload)return; var b=this; b.disabled=true; $('found').hidden=true; $('log').textContent=''; $('readlog').hidden=true; $('fixed').textContent='';
     ['buildbtn','zipbtn','jsonbtn'].forEach(function(id){ $(id).disabled=true; }); $('built').hidden=true; enable(4,false); enable(5,false); site=null;
     try{
       await boot();
@@ -260,6 +261,11 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
       .replace('</body>','<script>document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[href]");if(!a)return;var m=/^(index|plan|3d)\\.html/.exec(a.getAttribute("href"));if(m){e.preventDefault();parent.postMessage({studio:m[1]},"*");}},true);<\/script></body>');
     $('siteframe').srcdoc=h; }
   window.addEventListener('message',function(e){ if(e.source===$('siteframe').contentWindow&&e.data&&e.data.studio)preview(e.data.studio); });
+  // corrections made on the check page (door swings, sills, heights) replace the draft the site is built from
+  window.addEventListener('message',function(e){ if(e.source!==$('checkframe').contentWindow||!e.data||!e.data.checkDraft||!draft)return;
+    draft=e.data.checkDraft; var n=((draft['import']||{}).corrected||[]).length;
+    $('fixed').textContent=n?n+' correction'+(n>1?'s':'')+' made on the check page'+(site?': build again to see them.':', used when you build.'):'';
+    if(site)$('buildbtn').disabled=false; });
   [].forEach.call(document.querySelectorAll('.seg button'),function(x){ x.addEventListener('click',function(){ preview(x.getAttribute('data-p')); }); });
 
   $('buildbtn').addEventListener('click',async function(){ if(!draft)return; var b=this; b.disabled=true; $('buildlog').hidden=true;

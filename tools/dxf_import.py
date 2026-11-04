@@ -529,7 +529,7 @@ def import_dxf(path, units=None, layers=None, site=None):
         doors.append({'hinge': h, 'leaf': lf, 'end': e}); swung += 1
     if swung:
         report['assumed'].append(f'{swung} door swing(s) are assumed: each opens into the bigger room, hinged at its left or top '
-                                 'end. Mark the right side and hinge on the check page, and they will be corrected.')
+                                 'end. Click a door on the check page to turn it or move its hinge.')
     openings, nw, nd = [], 0, 0
     panes_drawn = any(g.get('panes', 0) >= 2 for g in glaz)
     for g in glaz:
@@ -557,7 +557,7 @@ def import_dxf(path, units=None, layers=None, site=None):
     if openings:
         report['assumed'].append('Window sills and heights (100 and 120 cm) and glazed-door heights (230 cm) are assumed; '
                                  + ('frames with sliding panes drawn are read as glazed doors. ' if panes_drawn else 'frames 1.20 m or longer are read as glazed doors. ')
-                                 + 'Correct them in apartment.json.')
+                                 + 'Correct them on the check page.')
 
     dims = []
     for e in got['dims']:
@@ -639,16 +639,98 @@ def write(A, outdir):
     return p
 
 
+CHECK_JS = r"""
+(function(){
+  var $=function(id){ return document.getElementById(id); };
+  var READ=JSON.parse($('draft').textContent), A=JSON.parse(JSON.stringify(READ)), inStudio=window.parent!==window, sel=null;
+  var NS='http://www.w3.org/2000/svg';
+  var r1=function(v){ return Math.round(v*100)/100; };              // keeps the drawing's own precision (a tenth of a mm)
+  var f=function(v){ return String(+(+v).toFixed(1)); };
+  function doorSVG(d){ var hx=d.hinge[0],hy=d.hinge[1],lx=d.leaf[0],ly=d.leaf[1],ex=d.end[0],ey=d.end[1];
+    var r=Math.hypot(lx-hx,ly-hy), a1=Math.atan2(ly-hy,lx-hx), a2=Math.atan2(ey-hy,ex-hx);
+    var dd=((a2-a1+Math.PI)%(2*Math.PI)+2*Math.PI)%(2*Math.PI)-Math.PI, sw=dd>0?1:0;
+    return '<path d="M'+f(hx)+' '+f(hy)+' L'+f(lx)+' '+f(ly)+'" class="'+(d.cls||'door')+'"/>'+
+      '<path d="M'+f(lx)+' '+f(ly)+' A'+f(r)+' '+f(r)+' 0 0 '+sw+' '+f(ex)+' '+f(ey)+'" class="swing"/>'; }
+  function hit(d){ var xs=[d.hinge[0],d.leaf[0],d.end[0]], ys=[d.hinge[1],d.leaf[1],d.end[1]];
+    var x0=Math.min.apply(0,xs)-8, y0=Math.min.apply(0,ys)-8, x1=Math.max.apply(0,xs)+8, y1=Math.max.apply(0,ys)+8;
+    return '<rect class="hit" x="'+f(x0)+'" y="'+f(y0)+'" width="'+f(x1-x0)+'" height="'+f(y1-y0)+'"/>'; }
+  var G=[].slice.call(document.querySelectorAll('.dd'));
+  function same(a,b){ return JSON.stringify([a.hinge,a.leaf,a.end])===JSON.stringify([b.hinge,b.leaf,b.end]); }
+  function drawDoors(){ G.forEach(function(g,n){ var i=+g.getAttribute('data-i'), d=A.plan[i];
+    g.innerHTML=doorSVG(d)+hit(d); g.classList.toggle('on',sel===g); g.classList.toggle('fixed',!same(d,READ.plan[i])); });
+    var m=$('marks'); m.innerHTML='';
+    if(sel){ var d=A.plan[+sel.getAttribute('data-i')], t=document.createElementNS(NS,'text');
+      t.setAttribute('x',f((d.hinge[0]+d.end[0])/2)); t.setAttribute('y',f((d.hinge[1]+d.end[1])/2-14)); t.setAttribute('class','dn');
+      t.textContent=sel.getAttribute('aria-label').replace('Door ',''); m.appendChild(t); } }
+  function choose(g){ sel=g; $('doorname').textContent=g?g.getAttribute('aria-label'):'No door chosen';
+    [].forEach.call(document.querySelectorAll('#doorbar button'),function(b){ b.disabled=!g; }); drawDoors(); }
+  G.forEach(function(g){ g.addEventListener('click',function(){ choose(g); });
+    g.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); choose(g); } }); });
+  [].forEach.call(document.querySelectorAll('#doorbar button'),function(b){ b.addEventListener('click',function(){
+    if(!sel)return; var i=+sel.getAttribute('data-i'), d=A.plan[i], H=d.hinge, L=d.leaf, E=d.end, v=[L[0]-H[0],L[1]-H[1]], act=b.getAttribute('data-act');
+    if(act==='side')d.leaf=[r1(H[0]-v[0]),r1(H[1]-v[1])];                         // the leaf on the wall's other side
+    else if(act==='hinge'){ d.hinge=E; d.end=H; d.leaf=[r1(E[0]+v[0]),r1(E[1]+v[1])]; }   // the same side, hinged at the far jamb
+    else { d.hinge=READ.plan[i].hinge.slice(); d.leaf=READ.plan[i].leaf.slice(); d.end=READ.plan[i].end.slice(); }
+    changed(); }); });
+  // openings: the long side of the box is its width
+  var tb=document.querySelector('#ops tbody');
+  (A.openings||[]).forEach(function(o,k){ var w=Math.max(o.box[2]-o.box[0],o.box[3]-o.box[1]), tr=document.createElement('tr');
+    tr.innerHTML='<th></th><td></td><td>'+(w/100).toFixed(2)+' m</td><td><input data-k="'+k+'" data-f="sill" inputmode="decimal"></td><td><input data-k="'+k+'" data-f="height" inputmode="decimal"></td>';
+    tr.children[0].textContent=o.code; tr.children[1].textContent=o.room||''; tb.appendChild(tr); });
+  if(!(A.openings||[]).length){ var tr=document.createElement('tr'); tr.innerHTML='<td colspan="5">No openings to the outside were read.</td>'; tb.appendChild(tr); }
+  function fill(){ [].forEach.call(tb.querySelectorAll('input'),function(x){ x.value=A.openings[+x.getAttribute('data-k')][x.getAttribute('data-f')]; x.classList.remove('bad'); });
+    $('ceil').value=A.heights.ceiling; $('dhead').value=A.heights.door_head; $('ceil').classList.remove('bad'); $('dhead').classList.remove('bad'); }
+  function num(x){ var v=x.value.trim().replace(',','.'), n=Number(v); return v!==''&&isFinite(n)&&n>=0?n:null; }
+  [].forEach.call(tb.querySelectorAll('input'),function(x){ x.addEventListener('input',function(){ var n=num(x); x.classList.toggle('bad',n===null);
+    if(n===null)return; var k=+x.getAttribute('data-k'), o=A.openings[k], r=READ.openings[k]; o[x.getAttribute('data-f')]=n;
+    if('assumed' in r)o.assumed=r.assumed&&o.sill===r.sill&&o.height===r.height;      // a sill or height given is no longer assumed
+    changed(); }); });
+  [['ceil','ceiling'],['dhead','door_head']].forEach(function(p){ $(p[0]).addEventListener('input',function(){ var n=num(this); this.classList.toggle('bad',n===null||n<150);
+    if(n!==null&&n>=150){ A.heights[p[1]]=n; changed(); } }); });
+  function notes(){ var out=[], nd=0;
+    G.forEach(function(g){ var i=+g.getAttribute('data-i'), d=A.plan[i], o=READ.plan[i]; if(same(d,o))return; nd++;
+      var side=(d.leaf[0]-d.hinge[0])*(o.leaf[0]-o.hinge[0])+(d.leaf[1]-d.hinge[1])*(o.leaf[1]-o.hinge[1])<0;
+      var moved=d.hinge[0]!==o.hinge[0]||d.hinge[1]!==o.hinge[1];
+      out.push(g.getAttribute('aria-label')+': '+[moved?'hinged at the other end':'',side?'swings to the other side':''].filter(Boolean).join(', ')+'.'); });
+    (A.openings||[]).forEach(function(o,k){ var r=READ.openings[k]; if(o.sill!==r.sill||o.height!==r.height)out.push(o.code+': sill '+o.sill+' cm, height '+o.height+' cm.'); });
+    if(A.heights.ceiling!==READ.heights.ceiling)out.push('Ceiling '+A.heights.ceiling+' cm.');
+    if(A.heights.door_head!==READ.heights.door_head)out.push('Door heads '+A.heights.door_head+' cm.');
+    return out; }
+  function changed(){ var out=notes(); drawDoors(); A['import'].corrected=out;
+    var high=(A.openings||[]).filter(function(o){ return o.sill+o.height>A.heights.ceiling; }).map(function(o){ return o.code; });
+    $('fixnote').textContent=(out.length?out.length+' correction'+(out.length>1?'s':'')+(inStudio?', used when you build the site.':', kept in the file you save.'):'')+
+      (high.length?' Check '+high.join(', ')+': sill and height together are above the ceiling.':'');
+    if(inStudio)parent.postMessage({checkDraft:A},'*'); }
+  function text(){ return JSON.stringify(A,null,1).replace(/\[\s*([-\d.,\s]+?)\s*\]/g,function(m,g){ return '['+g.replace(/\s+/g,'').split(',').join(', ')+']'; })+'\n'; }
+  $('save').addEventListener('click',function(){ var u=URL.createObjectURL(new Blob([text()],{type:'application/json'})), a=document.createElement('a');
+    a.href=u; a.download='apartment.json'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(u); },4000);
+    $('fixnote').textContent='Saved apartment.json: put it in place of drawings/import/apartment.json, then tell Claude Code the import is right.'; });
+  $('reset').addEventListener('click',function(){ A=JSON.parse(JSON.stringify(READ)); fill(); choose(null); changed(); $('fixnote').textContent=inStudio?'Back to what was read.':''; });
+  if(inStudio){ $('save').hidden=true; $('cli').hidden=true; }
+  fill(); drawDoors();
+})();
+"""
+
+
 def check_page(A, size, src, outdir):
     """check.html: the draft plan drawn with the plan page's own helpers, over the drawing's walls and columns in red,
-    with what was assumed and what could not be read."""
+    with what was assumed and what could not be read. What a drawing cannot say is corrected on the page itself: click a
+    door to turn its swing or move its hinge; each opening's sill and height; the ceiling and door heads. Opened on a
+    computer, the page saves the corrected apartment.json; inside the studio, it hands the draft to the page around it."""
     sys.path.insert(0, HERE)
     import build_plans as bp
     import openings as op
     keep = op.OPENINGS
     op.OPENINGS = [(o['code'], o['room'], tuple(o['box']), o['sill'], o['height'], tuple(o['normal'])) for o in A['openings']]
     try:
-        body = ''.join(bp.draw(e) for e in A['plan'])
+        parts, n = [], 0
+        for i, e in enumerate(A['plan']):
+            if e['k'] == 'door':
+                n += 1
+                parts.append(f'<g class="dd" data-i="{i}" tabindex="0" role="button" aria-label="Door {n}">{bp.draw(e)}</g>')
+            else:
+                parts.append(bp.draw(e))
+        body = ''.join(parts)
     finally:
         op.OPENINGS = keep
     W, H = size
@@ -659,6 +741,7 @@ def check_page(A, size, src, outdir):
     counts = ''.join('<tr><th>%s</th><td>%s</td></tr>' % (k, v) for k, v in rep['counts'].items())
     ignored = ', '.join('%s (%d)' % (k, v) for k, v in sorted(rep['ignored'].items())) or 'nothing'
     layers = ', '.join('%s: %s' % (k, ' '.join(v)) for k, v in rep['layers'].items())
+    draft = json.dumps(A, ensure_ascii=False).replace('</', '<\\/')        # safe inside a <script>
     html = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Check the import</title><style>
 :root{{--bg:#F6F4EF;--ink:#1D2125;--muted:#5d6267;--line:#d9d4ca;--accent:#2E5A74}}
@@ -668,6 +751,17 @@ main{{max-width:1100px;margin:0 auto;padding:20px 16px 40px;display:grid;gap:18p
 h1{{margin:0;font-size:24px}} h2{{margin:0;font-size:16px}} p{{margin:0;color:var(--muted)}}
 .plan{{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px;overflow:auto}}
 svg{{width:100%;height:auto;display:block;min-width:600px}}
+.dd{{cursor:pointer;outline:none}} .dd .hit{{fill:transparent;stroke:none}} .dd:hover .door,.dd:focus-visible .door{{stroke:var(--accent)}}
+.dd.fixed .door{{stroke:#2f7d4f}} .dd.on .door{{stroke:#c2410c;stroke-width:3}} .dd.on .swing{{stroke:#c2410c}}
+.dn{{font:600 15px system-ui,sans-serif;fill:#c2410c;text-anchor:middle;pointer-events:none}}
+.fix{{display:grid;gap:12px;border:1px solid var(--line);border-radius:8px;padding:14px 16px}}
+.fix .bar{{display:flex;flex-wrap:wrap;gap:8px;align-items:center}}
+button{{font:inherit;font-size:14px;padding:6px 12px;border-radius:6px;border:1px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}}
+button.main{{background:var(--ink);color:var(--bg)}} button:disabled{{opacity:.4;cursor:default}}
+.tw{{overflow-x:auto}} #ops{{min-width:480px}} #ops td,#ops th{{padding:4px 12px 4px 0;font-variant-numeric:tabular-nums}}
+.fix input{{font:inherit;width:6.5em;padding:4px 6px;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--ink)}}
+.fix input.bad{{border-color:#c2410c}} .hts{{display:flex;flex-wrap:wrap;gap:8px 20px}} .hts label{{display:flex;gap:8px;align-items:center}}
+#fixnote{{color:var(--ink)}} #fixnote:empty{{display:none}}
 .grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}}
 table{{border-collapse:collapse}} th{{text-align:left;font-weight:500;color:var(--muted);padding:2px 12px 2px 0}}
 ul{{margin:6px 0 0;padding-left:18px}}
@@ -683,13 +777,23 @@ ul{{margin:6px 0 0;padding-left:18px}}
 .dl{{stroke:#2E5A74;stroke-width:1.2}}.dt{{stroke:#2E5A74;stroke-width:1.5}}.dimt{{font:15px system-ui,sans-serif;text-anchor:middle;fill:#2E5A74}}
 </style></head><body><main>
 <h1>Check the import: {rep['source']}</h1>
-<p>The plan as read from the drawing, drawn the way the plan page draws it. The red dashed outlines are the drawing's own walls and columns: they should sit exactly on the black. Look at every door, window and room name, then confirm in Claude Code ("the import is right"), or say what to correct.</p>
-<div class="plan"><svg viewBox="-40 -40 {W + 80} {H + 80}">{garden}{body}{red}</svg></div>
+<p>The plan as read from the drawing, drawn the way the plan page draws it. The red dashed outlines are the drawing's own walls and columns: they should sit exactly on the black. Look at every door, window and room name, and correct below what the drawing could not say.<span id="cli"> Then confirm in Claude Code ("the import is right"), or say what else to correct.</span></p>
+<div class="plan"><svg viewBox="-40 -40 {W + 80} {H + 80}" id="plansvg">{garden}{body}{red}<g id="marks"></g></svg></div>
+<section class="fix" id="fix"><h2>Correct what the drawing could not say</h2>
+<p>A drawing does not say which way a door opens, how high a window sits or how high the ceiling is: what was assumed is below. Click a door on the plan to change it; type a sill or a height. Every change is kept in the draft.</p>
+<div class="bar" id="doorbar"><b id="doorname">No door chosen</b><button type="button" data-act="side" disabled>Swing to the other side</button><button type="button" data-act="hinge" disabled>Hinge at the other end</button><button type="button" data-act="back" disabled>As read</button></div>
+<div class="tw"><table id="ops"><thead><tr><th>Opening</th><th>Room</th><th>Width</th><th>Sill, cm</th><th>Height, cm</th></tr></thead><tbody></tbody></table></div>
+<div class="hts"><label>Ceiling, cm <input id="ceil" inputmode="decimal"></label><label>Door heads, cm <input id="dhead" inputmode="decimal"></label></div>
+<p id="fixnote" role="status"></p>
+<div class="bar"><button type="button" class="main" id="save">Save the corrected apartment.json</button><button type="button" id="reset">Back to what was read</button></div>
+</section>
 <div class="grid">
 <section><h2>What was read</h2><table>{counts}</table><p>Units: {rep['units']}. Layers: {layers}.</p></section>
 <section><h2>Assumed (please confirm)</h2><ul>{li(rep['assumed'])}</ul></section>
 <section><h2>Could not be read</h2><ul>{li(rep['warnings'])}</ul><p>Left out: {ignored}.</p></section>
-</div></main></body></html>'''
+</div></main>
+<script type="application/json" id="draft">{draft}</script>
+<script>{CHECK_JS}</script></body></html>'''
     p = os.path.join(outdir, 'check.html')
     open(p, 'w', encoding='utf-8').write(html)
     return p

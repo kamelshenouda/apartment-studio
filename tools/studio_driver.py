@@ -44,8 +44,8 @@ Made with Apartment studio ({studio}) from your drawing, entirely in your browse
 To publish it, upload this folder to any web host. On GitHub: make a new repository, upload these files,
 then Settings, Pages, Deploy from a branch.
 
-To correct anything the importer assumed (door swings, window sills and heights, the ceiling) and keep the site up
-to date, use the template with Claude Code: https://github.com/kamelshenouda/apartment-studio
+Door swings, window sills and heights and the ceiling corrected on the check page are already in it. To change
+anything else and keep the site up to date, use the template with Claude Code: https://github.com/kamelshenouda/apartment-studio
 Put this apartment.json at the top of your copy and ask Claude Code to "build my apartment".
 """
 
