@@ -22,7 +22,9 @@ See what you get: the sample apartment, published by this repository itself, is 
   - share a link that opens the same view, with the furniture you placed and the finishes you tried;
   - save the view as a picture, with a strip naming each finish in it;
   - compare a planting proposal with the garden as designed (a Planting switch, shown when the plan has one: garden
-    plants drawn from a few forms, mound, grass, upright shrub and climber, with their flowers).
+    plants drawn from a few forms, mound, grass, upright shrub and climber, with their flowers);
+  - switch on a soft ambience (off by default), made in the page with no recordings: wind, birds by day, crickets on
+    warm nights, the city far off, muffled indoors and following the time of day.
   It works on a phone too.
 - **A plan lock**, so nothing moves your walls by accident: every build checks the measurements against the ones you
   approved.

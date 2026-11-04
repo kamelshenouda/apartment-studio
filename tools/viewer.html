@@ -454,6 +454,7 @@ h3{font-weight:600}
       <div class="ctl" id="awrow"><div class="cl"><span>Shades A + B</span></div><div class="bt" data-state="aw"><button type="button" data-v="out" aria-pressed="true">Out</button><button type="button" data-v="in" aria-pressed="false">In</button></div></div>
       <div class="ctl"><div class="cl"><span>Shutters</span></div><div class="bt" data-state="sh"><button type="button" data-v="open" aria-pressed="true">Open</button><button type="button" data-v="half" aria-pressed="false">Half</button><button type="button" data-v="closed" aria-pressed="false">Closed</button></div></div>
       <div class="ctl<@v21>" id="uprow</@v21>"><div class="cl"><span>Neighbours</span></div><div class="bt" data-state="up"><button type="button" data-v="on" aria-pressed="true" title="The <@v22>neighbouring buildings in apartment.json</@v22> cast their shade">Shade on</button><button type="button" data-v="off" aria-pressed="false">None</button></div></div>
+      <div class="ctl" id="sndrow"><div class="cl"><span>Sound</span></div><div class="bt" data-state="snd"><button type="button" data-v="off" aria-pressed="true">Off</button><button type="button" data-v="on" aria-pressed="false" title="A soft ambience made in this page, no recordings: wind in the planting, birds by day, crickets on warm nights, the city far off; muffled indoors, less so with the garden doors open. It follows the time of day">On</button></div></div>
     </section>
 
     <section class="tabp" id="tab-furnish" role="tabpanel" aria-labelledby="tb-furnish" hidden>
@@ -917,7 +918,7 @@ function clearModel(){
 }
 
 // ---------- states (needed by the material factory, so declared before the first build)
-var state={pl:Q.get('planting')==='proposal'?'prop':'design',st:'off',pw:'off',dof:'on',chg:'on',sp:'on',isl:'design',k:'open',p:'open',d:'open',v:'now',season:'mar',hour:12,cut:'full',up:'on',sh:'open',gs:'pergola',aw:'out',fu:'all',fl:'stone',dim:'off',
+var state={snd:'off',pl:Q.get('planting')==='proposal'?'prop':'design',st:'off',pw:'off',dof:'on',chg:'on',sp:'on',isl:'design',k:'open',p:'open',d:'open',v:'now',season:'mar',hour:12,cut:'full',up:'on',sh:'open',gs:'pergola',aw:'out',fu:'all',fl:'stone',dim:'off',
            wm:Q.get('walls')==='solid'?'solid':Q.get('walls')==='glass'?'glass':'auto',look:Q.get('look')==='model'?'model':'natural'};
 // designed furniture moved as a trial: the piece's triangles in the merged model fold to a point (nothing is rebuilt)
 // and an exact copy becomes a Furnish piece ('@' and its number) that drags, turns and measures like the others
@@ -1528,6 +1529,7 @@ function applyState(){
   document.getElementById('awrow').hidden=state.gs!=='awning';
   document.getElementById('strow').hidden=!groups['st-on']; document.getElementById('pwrow').hidden=!groups['pw'];
   document.getElementById('plrow').hidden=!groups['pl-prop'];
+  sndSync();
   setSun();
   var cut=state.cut==='cut'&&mode==='overview';
   cutPlane.constant=cut?1.25:1e5;
@@ -1555,6 +1557,52 @@ function setKey(key,val,user){
     setKey(key,v,true); if(key==='dim')makeLabels(); applyState(); if(was!==v)hKey(key,was,v,dw); });});
 });
 press('wm',state.wm); press('look',state.look); press('pl',state.pl);
+// ---- Sound (off until switched on, which is also what lets a browser play it): an ambience made here with the Web
+// Audio API, no recordings. Wind in the planting (filtered noise that swells), birds by day (busiest after sunrise and
+// before sunset, with a dove's coo), crickets on warm nights, the city far off. Standing indoors it is muffled, less
+// so with the garden doors open; from above it is a little distant. It follows the clock and the season of the sun.
+var SND={c:null,timer:null,next:0};
+function sndLevels(){ var h=+state.hour, s=state.season;
+  var day=h>=6&&h<=18.5?1:h>5&&h<6?h-5:h>18.5&&h<19.5?19.5-h:0;
+  var birds=day*(h<10?1:h>16.5?.8:.35), night=h>=19.5||h<5.5?1:h>18.8&&h<19.5?(h-18.8)/.7:0;
+  return {birds:birds*(s==='dec'?.6:1),crickets:night*(s==='jun'?1:s==='mar'?.55:.15),wind:.55+.25*day*(h>13?1:.6),city:.35+.3*day}; }
+function sndWhere(){ if(typeof mode==='undefined'||mode!=='eye')return {cut:5200,vol:.55};
+  var x=camera.position.x/S, y=camera.position.z/S, r=roomAt(x,y), inside=r&&!/garden|terrace|court|balcon|yard|outdoor/i.test(r.n||'');
+  return inside?(state.d==='open'?{cut:2400,vol:.6}:{cut:650,vol:.45}):{cut:16000,vol:1}; }
+function sndStart(){ var AC=window.AudioContext||window.webkitAudioContext; if(!AC)return false;
+  if(SND.c){ SND.c.resume(); return true; }
+  var c=new AC(), sr=c.sampleRate; SND.c=c;
+  var out=c.createGain(); out.gain.value=0; var cut=c.createBiquadFilter(); cut.type='lowpass'; cut.frequency.value=16000; cut.connect(out); out.connect(c.destination);
+  var n=sr*4, buf=c.createBuffer(1,n,sr), d=buf.getChannelData(0), b0=0,b1=0,b2=0;
+  for(var i=0;i<n;i++){ var w=Math.random()*2-1; b0=.99765*b0+w*.099046; b1=.963*b1+w*.2965164; b2=.57*b2+w*1.0526913; d[i]=(b0+b1+b2+w*.1848)*.11; }   // pink noise
+  function noise(){ var s=c.createBufferSource(); s.buffer=buf; s.loop=true; s.loopStart=Math.random(); s.start(0,Math.random()*3); return s; }
+  function chain(src,type,f,q,g){ var fl=c.createBiquadFilter(); fl.type=type; fl.frequency.value=f; if(q)fl.Q.value=q; var gn=c.createGain(); gn.gain.value=g; src.connect(fl); fl.connect(gn); gn.connect(cut); return gn; }
+  var wind=chain(noise(),'bandpass',800,.6,0), lfo=c.createOscillator(), lg=c.createGain(); lfo.frequency.value=.07; lg.gain.value=.05; lfo.connect(lg); lg.connect(wind.gain); lfo.start();
+  var leaves=chain(noise(),'highpass',3200,.7,0), city=chain(noise(),'lowpass',160,.7,0);
+  var birdsBus=c.createGain(); birdsBus.connect(cut); var crBus=c.createGain(); crBus.connect(cut);
+  SND.an=c.createAnalyser(); SND.an.fftSize=2048; out.connect(SND.an);       // for sound() below: how loud it is now
+  SND.out=out; SND.cut=cut; SND.wind=wind; SND.leaves=leaves; SND.city=city; SND.birds=birdsBus; SND.cr=crBus;
+  SND.next=c.currentTime+.5; SND.crNext=c.currentTime+.3;
+  function tone(bus,t,f0,f1,dur,g,type){ var o=c.createOscillator(), e=c.createGain(); o.type=type||'sine'; o.frequency.setValueAtTime(f0,t); o.frequency.exponentialRampToValueAtTime(f1,t+dur);
+    e.gain.setValueAtTime(0,t); e.gain.linearRampToValueAtTime(g,t+dur*.2); e.gain.exponentialRampToValueAtTime(.0001,t+dur); o.connect(e); e.connect(bus); o.start(t); o.stop(t+dur+.02); }
+  function phrase(t){ var k=Math.random(), p=Math.random()*.8-.4;
+    var pan=c.createStereoPanner?c.createStereoPanner():null, bus=SND.birds; if(pan){ pan.pan.value=p; pan.connect(SND.birds); bus=pan; }
+    if(k<.5){ var f=2600+Math.random()*1600, m=2+Math.floor(Math.random()*5); for(var j=0;j<m;j++)tone(bus,t+j*.13,f*(1+Math.random()*.1),f*(.7+Math.random()*.2),.09,.05); }   // a sparrow's chirps
+    else if(k<.8){ var g=3400+Math.random()*1800; for(var j2=0;j2<8;j2++)tone(bus,t+j2*.055,g,g*1.25,.045,.035); }                                         // a quick trill
+    else { [0,.38,.62,1.05,1.3].forEach(function(dt,ii){ tone(bus,t+dt,ii%2?520:470,ii%2?430:400,ii%2?.2:.3,.035,'sine'); }); } }                            // a laughing dove's coo
+  function chirp(t){ for(var j=0;j<3;j++)tone(SND.cr,t+j*.045,4650,4600,.028,.03,'triangle'); }
+  SND.tick=function(){ var t=c.currentTime, L=sndLevels(), W=sndWhere(), k=.6;
+    out.gain.setTargetAtTime(.5*W.vol,t,k); cut.frequency.setTargetAtTime(W.cut,t,k);
+    wind.gain.setTargetAtTime(.10*L.wind,t,1.5); leaves.gain.setTargetAtTime(.025*L.wind,t,1.5); city.gain.setTargetAtTime(.22*L.city,t,1.5);
+    birdsBus.gain.setTargetAtTime(L.birds,t,1); crBus.gain.setTargetAtTime(L.crickets,t,1);
+    if(SND.next<t)SND.next=t+.2+Math.random(); if(SND.crNext<t)SND.crNext=t+.1;       // back from a hidden tab: no backlog
+    while(SND.next<t+1){ if(L.birds>.02)phrase(SND.next); SND.next+=1.2+Math.random()*(L.birds>.6?2.5:6); }
+    while(SND.crNext<t+1){ if(L.crickets>.02)chirp(SND.crNext); SND.crNext+=.32+Math.random()*.05; } };
+  return true; }
+function sndSync(){ if(!SND)return; var on=state.snd==='on';
+  if(on&&!SND.timer){ if(!sndStart()){ press('snd','off'); state.snd='off'; return; } SND.tick(); SND.timer=setInterval(function(){ if(!document.hidden)SND.tick(); },250); }
+  else if(!on&&SND.timer){ clearInterval(SND.timer); SND.timer=null; if(SND.c){ SND.out.gain.setTargetAtTime(0,SND.c.currentTime,.25); var c=SND.c; setTimeout(function(){ if(!SND.timer)c.suspend(); },900); } } }
+document.addEventListener('visibilitychange',function(){ if(!SND.c||!SND.timer)return; if(document.hidden)SND.c.suspend(); else SND.c.resume(); });
 var SEASON_SHORT={jun:'21 Jun',mar:'21 Mar',dec:'21 Dec'};
 function summarize(){
   var fin=[state.fl==='wood'?'Oak floors':'Porcelain floors', {open:'doors open',closed:'doors closed',none:'no doors'}[state.d]];
@@ -2976,7 +3024,8 @@ document.getElementById('sharebtn').addEventListener('click',function(){
 });
 window.<@v131>APT3D</@v131>={shareToken:function(){ return shareToken(); },furn:function(){ return JSON.parse(JSON.stringify(fList())); },moved:function(){ return Object.keys(PCMOVED).map(Number); },furnishing:function(on){ if(on!==undefined&&on!==fOn)setFurnish(on); return fOn; },loadTimes:function(){ return LOADT.slice(); },fly:function(n){ if(VIEWS[n])goto(n); },frame:function(q){ draw(true); return renderer.domElement.toDataURL('image/jpeg',q||.92); },picture:function(){ return new Promise(function(r){ picture(function(b,cv){ r({w:cv.width,h:cv.height,bytes:b?b.size:0,url:cv.toDataURL('image/jpeg',.8)}); }); }); },pieces:function(){ return SCENE.pieces||[]; },lights:function(){ return lxObjs.filter(function(m){ return m.userData.kind==='fit'; }).map(function(m){ m.geometry.computeBoundingBox(); var c=new T.Vector3(); m.geometry.boundingBox.getCenter(c); return {g:m.userData.g,k:m.userData.k,c:[c.x/S,c.z/S,c.y/S],vis:m.visible,e:m.material.emissiveIntensity}; }); },card:function(){ return cardEl.hidden?null:{t:cardT.textContent,l:cardL.textContent,a:[].map.call(cardA.querySelectorAll('button'),function(b){ return b.textContent; })}; },
   cardAct:function(i){ var b=cardA.querySelectorAll('button')[i||0]; if(b)b.click(); },pick:function(cx,cy){ pickAt(cx,cy); },
-  screen:function(x,y,z){ camera.updateMatrixWorld(); var r=renderer.domElement.getBoundingClientRect(), v=P(x,y,z).project(camera); return v.z>1?null:[r.left+(v.x+1)/2*r.width,r.top+(1-v.y)/2*r.height]; },doors:function(){ return JSON.parse(JSON.stringify(DOORS)); },lightsOff:function(){ return Object.keys(LXOFF); },layers:{open:function(){ lyStart(); },close:function(){ lyEnd(false); },check:function(){ var m=0; if(!LY.parts)return 0; ['furn','walls','lights'].forEach(function(k){ LY.parts[k].forEach(function(q){ m=Math.max(m,Math.abs(q.o.position.y-q.y)); }); }); return m; },parts:function(){ return LY.parts&&{floor:LY.parts.floor.length,furn:LY.parts.furn.length,walls:LY.parts.walls.length,lights:LY.parts.lights.length}; }},walk:{start:function(){ stStart(); },go:function(i){ stShow(i); },state:function(){ return {on:ST.on,i:ST.i,dim:state.dim,hour:state.hour}; },end:function(){ stEnd(); }},ba:{pose:function(t){ if(!BA.on)baStart(1); BA.run=false; baPose(t); },end:function(){ baEnd(); }},rig:rig,camToken:camToken,finAt:function(x,y){ var s=finSurfaceAt(x,y); return s&&(s.id||'wet'); },
+  screen:function(x,y,z){ camera.updateMatrixWorld(); var r=renderer.domElement.getBoundingClientRect(), v=P(x,y,z).project(camera); return v.z>1?null:[r.left+(v.x+1)/2*r.width,r.top+(1-v.y)/2*r.height]; },doors:function(){ return JSON.parse(JSON.stringify(DOORS)); },lightsOff:function(){ return Object.keys(LXOFF); },layers:{open:function(){ lyStart(); },close:function(){ lyEnd(false); },check:function(){ var m=0; if(!LY.parts)return 0; ['furn','walls','lights'].forEach(function(k){ LY.parts[k].forEach(function(q){ m=Math.max(m,Math.abs(q.o.position.y-q.y)); }); }); return m; },parts:function(){ return LY.parts&&{floor:LY.parts.floor.length,furn:LY.parts.furn.length,walls:LY.parts.walls.length,lights:LY.parts.lights.length}; }},walk:{start:function(){ stStart(); },go:function(i){ stShow(i); },state:function(){ return {on:ST.on,i:ST.i,dim:state.dim,hour:state.hour}; },end:function(){ stEnd(); }},ba:{pose:function(t){ if(!BA.on)baStart(1); BA.run=false; baPose(t); },end:function(){ baEnd(); }},rig:rig,camToken:camToken,sound:function(){ if(!SND.c)return null; var a=new Float32Array(SND.an.fftSize); SND.an.getFloatTimeDomainData(a); var e=0; for(var i=0;i<a.length;i++)e+=a[i]*a[i];
+    return {state:SND.c.state,on:!!SND.timer,cut:Math.round(SND.cut.frequency.value),vol:+SND.out.gain.value.toFixed(3),birds:+SND.birds.gain.value.toFixed(2),crickets:+SND.cr.gain.value.toFixed(2),rms:+Math.sqrt(e/a.length).toFixed(4),mode:mode,room:(function(){ var r=roomAt(camera.position.x/S,camera.position.z/S); return r?r.n:null; })(),at:[Math.round(camera.position.x/S),Math.round(camera.position.z/S)]}; },finAt:function(x,y){ var s=finSurfaceAt(x,y); return s&&(s.id||'wet'); },
   setCam:function(t){ var m=String(t).split('~'), n=m.slice(3,9).map(Number); if(m[0]!=='v1'||n.some(function(v){ return !isFinite(v); }))return;   // follow another view (the compare page): camera only
     if((m[2]==='e')!==(mode==='eye')){ applyCam([m[0],LAYOUT].concat(m.slice(2))); return; }
     if(m[2]==='e'){ var pos=P(n[0],n[1],n[2]), ya=n[3]*Math.PI/180, pi=n[4]*Math.PI/180; camera.position.copy(pos);
