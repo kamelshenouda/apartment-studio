@@ -17,8 +17,8 @@ jobs:
       - run: python -m pip install -q playwright && python -m playwright install --with-deps chromium > /dev/null
       - name: Wait for the new studio to be published
         run: |
-          for i in $(seq 1 60); do curl -s https://apartment.kamelnabil.com/studio/files.json | grep -q 'pdf_import' && break; sleep 10; done
-          curl -s https://apartment.kamelnabil.com/studio/files.json | grep 'pdf_import'
+          for i in $(seq 1 60); do curl -s https://apartment.kamelnabil.com/studio/files.json | curl -s https://apartment.kamelnabil.com/studio/tools/dxf_import.py | grep -q 'checkDraft' && break; sleep 10; done
+          curl -s https://apartment.kamelnabil.com/studio/tools/dxf_import.py | grep -c 'checkDraft'
       - name: Headers
         run: |
           curl -sI -H 'Accept-Encoding: gzip, br' https://apartment.kamelnabil.com/studio/libredwg/dwg2dxf.wasm | grep -iE "^HTTP|content-type|content-encoding|content-length"
@@ -47,6 +47,13 @@ jobs:
               print('read after %.1f s' % (time.time() - t0), pg.eval_on_selector_all('#log li', 'e=>e.map(x=>x.className+": "+x.textContent)'))
               print('counts:', pg.text_content('#counts'))
               print('read log:', (pg.text_content('#readout') or '')[:300].replace(chr(10), ' | '))
+              # correct the draft on the check page: turn door 1, hinge door 2 at its other end, a sill, the ceiling
+              fr = pg.frame_locator('#checkframe'); import json as J
+              A0 = J.loads(fr.locator('#draft').text_content()); D0 = [e for e in A0['plan'] if e['k'] == 'door']
+              fr.locator('.dd').nth(0).click(); fr.locator('#doorbar button[data-act=side]').click()
+              fr.locator('.dd').nth(1).click(); fr.locator('#doorbar button[data-act=hinge]').click()
+              fr.locator('#ops input[data-k="0"][data-f="sill"]').fill('5'); fr.locator('#ceil').fill('285')
+              print('corrections:', pg.text_content('#fixed'))
               pg.evaluate("document.getElementById('buildbtn').click()")
               pg.wait_for_function("!document.getElementById('built').hidden || [].some.call(document.querySelectorAll('#log li'),function(l){return l.className==='bad'})", timeout=300000)
               print('built after %.1f s' % (time.time() - t0), pg.eval_on_selector_all('#log li', 'e=>e.slice(-2).map(x=>x.className+": "+x.textContent)'))
@@ -63,6 +70,11 @@ jobs:
               with pg.expect_download(timeout=120000) as d:
                   pg.evaluate("document.getElementById('zipbtn').click()")
               z = d.value; z.save_as('site.zip'); n = zipfile.ZipFile('site.zip').namelist()
+              A = J.loads(zipfile.ZipFile('site.zip').read('apartment.json')); D = [e for e in A['plan'] if e['k'] == 'door']
+              h0, l0, e0 = D0[0]['hinge'], D0[0]['leaf'], D0[0]['end']
+              ok1 = D[0]['hinge'] == h0 and D[0]['end'] == e0 and D[0]['leaf'] == [round(2 * h0[0] - l0[0], 2), round(2 * h0[1] - l0[1], 2)]
+              ok2 = D[1]['hinge'] == D0[1]['end'] and D[1]['end'] == D0[1]['hinge']
+              print('in the zip: door 1 turned', ok1, '| door 2 hinged at the other end', ok2, '| sill', A['openings'][0]['sill'], '| ceiling', A['heights']['ceiling'])
               print('zip:', z.suggested_filename, os.path.getsize('site.zip'), 'bytes,', len(n), 'files')
               pg.set_viewport_size({'width': 390, 'height': 844}); pg.wait_for_timeout(500)
               print('at 390 px wide, the page is', pg.evaluate('document.documentElement.scrollWidth'), 'px wide')
