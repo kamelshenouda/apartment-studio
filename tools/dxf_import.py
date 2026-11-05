@@ -759,7 +759,8 @@ def write(A, outdir):
 CHECK_JS = r"""
 (function(){
   var $=function(id){ return document.getElementById(id); };
-  var READ=JSON.parse($('draft').textContent), A=JSON.parse(JSON.stringify(READ)), inStudio=window.parent!==window, sel=null;
+  var READ=JSON.parse($('draft').textContent), A=JSON.parse(JSON.stringify(READ)), sel=null;
+  var host=window.parent!==window?window.parent:window.opener||null, inStudio=!!host;   // the studio around it, or the studio that opened it
   var NS='http://www.w3.org/2000/svg';
   var r1=function(v){ return Math.round(v*100)/100; };              // keeps the drawing's own precision (a tenth of a mm)
   var f=function(v){ return String(+(+v).toFixed(1)); };
@@ -817,7 +818,7 @@ CHECK_JS = r"""
     var high=(A.openings||[]).filter(function(o){ return o.sill+o.height>A.heights.ceiling; }).map(function(o){ return o.code; });
     $('fixnote').textContent=(out.length?out.length+' correction'+(out.length>1?'s':'')+(inStudio?', used when you build the site.':', kept in the file you save.'):'')+
       (high.length?' Check '+high.join(', ')+': sill and height together are above the ceiling.':'');
-    if(inStudio)parent.postMessage({checkDraft:A},'*'); }
+    if(inStudio)host.postMessage({checkDraft:A},'*'); }
   function text(){ return JSON.stringify(A,null,1).replace(/\[\s*([-\d.,\s]+?)\s*\]/g,function(m,g){ return '['+g.replace(/\s+/g,'').split(',').join(', ')+']'; })+'\n'; }
   $('save').addEventListener('click',function(){ var u=URL.createObjectURL(new Blob([text()],{type:'application/json'})), a=document.createElement('a');
     a.href=u; a.download='apartment.json'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(u); },4000);
@@ -825,6 +826,7 @@ CHECK_JS = r"""
   $('reset').addEventListener('click',function(){ A=JSON.parse(JSON.stringify(READ)); fill(); choose(null); changed(); $('fixnote').textContent=inStudio?'Back to what was read.':''; });
   if(inStudio){ $('save').hidden=true; $('cli').hidden=true; }
   fill(); drawDoors();
+  if(inStudio){ host.postMessage({checkReady:1},'*'); if(READ['import'].corrected&&READ['import'].corrected.length)changed(); }
 })();
 """
 

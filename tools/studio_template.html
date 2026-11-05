@@ -136,6 +136,7 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
         <p class="hint">On the check page below, the red dashed outlines are the drawing's own walls: they should sit on the black. Then look at every door, window and room name. Under the plan, click a door to change which way it opens, and give the real window sills and heights and the ceiling: the drawing can't say them.</p>
         <p class="hint" id="fixed" role="status"></p>
         <div class="frame"><iframe id="checkframe" title="What was found in the drawing" sandbox="allow-scripts"></iframe></div>
+        <p class="hint" id="checktab"><span id="checknote"></span><a href="#" id="checkopen">Open the check page in its own tab</a></p>
       </div>
       <details id="readlog" hidden><summary>What the importer printed</summary><pre id="readout"></pre></details>
     </div>
@@ -169,7 +170,7 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
 (function(){
   var PYO='https://cdn.jsdelivr.net/pyodide/v0.29.5/full/';
   var $=function(id){ return document.getElementById(id); };
-  var py=null, FILES=null, upload=null, draft=null, site=null, booting=null, filesP=null, dwgP=null, drawing=null, pdfLoaded=false, plansel=null, toolsV=null;
+  var py=null, FILES=null, upload=null, draft=null, site=null, booting=null, filesP=null, dwgP=null, drawing=null, pdfLoaded=false, plansel=null, toolsV=null, checkHTML=null, checkReady=false, checkWin=null;
   function say(t,cls){ var li=document.createElement('li'); li.textContent=t; li.className=cls||'now'; [].forEach.call($('log').children,function(x){ if(x.className==='now')x.className='ok'; }); $('log').appendChild(li); return li; }
   function done(){ [].forEach.call($('log').children,function(x){ if(x.className==='now')x.className='ok'; }); }
   function fail(t,out,where){ [].forEach.call($('log').children,function(x){ if(x.className==='now')x.className='bad'; }); say(t,'bad'); if(out!==undefined){ $(where+'log').hidden=false; $(where+'out').textContent=out; $(where+'log').open=true; } }
@@ -261,7 +262,9 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
       if(pl.length>1){ var lab=document.createElement('span'); lab.className='hint'; lab.textContent='This drawing has '+pl.length+' plans; '+cur+' was read. Read another:'; $('plans').appendChild(lab);
         pl.forEach(function(t,i){ if(t===cur)return; var bt=document.createElement('button'); bt.type='button'; bt.className='btn'; bt.textContent=t;
           bt.addEventListener('click',function(){ plansel=/\(no title\)$/.test(t)?String(i+1):t; $('readbtn').click(); }); $('plans').appendChild(bt); }); }
-      $('checkframe').srcdoc=py.FS.readFile('/app/drawings/import/check.html',{encoding:'utf8'});
+      checkHTML=py.FS.readFile('/app/drawings/import/check.html',{encoding:'utf8'}); checkReady=false; $('checknote').textContent='';
+      $('checkframe').srcdoc=checkHTML;
+      setTimeout(function(){ if(!checkReady&&checkHTML)$('checknote').textContent='The check page did not show in this frame (some browsers block it). '; },5000);
       $('found').hidden=false; done(); say('Read in '+r.s+' s','ok');
       $('s3').classList.add('done'); enable(4,true); $('buildbtn').disabled=false;
     }catch(e){ fail('Something went wrong: '+(e&&e.message||e)); }
@@ -275,7 +278,11 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
     $('siteframe').srcdoc=h; }
   window.addEventListener('message',function(e){ if(e.source===$('siteframe').contentWindow&&e.data&&e.data.studio)preview(e.data.studio); });
   // corrections made on the check page (door swings, sills, heights) replace the draft the site is built from
-  window.addEventListener('message',function(e){ if(e.source!==$('checkframe').contentWindow||!e.data||!e.data.checkDraft||!draft)return;
+  // the check page in its own tab, for browsers that will not show it in the frame; its corrections come back the same way
+  $('checkopen').addEventListener('click',function(ev){ ev.preventDefault(); if(!checkHTML)return;
+    checkWin=window.open(URL.createObjectURL(new Blob([checkHTML],{type:'text/html'})),'_blank'); });
+  window.addEventListener('message',function(e){ if(e.data&&e.data.checkReady&&e.source===$('checkframe').contentWindow){ checkReady=true; $('checknote').textContent=''; } });
+  window.addEventListener('message',function(e){ if((e.source!==$('checkframe').contentWindow&&(!checkWin||e.source!==checkWin))||!e.data||!e.data.checkDraft||!draft)return;
     draft=e.data.checkDraft; var n=((draft['import']||{}).corrected||[]).length;
     $('fixed').textContent=n?n+' correction'+(n>1?'s':'')+' made on the check page'+(site?': build again to see them.':', used when you build.'):'';
     if(site)$('buildbtn').disabled=false; });
