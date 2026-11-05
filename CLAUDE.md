@@ -19,6 +19,9 @@ When the owner asks for this (or anything like it), go through these steps in or
    - the UTC offset in winter and in summer (`tz`, `tz_summer`).
 3. **Import.**
    - DWG or DXF: `python3 tools/dxf_import.py drawings/PLAN.dwg drawings/import --lat .. --lon .. --facing ..`
+     Walls may be hatched, outlined or drawn as two parallel lines; layer names from bound references (`XREF$0$A-WALL`)
+     are read by their own name. A sheet with several plans (ground floor, first floor, roof) reads the one with room
+     names, else the ground floor; `--plan "First floor"` (its title, or its number) reads another.
    - PDF: `python3 tools/pdf_import.py drawings/PLAN.pdf drawings/import --lat .. --lon .. --facing ..`
    It writes `drawings/import/apartment.json` (a draft) and `drawings/import/check.html`.
 4. **Check it with the owner.** Open `check.html` (take a screenshot with Playwright if you cannot show the file) and

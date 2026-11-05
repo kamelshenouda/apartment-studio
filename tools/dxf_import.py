@@ -31,7 +31,7 @@ import ezdxf
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 LAYERS = {
-    'walls': r'(^|[-_ ])(wall|walls|mur|murs)($|[-_ ])|a-wall',
+    'walls': r'(^|[-_ ])(wall+s?|mur|murs)($|[-_ ])|a-wall',              # 'walll' too: a typo in a real drawing
     'columns': r'(^|[-_ ])(col|cols|column|columns|pillar|struct)($|[-_ ])',
     'doors': r'(^|[-_ ])(door|doors|porte)($|[-_ ])',
     'glazing': r'(^|[-_ ])(glaz|glazing|win|window|windows|fenetre)($|[-_ ])',
@@ -65,10 +65,20 @@ OPENING_BLOCK = r'door|window|opening|porte|fenetre'
 TAG = r'^[DW]-?\d{1,3}[A-Z]?$'
 
 
+def layer_name(layer):
+    """A layer's own name: a referenced drawing bound into this one prefixes its layers ('XREF-WIN-04$0$A-GLAZ',
+    nested 'A$0$B$0$A-GLAZ'), and an attached one 'XREF|A-GLAZ'."""
+    return re.split(r'\$\d+\$|\|', layer)[-1]
+
+
 def classify(layer, mapping):
+    layer = layer_name(layer)
     labels = re.search(r'iden|tag|anno|note|text|ttlb', layer, re.I)    # tags, notes and titles on a door layer are not doors
+    grid = re.search(r'grid|axis|axes', layer, re.I)                     # setting-out grid lines are not columns
     for cat, pat in mapping.items():
         if labels and cat not in ('rooms', 'dims'):
+            continue
+        if grid and cat == 'columns':
             continue
         if re.search(pat, layer, re.I):
             return cat
@@ -96,7 +106,7 @@ def entities(msp):
 def polygons(e):
     """Closed outlines of an entity, as lists of (x, y) in drawing units."""
     t = e.dxftype()
-    if t == 'LWPOLYLINE' and (e.closed or len(e) > 2 and e[0][:2] == e[-1][:2]):
+    if t == 'LWPOLYLINE' and (e.closed or len(e) > 2 and tuple(e[0][:2]) == tuple(e[-1][:2])):
         return [[(p[0], p[1]) for p in e.get_points('xy')]]
     if t == 'POLYLINE' and e.is_closed:
         return [[(v.dxf.location.x, v.dxf.location.y) for v in e.vertices]]
@@ -117,6 +127,75 @@ def polygons(e):
                     out.append(pts)
         return [('xor', out)] if len(out) > 1 else out
     return []
+
+
+def line_walls(ents, k):
+    """Walls drawn as two parallel lines (LINEs, and the segments of open polylines), as many offices and Revit
+    exports draw them: each line is paired with its nearest parallel neighbour 4 to 61 cm away and the band between
+    them becomes wall, as four-cornered outlines in drawing units. Where one line runs on past the other (a corner, a
+    T), the band runs on by the wall's thickness so the corner fills; where both stop (an opening), it stops."""
+    segs = []
+    for e in ents:
+        t = e.dxftype()
+        if t == 'LINE':
+            segs.append(((e.dxf.start.x, e.dxf.start.y), (e.dxf.end.x, e.dxf.end.y)))
+        elif t in ('LWPOLYLINE', 'POLYLINE') and not polygons(e):
+            pts = [(q[0], q[1]) for q in e.get_points('xy')] if t == 'LWPOLYLINE' else [(v.dxf.location.x, v.dxf.location.y) for v in e.vertices]
+            segs += list(zip(pts, pts[1:]))
+    lo, hi, tol = 4 / k, 61 / k, math.radians(.6)
+    L = []
+    for a, b in segs:
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        if math.hypot(dx, dy) * k < 8:
+            continue
+        th = math.atan2(dy, dx) % math.pi
+        L.append((th, a, b))
+    L.sort()
+    def partners(i):
+        """Parallel lines 4 to 61 cm from line i and running alongside it: [(|d|, d, from, to)] in i's own frame."""
+        th, a, b = L[i]
+        ux, uy = math.cos(th), math.sin(th); nx, ny = -uy, ux
+        d0 = a[0] * nx + a[1] * ny
+        s0, s1 = sorted((a[0] * ux + a[1] * uy, b[0] * ux + b[1] * uy))
+        cands = []
+        for j, (th2, a2, b2) in enumerate(L):
+            if j == i or min(abs(th2 - th), math.pi - abs(th2 - th)) > tol:
+                continue
+            dd = ((a2[0] + b2[0]) / 2) * nx + ((a2[1] + b2[1]) / 2) * ny - d0
+            if not lo <= abs(dd) <= hi:
+                continue
+            t0, t1 = sorted((a2[0] * ux + a2[1] * uy, b2[0] * ux + b2[1] * uy))
+            if min(s1, t1) - max(s0, t0) > lo:
+                cands.append((abs(dd), dd, t0, t1, j))
+        return cands
+    P_ = [partners(i) for i in range(len(L))]
+    # a run of evenly spaced parallel lines (stair treads, a hatch, louvres) is not walls: a line with neighbours
+    # on both sides is part of a run, and so are the run's two end lines next to it
+    run = {i for i, c in enumerate(P_) if any(d > 0 for _, d, *_ in c) and any(d < 0 for _, d, *_ in c)}
+    run |= {i for i, c in enumerate(P_) if c and min(c)[4] in run}
+    out = []
+    for i, (th, a, b) in enumerate(L):
+        if i in run:
+            continue
+        ux, uy = math.cos(th), math.sin(th); nx, ny = -uy, ux
+        d0 = a[0] * nx + a[1] * ny
+        s0, s1 = sorted((a[0] * ux + a[1] * uy, b[0] * ux + b[1] * uy))
+        claimed = {1: [], -1: []}                     # per side: the stretches a nearer partner already pairs
+        for ad, dd, t0, t1, j in sorted(P_[i]):
+            if j in run:
+                continue
+            o0, o1 = max(s0, t0), min(s1, t1)
+            side = 1 if dd > 0 else -1
+            free = [(o0, o1)]
+            for c0, c1 in claimed[side]:
+                free = [q for f0, f1 in free for q in ((f0, min(f1, c0)), (max(f0, c1), f1)) if q[1] - q[0] > lo]
+            for f0, f1 in free:
+                e0 = max(min(s0, t0), f0 - ad) if f0 <= o0 + 1e-9 else f0          # run on into a corner
+                e1 = min(max(s1, t1), f1 + ad) if f1 >= o1 - 1e-9 else f1
+                P = lambda sv, dv: (sv * ux + dv * nx, sv * uy + dv * ny)
+                out.append([P(e0, d0), P(e1, d0), P(e1, d0 + dd), P(e0, d0 + dd)])
+            claimed[side].append((o0, o1))
+    return out
 
 
 def rects(mask):
@@ -173,7 +252,7 @@ def rnd(v):
     return int(v) if v == int(v) else v
 
 
-def import_dxf(path, units=None, layers=None, site=None):
+def import_dxf(path, units=None, layers=None, site=None, plan=None):
     doc = ezdxf.readfile(path)
     msp = doc.modelspace()
     mapping = dict(LAYERS, **(layers or {}))
@@ -219,6 +298,14 @@ def import_dxf(path, units=None, layers=None, site=None):
 
     # the frame: drawing units -> plan cm, y flipped (CAD y points up, the plan's y runs down the sheet)
     wall_polys = [p for e in got['walls'] for p in polygons(e)]
+    # walls drawn as two parallel lines, when that is how the drawing draws them: a wall layer that is almost all open
+    # lines (a drawing with hatched or outlined walls keeps those, and its lines are their edges)
+    n_open = sum(1 for e in got['walls'] if e.dxftype() == 'LINE' or e.dxftype() in ('LWPOLYLINE', 'POLYLINE') and not polygons(e))
+    lw = line_walls(got['walls'], k) if n_open and len(wall_polys) < .05 * n_open else []
+    if lw:
+        wall_polys += lw
+        report['assumed'].append(f'{len(lw)} stretch(es) of wall were read from pairs of parallel lines 4 to 61 cm apart; '
+                                 'check them against the red outlines on the plan.')
     col_polys = [p for e in got['columns'] for p in polygons(e)]
     site_polys = [p for e in got['site'] for p in polygons(e)]
     # a drawing may hold the plan more than once (a copy for another sheet): keep the copy with the room names
@@ -241,7 +328,33 @@ def import_dxf(path, units=None, layers=None, site=None):
                 if e.dxftype() in ('TEXT', 'MTEXT') and g[0] <= e.dxf.insert.x <= g[2] and g[1] <= e.dxf.insert.y <= g[3]:
                     n += 1
             return n
-        keep = max(groups, key=lambda g: (names_in(g), (g[2] - g[0]) * (g[3] - g[1])))
+        # each copy's title, if the sheet gives one: the nearest 'Ground floor', 'First floor', 'Roof', 'Elevation'...
+        TITLE = r'\b(ground|first|second|third|fourth|fifth|upper|lower|basement|roof|mezzanine|typical|attic)\b|\b(floor|level|plan|elevation|section)\b'
+        titles = []
+        for e in msp:
+            if e.dxftype() in ('TEXT', 'MTEXT'):
+                t = (e.plain_text() if e.dxftype() == 'MTEXT' else e.dxf.text).strip()
+                if 2 < len(t) < 40 and re.search(TITLE, t, re.I):
+                    titles.append((t, e.dxf.insert.x, e.dxf.insert.y))
+        def title_of(g):
+            m = 800 / k; best = None
+            for t, x, y in titles:
+                dx = max(g[0] - x, 0, x - g[2]); dy = max(g[1] - y, 0, y - g[3])
+                if dx <= m and dy <= m and (best is None or dx + dy < best[0]):
+                    best = (dx + dy, t)
+            return best and ' '.join(best[1].split())
+        named = [(g, title_of(g)) for g in groups]
+        plans = [(g, t) for g, t in named if not (t and re.search(r'elevation|section', t, re.I))] or named
+        if plan:
+            pick = [q for q in plans if q[1] and plan.lower() in q[1].lower()] or \
+                   ([plans[int(plan) - 1]] if str(plan).isdigit() and 0 < int(plan) <= len(plans) else [])
+            if not pick:
+                raise SystemExit(f'No plan called "{plan}" on this drawing. Its plans: ' + ', '.join(t or f'plan {i + 1} (no title)' for i, (_, t) in enumerate(plans)) + '.')
+            keep = pick[0][0]
+        else:
+            keep = max(plans, key=lambda q: (names_in(q[0]), bool(q[1] and re.search(r'ground', q[1], re.I)), (q[0][2] - q[0][0]) * (q[0][3] - q[0][1])))[0]
+        report['plans'] = [t or f'plan {i + 1} (no title)' for i, (_, t) in enumerate(plans)]
+        report['plan'] = next(t or f'plan {i + 1} (no title)' for i, (g, t) in enumerate(plans) if g == keep)
         inside = lambda b, m=0: b[0] >= keep[0] - m and b[2] <= keep[2] + m and b[1] >= keep[1] - m and b[3] <= keep[3] + m
         wall_polys = [g for g in wall_polys if inside(box(g))]
         col_polys = [g for g in col_polys if inside(box(g), 5 / k)]
@@ -258,9 +371,13 @@ def import_dxf(path, units=None, layers=None, site=None):
             q = [(x.dxf.start.x, x.dxf.start.y) for x in v if x.dxftype() == 'LINE'] + [(x.dxf.end.x, x.dxf.end.y) for x in v if x.dxftype() == 'LINE']
             return q
         got['blocks'] = [b for b in got['blocks'] if bb(b[2]) and all(at(q) for q in bb(b[2]))]
-        report['warnings'].append(f'The drawing holds the plan {len(groups)} times; the copy with the room names was read, the other(s) left out.')
+        if len(plans) > 1 and any(t for _, t in plans):
+            report['warnings'].append(f'The drawing holds {len(plans)} plans ({", ".join(report["plans"])}); {report["plan"]} was read. '
+                                      'To read another, choose it (studio) or pass --plan with its name.')
+        else:
+            report['warnings'].append(f'The drawing holds the plan {len(groups)} times; the copy with the room names was read, the other(s) left out.')
     single = sum(1 for e in got['walls'] if e.dxftype() in ('LINE', 'ARC') or e.dxftype() == 'LWPOLYLINE' and not polygons(e))
-    if single and not wall_polys:
+    if single and not wall_polys:          # open lines that pair with nothing
         report['warnings'].append(f'{single} wall line(s) are open lines, not closed outlines or hatches, and were left out. '
                                   'Close each wall as a polyline or hatch it, then import again.')
     allpts = [q for g in wall_polys + col_polys + site_polys for p in pts_of(g) for q in p]
@@ -805,11 +922,12 @@ def main():
     ap.add_argument('--units', choices=['mm', 'cm', 'm', 'in'])
     ap.add_argument('--layers', help='JSON: {"walls": "<regex>", ...} to override layer recognition')
     ap.add_argument('--lat', type=float); ap.add_argument('--lon', type=float); ap.add_argument('--facing', type=float)
+    ap.add_argument('--plan', help='which plan, when the drawing holds several: its title (e.g. "First floor") or its number')
     a = ap.parse_args()
     site = {'lat': a.lat, 'lon': a.lon, 'facing': a.facing}
     if a.dxf.lower().endswith('.dwg'):
         a.dxf = dwg_to_dxf(a.dxf, os.path.join(a.outdir, 'converted'))
-    A, size, src = import_dxf(a.dxf, a.units, json.loads(a.layers) if a.layers else None, site)
+    A, size, src = import_dxf(a.dxf, a.units, json.loads(a.layers) if a.layers else None, site, a.plan)
     p = write(A, a.outdir)
     c = check_page(A, size, src, a.outdir)
     print('wrote', p, 'and', c)
