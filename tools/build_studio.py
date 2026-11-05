@@ -41,7 +41,13 @@ def main():
     vendor = os.path.join(HERE, 'vendor')
     lib = sorted(os.path.relpath(os.path.join(r, f), vendor).replace(os.sep, '/')
                  for r, _, fs in os.walk(vendor) for f in fs if not f.startswith('.') and f != 'README.md')
-    json.dump({'tools': TOOLS, 'wheel': os.path.basename(wheel), 'dwg': 'libredwg/dwg2dxf.js', 'lib': lib}, open(os.path.join(out, 'files.json'), 'w'), indent=1)
+    # the tools' version: a page left open re-reads them when it changes, and every fetch names it (no stale cache)
+    import hashlib
+    h = hashlib.sha1()
+    for f in TOOLS + ['studio_driver.py']:
+        h.update(open(os.path.join(HERE, f), 'rb').read())
+    json.dump({'v': h.hexdigest()[:12], 'tools': TOOLS, 'wheel': os.path.basename(wheel), 'dwg': 'libredwg/dwg2dxf.js', 'lib': lib},
+              open(os.path.join(out, 'files.json'), 'w'), indent=1)
     shutil.copy(os.path.join(HERE, 'studio_template.html'), os.path.join(SITE, 'studio.html'))
     print('wrote site/studio.html and site/studio/:', len(TOOLS), 'tools,', len(lib), 'library files')
 

@@ -169,14 +169,14 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
 (function(){
   var PYO='https://cdn.jsdelivr.net/pyodide/v0.29.5/full/';
   var $=function(id){ return document.getElementById(id); };
-  var py=null, FILES=null, upload=null, draft=null, site=null, booting=null, filesP=null, dwgP=null, drawing=null, pdfLoaded=false, plansel=null;
+  var py=null, FILES=null, upload=null, draft=null, site=null, booting=null, filesP=null, dwgP=null, drawing=null, pdfLoaded=false, plansel=null, toolsV=null;
   function say(t,cls){ var li=document.createElement('li'); li.textContent=t; li.className=cls||'now'; [].forEach.call($('log').children,function(x){ if(x.className==='now')x.className='ok'; }); $('log').appendChild(li); return li; }
   function done(){ [].forEach.call($('log').children,function(x){ if(x.className==='now')x.className='ok'; }); }
   function fail(t,out,where){ [].forEach.call($('log').children,function(x){ if(x.className==='now')x.className='bad'; }); say(t,'bad'); if(out!==undefined){ $(where+'log').hidden=false; $(where+'out').textContent=out; $(where+'log').open=true; } }
   function enable(n,on){ $('s'+n).setAttribute('aria-disabled',on?'false':'true'); }
   function loadScript(src){ return new Promise(function(ok,no){ var s=document.createElement('script'); s.src=src; s.onload=ok; s.onerror=function(){ no(new Error('could not load '+src)); }; document.head.appendChild(s); }); }
   async function bytes(u){ var r=await fetch(u); if(!r.ok)throw new Error(u+': '+r.status); return new Uint8Array(await r.arrayBuffer()); }
-  function files(){ if(!filesP){ filesP=fetch('studio/files.json').then(function(r){ if(!r.ok)throw new Error('studio/files.json: '+r.status); return r.json(); }).then(function(j){ return FILES=j; }); filesP.catch(function(){ filesP=null; }); } return filesP; }
+  function files(){ if(!filesP){ filesP=fetch('studio/files.json',{cache:'no-store'}).then(function(r){ if(!r.ok)throw new Error('studio/files.json: '+r.status); return r.json(); }).then(function(j){ return FILES=j; }); filesP.catch(function(){ filesP=null; }); } return filesP; }
   function boot(){ if(booting)return booting; booting=(async function(){
     await files();
     say('Loading Python into this page'+(window.loadPyodide?'':' (about 35 MB the first time)'));
@@ -186,9 +186,15 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
     await py.loadPackage(['numpy','scipy','pillow','shapely','micropip','pyparsing','typing-extensions','fonttools']);
     await py.runPythonAsync("import micropip\nawait micropip.install('"+new URL('studio/'+FILES.wheel,location.href).href+"', deps=False)");
     py.FS.mkdirTree('/app/tools'); py.FS.mkdirTree('/app/drawings');
-    for(var i=0;i<FILES.tools.length;i++)py.FS.writeFile('/app/tools/'+FILES.tools[i],await bytes('studio/tools/'+FILES.tools[i]));
-    py.runPython(new TextDecoder().decode(await bytes('studio/driver.py')));
+    await loadTools();
     return py; })(); booting.catch(function(){ booting=null; }); return booting; }
+  // the drawing tools, written into Python's files; named by version so no cache hands back an old one
+  async function loadTools(){ var q='?v='+(FILES.v||'');
+    for(var i=0;i<FILES.tools.length;i++)py.FS.writeFile('/app/tools/'+FILES.tools[i],await bytes('studio/tools/'+FILES.tools[i]+q));
+    py.runPython(new TextDecoder().decode(await bytes('studio/driver.py'+q))); toolsV=FILES.v; }
+  // a page left open while the site is updated: before each read, take the newer tools if there are any
+  async function freshTools(){ try{ var j=await (await fetch('studio/files.json',{cache:'no-store'})).json();
+      if(j.v&&j.v!==toolsV){ FILES=j; say('Updating the drawing tools to the newest version'); await loadTools(); } }catch(e){} }
   function step(script,args,env){ var r=py.globals.get('step')(script,py.toPy(args||[]),py.toPy(env||{})), a=r.toJs(); r.destroy(); return {ok:a[0],out:String(a[1]),s:a[2]}; }
   function num(id){ var v=$(id).value.trim().replace(',','.'); if(v==='')return null; var n=Number(v); return isFinite(n)?n:NaN; }
   // DWG: LibreDWG's dwg2dxf, compiled to WebAssembly (studio/libredwg, GPL-3), turns it into a DXF in this page
@@ -217,7 +223,7 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
   $('readbtn').addEventListener('click',async function(){ if(!upload)return; var b=this; b.disabled=true; $('found').hidden=true; $('log').textContent=''; $('readlog').hidden=true; $('fixed').textContent='';
     ['buildbtn','zipbtn','jsonbtn'].forEach(function(id){ $(id).disabled=true; }); $('built').hidden=true; enable(4,false); enable(5,false); site=null;
     try{
-      await boot();
+      await boot(); await freshTools();
       var lat=num('lat'), lon=num('lon'), fac=num('facing');
       if([lat,lon,fac].some(function(v){ return v!==null&&isNaN(v); })){ fail('Latitude, longitude and the facing must be numbers'); b.disabled=false; return; }
       var data=new Uint8Array(await upload.arrayBuffer()), stem=upload.name.replace(/\.[^.]+$/,'').replace(/[\/\\\0]+/g,'_')||'plan', conv='', tool='dxf_import.py', ext='.dxf';
