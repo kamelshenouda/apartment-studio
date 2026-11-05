@@ -17,7 +17,7 @@ jobs:
       - run: python -m pip install -q playwright && python -m playwright install --with-deps chromium > /dev/null
       - name: Wait for the new studio to be published
         run: |
-          for i in $(seq 1 60); do curl -s https://apartment.kamelnabil.com/studio.html | grep -q 'freshTools' && break; sleep 10; done
+          for i in $(seq 1 60); do curl -s https://apartment.kamelnabil.com/studio.html | grep -q 'checkopen' && break; sleep 10; done
           curl -s https://apartment.kamelnabil.com/studio/tools/dxf_import.py | grep -c 'def line_walls'
       - name: Headers
         run: |
