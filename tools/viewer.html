@@ -582,6 +582,12 @@ if(new URLSearchParams(location.search).get('embed')==='1')document.documentElem
 var SCENE=ALL.layouts[LAYOUT];
 <@v36>var BND=SCENE.bounds, CX=(BND[0]+BND[2])/2, CY=(BND[1]+BND[3])/2, SPAN=Math.max(BND[2]-BND[0],BND[3]-BND[1],600);   // the plan's extent (cm)
 </@v36>var stage=document.getElementById('stage'), statusEl=document.getElementById('status'), z11=document.getElementById('z11'), appEl=document.querySelector('.app'), panelEl=document.querySelector('.panel');
+// the sizes the overlays need each frame, read once here (on resize) rather than every moving frame, where reading
+// layout right after the last frame's label moves makes the browser lay the page out again several times a frame
+var LAY={w:1,h:1,mw:0,mh:0};
+function layRead(){ LAY.w=stage.clientWidth||1; LAY.h=stage.clientHeight||1; LAY.mw=0; }
+if(window.ResizeObserver)new ResizeObserver(function(){ layRead(); dirty=true; }).observe(stage);
+layRead();
 var S=0.01; // cm -> m
 function P(x,y,z){return new T.Vector3(x*S,z*S,y*S);}  // plan (x,y) + height z -> world
 // prototype switches (?ao=off&walls=solid&glass=clear&look=model&tone=agx&bevel=0&prog=0); the defaults are the chosen ones
@@ -1020,22 +1026,34 @@ function setSun(){
 // Phones and small machines skip it.
 var winLights=[], DAY=1;
 if(!LOWEND&&Q.get('win')!=='0')RectAreaLightUniformsLib.init();
+// Each window light shines on every surface in the flat (they cast no shadow, so through walls too), and each costs
+// every pixel twice where there is glass: only the few nearest you are lit, preferring your own room's, and they are
+// re-aimed as you move. The number never changes, so no shader is rebuilt. ?winn= to set how many (default 4).
+var WINS=[], WINN=Math.max(1,+(Q.get('winn')||4)), winAt=null;
 function makeWindowLights(){
-  winLights.forEach(function(l){scene.remove(l);}); winLights=[];
+  winLights.forEach(function(l){scene.remove(l);}); winLights=[]; WINS=[]; winAt=null;
   if(LOWEND||Q.get('win')==='0')return;
   (SCENE.pieces||[]).forEach(function(p){
     if((p.n!=='Window'&&p.n!=='Garden doors')||p.v)return;
     var b=p.b, alongX=(b[3]-b[0])>(b[4]-b[1]), cx=(b[0]+b[3])/2, cy=(b[1]+b[4])/2, w=alongX?b[3]-b[0]:b[4]-b[1], h=b[5]-b[2];
     var sides=[-1,1].filter(function(sg){ return !!roomAt(alongX?cx:cx+sg*70,alongX?cy+sg*70:cy); }); if(sides.length!==1)return;
-    var sg=sides[0], l=new T.RectAreaLight(0xF4F1EA,0,w*S*.96,h*S*.96);
-    l.position.copy(P(alongX?cx:cx+sg*8,alongX?cy+sg*8:cy,(b[2]+b[5])/2));
-    l.lookAt(P(alongX?cx:cx+sg*200,alongX?cy+sg*200:cy,(b[2]+b[5])/2-40));
-    scene.add(l); winLights.push(l);
+    var sg=sides[0];
+    WINS.push({w:w*S*.96,h:h*S*.96,room:roomAt(alongX?cx:cx+sg*70,alongX?cy+sg*70:cy),c:P(cx,cy,(b[2]+b[5])/2),
+      pos:P(alongX?cx:cx+sg*8,alongX?cy+sg*8:cy,(b[2]+b[5])/2),look:P(alongX?cx:cx+sg*200,alongX?cy+sg*200:cy,(b[2]+b[5])/2-40)});
   });
-  setWindowLights();
+  for(var i=0;i<Math.min(WINN,WINS.length);i++){ var l=new T.RectAreaLight(0xF4F1EA,0,1,1); scene.add(l); winLights.push(l); }
+  placeWindowLights(true); setWindowLights();
+}
+function placeWindowLights(force){
+  if(!winLights.length)return;
+  var at=mode==='eye'?camera.position:controls.target;
+  if(!force&&winAt&&winAt.distanceToSquared(at)<.09)return; winAt=at.clone();
+  var here=roomAt(at.x/S,at.z/S);
+  WINS.map(function(o){ return {o:o,d:o.c.distanceTo(at)+(here&&o.room!==here?6:0)}; }).sort(function(a,b){ return a.d-b.d; })
+    .slice(0,winLights.length).forEach(function(e,i){ var l=winLights[i], o=e.o; l.width=o.w; l.height=o.h; l.position.copy(o.pos); l.lookAt(o.look); });
 }
 function setWindowLights(){ var k=Q.get('wink')?+Q.get('wink'):2.2;
-  winLights.forEach(function(l){ l.intensity=(mode==='eye'?k:k*.5)*DAY; }); }
+  winLights.forEach(function(l){ l.intensity=(mode==='eye'?k:k*.5)*DAY; l.visible=l.intensity>0; }); }
 
 // ---------- the lighting plan (05-package) in 3D: coves, downlights, wall washers, ceiling lights, lamps, under-shelf
 // strips and garden lights, each a glowing fitting with a soft pool or wash of light, grouped by room and driven by the
@@ -1142,7 +1160,7 @@ function setLights(){
     if(u.kind==='body'){ m.visible=state.fu==='all'; return; }
     if(u.kind==='fit'){ m.material.emissiveIntensity=lv*(u.k==='lamp'?.25+.35*NIGHT:1+(u.k==='ceil'?1.2:4)*NIGHT); m.visible=(eye||u.k==='ext'||u.k==='lamp'||(typeof LY!=='undefined'&&LY&&LY.on))&&(u.k!=='lamp'||state.fu==='all'); return; }
     var op=lv*NIGHT*(u.kind==='pool'?.3:u.kind==='band'?.32:.38); m.material.opacity=op; m.visible=op>.004&&(u.k!=='lamp'||state.fu==='all'); });
-  lamps.forEach(function(l){ var p=l.parent.position, g=lxGroup(p.x/S,p.z/S); l.intensity=12*NIGHT*lxLevel('pend',g)*(l.userData.k||1)*lxRamp(g); });
+  lamps.forEach(function(l){ var p=l.parent.position, g=lxGroup(p.x/S,p.z/S); l.intensity=12*NIGHT*lxLevel('pend',g)*(l.userData.k||1)*lxRamp(g); l.visible=l.intensity>0; });   // a light at nought is left out: every pixel would still work it out
   var lit=lamps.some(function(l){return l.intensity>0;}); M.lamp.emissiveIntensity=lit?2.2:LXSCENE==='off'?0:.2; M.rattan.emissiveIntensity=lit?.65:0;
   // every glowing strip and lens follows the scene, so All off is dark: the LED under the wall cupboards (kitchen
   // under-shelf level) and the lens of each ceiling cylinder (the pendant level, by day too)
@@ -1214,7 +1232,7 @@ function arcOn(){ return mode==='overview'&&state.sp!=='off'&&!document.document
 function drawSunArc(){
   var on=arcOn(); sunArc.visible=on;
   if(!on){ sunH.hidden=true; sunL.hidden=true; arcHrEls.forEach(function(e){ e.el.hidden=true; }); return; }
-  var w=renderer.domElement.clientWidth, h=renderer.domElement.clientHeight, v=new T.Vector3();
+  var w=LAY.w, h=LAY.h, v=new T.Vector3();
   function at(p,el){ v.copy(p).project(camera); var vis=v.z<1&&v.x>-1.02&&v.x<1.02&&v.y>-1.02&&v.y<1.02; el.hidden=!vis;
     if(vis){ el.style.left=((v.x+1)/2*w)+'px'; el.style.top=((1-v.y)/2*h)+'px'; } return vis; }
   arcHrEls.forEach(function(e){ at(e.p,e.el); });
@@ -1307,7 +1325,7 @@ var chgEls=(ALL.changes||[]).map(function(c){ var b=document.createElement('butt
   b.addEventListener('click',function(e){ e.stopPropagation(); showCard(c.n+'. '+c.h,[c.d],null,P(c.x,c.y,150)); });
   stage.appendChild(b); return {el:b,p:P(c.x,c.y,150)}; });
 function drawChanges(){
-  var on=LAYOUT==='p1'&&state.chg!=='off'&&!flying&&!(LY&&LY.on)&&!renderer.xr.isPresenting, w=renderer.domElement.clientWidth, h=renderer.domElement.clientHeight, v=new T.Vector3();
+  var on=LAYOUT==='p1'&&state.chg!=='off'&&!flying&&!(LY&&LY.on)&&!renderer.xr.isPresenting, w=LAY.w, h=LAY.h, v=new T.Vector3();
   chgEls.forEach(function(c){ if(!on){ c.el.hidden=true; return; }
     if(mode==='eye'&&camera.position.distanceTo(c.p)>9){ c.el.hidden=true; return; }      // standing: only the changes near you
     v.copy(c.p).project(camera); var vis=v.z<1&&Math.abs(v.x)<1&&Math.abs(v.y)<1; c.el.hidden=!vis;
@@ -1413,7 +1431,7 @@ function tickLy(now){
 }
 function drawLy(){
   if(!LY.on){ return; }
-  var w=renderer.domElement.clientWidth, h=renderer.domElement.clientHeight, v=new T.Vector3(), b=SCENE.bounds||[0,0,1790,1633];
+  var w=LAY.w, h=LAY.h, v=new T.Vector3(), b=SCENE.bounds||[0,0,1790,1633];
   LY.els.forEach(function(e){ var lift=e.k==='floor'?0:LY_UP[e.k]*(LY.e||0);
     v.set(-0.4,(e.k==='floor'?.05:e.h-LY_UP[e.k]+lift),9.0).project(camera);
     var vis=mode==='overview'&&v.z<1&&Math.abs(v.x)<1.05&&Math.abs(v.y)<1.05; e.el.hidden=!vis;
@@ -1482,7 +1500,11 @@ var NEIGH=(ALL.context||[]).map(function(c){
   scene.add(m); return m;});
 
 // ---------- post: ambient occlusion, bloom on the light strips, neutral tone mapping; full quality whenever you pause
-var composer=new EffectComposer(renderer,new T.WebGLRenderTarget(1,1,{type:T.HalfFloatType,samples:4}));
+// 4x multisampling smooths edges while you move; on a sharp (high density) screen the edges are already fine and
+// it costs about a third of each frame, so it starts off there (still frames always get SMAA). ?msaa=0|4 to force.
+var MSAA=Q.get('msaa')!=null?+Q.get('msaa'):DPR>=1.5?0:4, MSAA_FIX=Q.get('msaa')!=null;
+var composer=new EffectComposer(renderer,new T.WebGLRenderTarget(1,1,{type:T.HalfFloatType,samples:MSAA}));
+function setMSAA(n){ if(n===MSAA)return; MSAA=n; [composer.renderTarget1,composer.renderTarget2].forEach(function(t){ t.samples=n; t.dispose(); }); STATS.msaa=n; }
 var renderPass=new RenderPass(scene,camera); composer.addPass(renderPass);
 var aoPass=null;
 if(FX.ao==='gtao'){
@@ -1491,13 +1513,21 @@ if(FX.ao==='gtao'){
   aoPass.updatePdMaterial({lumaPhi:10,depthPhi:2,normalPhi:3,radius:+(Q.get('pdr')||8),rings:3,samples:+(Q.get('pds')||(LOWEND?12:24))});
   aoPass.normalMaterial&&(aoPass.normalMaterial.clippingPlanes=[cutPlane]);
   aoPass.overrideVisibility=function(){ var cache=this._visibilityCache;   // leave out lines, the invisible shade-casting stand-ins and overlays drawn on top (the sun's path)
-    this.scene.traverse(function(o){ cache.set(o,o.visible); if(o.isPoints||o.isLine||(o.material&&(o.material.colorWrite===false||o.material.depthTest===false)))o.visible=false; }); };
+    this.scene.traverse(function(o){ cache.set(o,o.visible); if(o.isPoints||o.isLine||(o.material&&(o.material.colorWrite===false||o.material.depthTest===false||o.material.transmission>0)))o.visible=false; }); };   // glass too: any glass in view makes three draw the whole scene again behind it, on this pass as well
+  // the shading is soft by nature: one sample per screen point is enough, so on a sharp screen (1.5x, 2x) it is worked
+  // out at that and not at every device pixel, a third to a half of the work. ?aofull=1 for every pixel.
+  if(Q.get('aofull')!=='1'){ var aoSet=aoPass.setSize.bind(aoPass); aoPass.setSize=function(w,h){ var k=Math.min(1,1/DPR); aoSet(Math.max(1,Math.round(w*k)),Math.max(1,Math.round(h*k))); }; }
   composer.addPass(aoPass);
 }
 var bloomPass=new UnrealBloomPass(new T.Vector2(1,1),.32,.45,1.6); bloomPass.enabled=FX.bloom; composer.addPass(bloomPass);
 // depth of field from above: once the view settles, the model stays sharp and the far ground softens (BokehPass,
 // full-quality frames only); SMAA smooths the edges the finished frame has left after shading and bloom
 var dofPass=new BokehPass(scene,camera,{focus:20,aperture:.0003,maxblur:.004}); dofPass.enabled=false; composer.addPass(dofPass);
+// three r169 redraws the whole scene behind any glass on every render of the scene, even one that only wants depth
+// (this pass): the glass sits out of it, so the depth of field costs one drawing of the flat, not two
+function withoutGlass(fn){ var hid=[]; scene.traverse(function(o){ if(o.visible&&o.material&&o.material.transmission>0){ o.visible=false; hid.push(o); } });
+  try{ fn(); } finally{ hid.forEach(function(o){ o.visible=true; }); } }
+(function(){ var r=dofPass.render.bind(dofPass); dofPass.render=function(a,b,c,d,e){ withoutGlass(function(){ r(a,b,c,d,e); }); }; })();
 composer.addPass(new OutputPass());
 var smaaPass=Q.get('smaa')==='0'?null:new SMAAPass(1,1); if(smaaPass){ smaaPass.enabled=false; composer.addPass(smaaPass); }
 progress(.75,'Lighting…'); await tick();
@@ -1927,7 +1957,7 @@ function makeDims(){
   dimGroup.visible=state.dim==='on';
 }
 function drawDims(){
-  var on=state.dim==='on', w=renderer.domElement.clientWidth,h=renderer.domElement.clientHeight,v=new T.Vector3();
+  var on=state.dim==='on', w=LAY.w,h=LAY.h,v=new T.Vector3();
   dimEls.forEach(function(L){ if(!on){L.el.hidden=true;return;}
     if(mode!=='eye'||camera.position.distanceTo(L.p)>7){L.el.hidden=true;return;}   // overview: the room labels carry width x length
     v.copy(L.p).project(camera); var vis=v.z<1&&v.x>-1&&v.x<1&&v.y>-1&&v.y<1; L.el.hidden=!vis;
@@ -1956,7 +1986,7 @@ function syncLayoutUI(){
 [].forEach.call(document.querySelectorAll('#layout button'),function(b){b.addEventListener('click',function(){ var was=LAYOUT, v=b.getAttribute('data-v'); if(was!==v)hDo('Plan: '+ALL.layouts[v].name,function(){ setLayout(was); },function(){ setLayout(v); }); setLayout(v);});});
 syncLayoutUI();
 function drawLabels(){
-  var w=renderer.domElement.clientWidth,h=renderer.domElement.clientHeight,v=new T.Vector3();
+  var w=LAY.w,h=LAY.h,v=new T.Vector3();
   labelEls.forEach(function(L){ if(mode!=='overview'){L.el.hidden=true;return;} v.copy(L.p).project(camera);
     var vis=v.z<1&&v.x>-1&&v.x<1&&v.y>-1&&v.y<1; L.el.hidden=!vis; if(vis){L.el.style.left=((v.x+1)/2*w)+'px';L.el.style.top=((1-v.y)/2*h)+'px';}});
 }
@@ -1966,6 +1996,7 @@ function panelCover(){                       // how much of the left of the view
   return panelEl.offsetWidth+24;
 }
 function resize(){
+  layRead();
   var w=stage.clientWidth,h=Math.max(stage.clientHeight,1),off=panelCover(); VW=w+off;
   renderer.setSize(w,h,false); composer.setPixelRatio(DPR); composer.setSize(w,h); camera.aspect=VW/h;
   if(off)camera.setViewOffset(VW,h,0,0,w,h); else camera.clearViewOffset();   // centre the view in the free space
@@ -2036,7 +2067,7 @@ function hud(){
     hit=aimRay.intersectObjects(walls.concat(floors,furnMeshes).filter(function(o){return o.visible&&o.isMesh;}),false)[0]; }
   hudAhead.hidden=!hit; aimEl.hidden=mode!=='eye';
   if(hit)hudAhead.innerHTML='<b>'+hit.distance.toFixed(2)+' m</b> ahead';
-  if(mode==='eye'){ aimEl.style.left=((VW||stage.clientWidth)/2)+'px'; aimEl.style.top=(stage.clientHeight/2)+'px'; }
+  if(mode==='eye'){ aimEl.style.left=((VW||LAY.w)/2)+'px'; aimEl.style.top=(LAY.h/2)+'px'; }
 }
 
 
@@ -2177,7 +2208,7 @@ function measureAt(cx,cy){
   if(measures.length>4){ var o=measures.shift(); [o.line,o.a,o.b].forEach(function(x){scene.remove(x);x.geometry.dispose();}); o.el.remove(); }
   statusEl.textContent='Measured '+el.textContent+'. Click again for another, Esc to clear, M to stop.'; dirty=true;
 }
-function drawMeasures(){ var W=stage.clientWidth,H=stage.clientHeight,v=new T.Vector3();
+function drawMeasures(){ var W=LAY.w,H=LAY.h,v=new T.Vector3();
   measures.forEach(function(q){ v.copy(q.mid).project(camera); var vis=v.z<1&&Math.abs(v.x)<1.05&&Math.abs(v.y)<1.05; q.el.hidden=!vis;
     if(vis){ q.el.style.left=((v.x+1)/2*W)+'px'; q.el.style.top=((1-v.y)/2*H)+'px'; } }); }
 measBtn.addEventListener('click',function(){ setMeasuring(!measuring); });
@@ -2332,7 +2363,7 @@ function fDims(p,g){
     fDimEls.push({el:el,mid:P((a[0]+z[0])/2,(a[1]+z[1])/2,3)}); });
   dirty=true;
 }
-function drawFDims(){ var W=stage.clientWidth,H=stage.clientHeight,v=new T.Vector3();
+function drawFDims(){ var W=LAY.w,H=LAY.h,v=new T.Vector3();
   fDimEls.forEach(function(q){ v.copy(q.mid).project(camera); var vis=v.z<1&&Math.abs(v.x)<1.05&&Math.abs(v.y)<1.05; q.el.hidden=!vis;
     if(vis){ q.el.style.left=((v.x+1)/2*W)+'px'; q.el.style.top=((1-v.y)/2*H)+'px'; } }); }
 // snapping: a face within 8 cm of a wall or another piece closes up against it (hold Alt to place freely)
@@ -2783,7 +2814,7 @@ function finAnchorList(){ if(finAnchors&&finAnchors.L===LAYOUT)return finAnchors
   finAnchors={L:LAYOUT,a:a}; return a; }
 function drawFinCards(){ if(!FIN_ON)return;
   var on=finTab&&finLabels&&mode==='overview'; finLayer.hidden=!on; if(!ftray.hidden)finPlace(); if(!on)return;
-  var A=finAnchorList(), W=stage.clientWidth, H=stage.clientHeight, v=new T.Vector3();
+  var A=finAnchorList(), W=LAY.w, H=LAY.h, v=new T.Vector3();
   if(finCardsFor!==LAYOUT+'|'+JSON.stringify(FIN)+state.fl){ finCardsFor=LAYOUT+'|'+JSON.stringify(FIN)+state.fl;
     finCardEls.forEach(function(e){ e.remove(); }); finCardEls=A.map(function(a){ var c=document.createElement('button'), x=FIN_BY[finCur(finActive(a.s))];
       c.type='button'; c.className='fcl'; c.appendChild(finSw(x.id,120,64)); var l=document.createElement('span'); l.textContent=a.s.n; c.appendChild(l);
@@ -2843,7 +2874,7 @@ kguide.addEventListener('click',function(e){ if(e.target===kguide)showGuide(fals
 
 // ---------- the plan, top right while you stand: where you are and which way you face. Click a spot to walk there.
 var mm=document.getElementById('minimap'), mmCtx=mm.getContext('2d'), mmBase=document.createElement('canvas'), mmKey='', MMB=[<@v126>BND[0]-40,BND[1]-40,BND[2]+40,BND[3]+40</@v126>];
-function mmSize(){ var w=mm.clientWidth||200, h=mm.clientHeight||182, d=Math.min(window.devicePixelRatio||1,2), W=Math.round(w*d), H=Math.round(h*d);
+function mmSize(){ if(!LAY.mw){ LAY.mw=mm.clientWidth; LAY.mh=mm.clientHeight; } var w=LAY.mw||200, h=LAY.mh||182, d=Math.min(window.devicePixelRatio||1,2), W=Math.round(w*d), H=Math.round(h*d);
   if(mm.width!==W||mm.height!==H){ mm.width=W; mm.height=H; mmKey=''; } return {w:W,h:H,d:d}; }
 function mmK(W,H){ var k=Math.min(W/(MMB[2]-MMB[0]),H/(MMB[3]-MMB[1])); return {k:k,ox:(W-(MMB[2]-MMB[0])*k)/2,oy:(H-(MMB[3]-MMB[1])*k)/2}; }
 function mmBuild(W,H){
@@ -2882,10 +2913,19 @@ mm.addEventListener('click',function(e){
 
 
 // ---------- drawing: a quick frame while you move, the full-quality frame (ambient occlusion on) the moment you stop
-var STATS={frames:0,ms:0,last:0,calls:0,tris:0,dpr:DPR,low:LOWEND};
+var STATS={frames:0,ms:0,last:0,calls:0,tris:0,dpr:DPR,low:LOWEND,msaa:MSAA};
+var BENCH=Q.get('bench')==='1'?new Uint8Array(4):null;
 renderer.info.autoReset=false;
+// glass: three draws the whole room again behind every pane of transmissive glass (and the glass walls seen from
+// above), at the full screen resolution with 4x multisampling, every frame. What shows through is softened by the
+// glass anyway, so that picture is drawn at one pixel per screen point when still and half that while moving
+// (r169 sizes it from camera.viewport, which a plain camera uses for nothing else). ?txs= / ?txm= to test.
+var TXR={still:+(Q.get('txs')||1),move:+(Q.get('txm')||.5)}, txVP=new T.Vector4();
+function txSize(full){ var r=Math.min(DPR,full?TXR.still:TXR.move);
+  txVP.set(0,0,Math.max(1,Math.round(LAY.w*r)),Math.max(1,Math.round(LAY.h*r))); camera.viewport=txVP; }
 function draw(full){
   var t0=performance.now();
+  txSize(full);
   sunArc.visible=arcOn();                       // decided before drawing, so a jump into a room never shows the guide for a frame
   if(aoPass)aoPass.enabled=full||!FX.prog;
   var dofOn=full&&!LOWEND&&mode==='overview'&&state.dof!=='off'&&!renderer.xr.isPresenting;
@@ -2893,16 +2933,26 @@ function draw(full){
   dofPass.enabled=dofOn; if(smaaPass)smaaPass.enabled=full;
   if(full&&skyEnvDirty&&mode==='eye')updateSkyEnv();
   renderer.info.reset(); composer.render();
+  if(BENCH){ var gl=renderer.getContext(); gl.readPixels(0,0,1,1,gl.RGBA,gl.UNSIGNED_BYTE,BENCH); }
+  if(BENCH){ var lc={}; scene.traverseVisible(function(o){ if(o.isLight)lc[o.type]=(lc[o.type]||0)+1; var m=o.material; if(m&&!Array.isArray(m)){ if(m.transparent&&m.side===T.DoubleSide&&!m.forceSinglePass)lc.twoPass=(lc.twoPass||0)+1; if(m.transmission>0)lc.glass=(lc.glass||0)+1; } }); STATS.lights=lc; }   // ?bench=1: wait for the frame to be drawn, so the time is real
   STATS.frames++; STATS.last=performance.now()-t0; STATS.ms+=STATS.last; STATS.calls=renderer.info.render.calls; STATS.tris=renderer.info.render.triangles;
 }
-var last=performance.now(), idleT=0, needFull=false, flying=false;
-// adaptive resolution: if moving stays under about 22 frames a second the pixel count steps down (never below 0.75 of
-// the screen's), and back up once there's room again. ?q=fixed turns it off for testing.
+var last=performance.now(), idleT=0, needFull=false, flying=false, wasBusy=false, held=0;
+// while a finger or the mouse button is down on the view, a pause in the drag is not the end of it: the full-quality
+// frame (much heavier) waits for the release, so it never lands in the middle of a look-around and stalls it
+renderer.domElement.addEventListener('pointerdown',function(){ held++; });
+['pointerup','pointercancel','blur'].forEach(function(t){ window.addEventListener(t,function(){ if(held){ held=0; dirty=true; } }); });
+// adaptive resolution: if moving runs under about 25 frames a second, the pixel count drops at once by as much as
+// the frame time says is needed (never below 0.67 of the screen's), and steps back up slowly once there's room
+// again. A slow computer gets smooth within half a second of moving instead of a few seconds. ?q=fixed turns it off.
 var adapt={n:0,sum:0,t:0,on:Q.get('q')!=='fixed'};
 function adaptQuality(ms,now){
-  if(!adapt.on||ms>5000)return; adapt.n++; adapt.sum+=ms; if(adapt.n<10&&adapt.sum<1500)return;
-  var avg=adapt.sum/adapt.n; adapt.n=0; adapt.sum=0; if(now-adapt.t<2000)return;
-  var next=avg>200?.75:avg>45?Math.max(.75,DPR-.25):avg<22?Math.min(DPR_MAX,DPR+.25):DPR;
+  if(!adapt.on||ms>5000)return; adapt.n++; adapt.sum+=ms; if(adapt.n<6&&adapt.sum<500)return;
+  var avg=adapt.sum/adapt.n; adapt.n=0; adapt.sum=0;
+  var next=DPR;
+  if(avg>40&&now-adapt.t>500){ if(MSAA&&!MSAA_FIX){ setMSAA(0); adapt.t=now; dirty=true; return; }   // first the multisampling, then pixels
+    next=Math.max(.67,Math.round(DPR*Math.sqrt(28/avg)*8)/8); }                                  // pixels scale the GPU's work
+  else if(avg<20&&now-adapt.t>3000){ if(DPR<DPR_MAX)next=Math.min(DPR_MAX,DPR+.25); }
   if(next!==DPR){ DPR=next; adapt.t=now; renderer.setPixelRatio(DPR); resize(); dirty=true; STATS.dpr=DPR; }
 }
 var RM=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);   // reduced motion: cuts instead of flights
@@ -2922,9 +2972,10 @@ function loop(now){
   joyShow();
   var moving=!!anim||!!(JOY.f||JOY.t)||KEYS.some(function(k){return keys[k];});
   walk(dt); tickSun(dt); controls.update();
-  if(moving)adaptQuality(raw,now);
-  if(moving||dirty){ draw(false); drawLabels(); drawSunArc(); drawChanges(); drawLy(); drawDims(); hud(); drawMinimap(); placeCard(); drawMeasures(); drawFDims(); drawFinCards(); dirty=false; needFull=true; idleT=performance.now(); dvWant=true; dvNext=0; }
-  else if(needFull&&now-idleT>140){ draw(true); needFull=false; idleT=performance.now();       // idle frames skip rendering entirely
+  placeWindowLights(false);
+  var busy=moving||dirty; if(busy&&wasBusy)adaptQuality(raw,now); wasBusy=busy;    // dragging to look counts too
+  if(busy){ draw(false); drawLabels(); drawSunArc(); drawChanges(); drawLy(); drawDims(); hud(); drawMinimap(); placeCard(); drawMeasures(); drawFDims(); drawFinCards(); dirty=false; needFull=true; idleT=performance.now(); dvWant=true; dvNext=0; }
+  else if(needFull&&!held&&now-idleT>200){ draw(true); needFull=false; idleT=performance.now();       // idle frames skip rendering entirely
     if(DV_FROM===Infinity)DV_FROM=idleT+3000; }                         // the four times of day wait until 3 s after the first full frame
   else if(dvWant&&now>DV_FROM&&now-idleT>(dvNext?250:1200)&&dvVisible())renderDayViews();   // the four times of day, once the view has settled
 }
