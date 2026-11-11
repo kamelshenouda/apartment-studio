@@ -2967,6 +2967,7 @@ function txSize(full){ var r=Math.min(DPR,full?TXR.still:TXR.move);
   txVP.set(0,0,Math.max(1,Math.round(LAY.w*r)),Math.max(1,Math.round(LAY.h*r))); camera.viewport=txVP; }
 function draw(full){
   var t0=performance.now();
+  var pr=full?DPR_MAX:(DPR_MOVE||DPR_MAX); if(pr!==DPR){ DPR=pr; renderer.setPixelRatio(DPR); resize(); STATS.dpr=DPR; }   // still: always full sharpness
   txSize(full);
   sunArc.visible=arcOn();                       // decided before drawing, so a jump into a room never shows the guide for a frame
   if(aoPass)aoPass.enabled=HQ.ao&&(full||!FX.prog);
@@ -2984,18 +2985,20 @@ var last=performance.now(), idleT=0, needFull=false, flying=false, wasBusy=false
 // frame (much heavier) waits for the release, so it never lands in the middle of a look-around and stalls it
 renderer.domElement.addEventListener('pointerdown',function(){ held++; });
 ['pointerup','pointercancel','blur'].forEach(function(t){ window.addEventListener(t,function(){ if(held){ held=0; dirty=true; } }); });
-// adaptive resolution: if moving runs under about 25 frames a second, the pixel count drops at once by as much as
-// the frame time says is needed (never below 0.67 of the screen's), and steps back up slowly once there's room
-// again. A slow computer gets smooth within half a second of moving instead of a few seconds. ?q=fixed turns it off.
-var adapt={n:0,sum:0,t:0,on:Q.get('q')!=='fixed'};
+// adaptive resolution, for moving frames only: if moving runs under about 25 frames a second, the pixel count drops
+// at once by as much as the frame time says is needed (never below 0.67 of the screen's), and steps back up slowly
+// once there's room again. The view you stop on is always drawn at full sharpness (draw(true)). Frames over 250 ms
+// are one-off stalls (a shader compiling, a texture arriving), not the computer's pace, and the first 2.5 s after
+// the page opens are left out for the same reason: they made the opening view soft. ?q=fixed turns it off.
+var adapt={n:0,sum:0,t:0,t0:Infinity,on:Q.get('q')!=='fixed'}, DPR_MOVE=DPR;
 function adaptQuality(ms,now){
-  if(!adapt.on||ms>5000)return; adapt.n++; adapt.sum+=ms; if(adapt.n<6&&adapt.sum<500)return;
+  if(!adapt.on||ms>250||now<adapt.t0+2500)return; adapt.n++; adapt.sum+=ms; if(adapt.n<6&&adapt.sum<500)return;
   var avg=adapt.sum/adapt.n; adapt.n=0; adapt.sum=0;
-  var next=DPR;
+  var next=DPR_MOVE;
   if(avg>40&&now-adapt.t>500){ if(MSAA&&!MSAA_FIX){ setMSAA(0); adapt.t=now; dirty=true; return; }   // first the multisampling, then pixels
-    next=Math.max(.67,Math.round(DPR*Math.sqrt(28/avg)*8)/8); }                                  // pixels scale the GPU's work
-  else if(avg<20&&now-adapt.t>3000){ if(DPR<DPR_MAX)next=Math.min(DPR_MAX,DPR+.25); }
-  if(next!==DPR){ DPR=next; adapt.t=now; renderer.setPixelRatio(DPR); resize(); dirty=true; STATS.dpr=DPR; }
+    next=Math.max(.67,Math.round(DPR_MOVE*Math.sqrt(28/avg)*8)/8); }                             // pixels scale the GPU's work
+  else if(avg<20&&now-adapt.t>3000){ if(DPR_MOVE<DPR_MAX)next=Math.min(DPR_MAX,DPR_MOVE+.25); }
+  if(next!==DPR_MOVE){ DPR_MOVE=next; adapt.t=now; dirty=true; }
 }
 var RM=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);   // reduced motion: cuts instead of flights
 try{ matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',function(e){ RM=e.matches; }); }catch(e){}
@@ -3254,6 +3257,6 @@ if(renderer.compileAsync){ try{ await Promise.race([renderer.compileAsync(scene,
 progress(1,'Ready');
 var ld=document.getElementById('loading'); if(ld){ ld.classList.add('done'); setTimeout(function(){ ld.remove(); },700); }
 window.<@v134>APT_READY</@v134>=true;
-renderer.setAnimationLoop(loop);
+adapt.t0=performance.now(); renderer.setAnimationLoop(loop);
 </script>
 
