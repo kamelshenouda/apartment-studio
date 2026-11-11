@@ -481,6 +481,115 @@ def finish(out, layout):
     return out
 
 
+def plan2d(R):
+    """The plan as the editable 2D plan needs it. Wall pieces and the openings between them are joined into wall
+    lines (one per straight run of the same thickness), each with its openings: 'door', 'win' (window) or 'gl' (glazed
+    or sliding door). A line is locked when it is on the façade (outside the floor on one side, or glazed) or is
+    concrete (mostly a column); the doors in it are locked with it. 'src' lists the plan records each came from."""
+    windows = [r['box'] for r in R if r['kind'] == 'window']
+    sliders = [r['box'] for r in R if r['kind'] == 'slider']
+    cols = [list(r['box']) for r in R if r['kind'] == 'rect' and r.get('cls') == 'col']
+    zones = [list(r['box']) + [r['cls'][2:]] for r in R if r['kind'] == 'rect' and str(r.get('cls', '')).startswith('z ')]
+    segs = []
+    for ri, r in enumerate(R):
+        if r['kind'] == 'rect' and r.get('cls') in ('wall', 'wall neww'):
+            segs.append((ri, r['box'], 'w'))
+        elif r['kind'] == 'opening':
+            b = r['box']
+            t = 'win' if any(overlaps(b, w) for w in windows) else \
+                'gl' if any(overlaps(b, q) for q in sliders) or any(overlaps(b, g) for g in GLAZED_DOORS) else 'door'
+            segs.append((ri, b, t))
+    lines = []
+    for o in 'hv':
+        groups = {}
+        for ri, b, t in segs:
+            x0, y0, x1, y1 = b
+            if ('h' if (x1 - x0) >= (y1 - y0) else 'v') != o:
+                continue
+            key = (round(y0, 1), round(y1, 1)) if o == 'h' else (round(x0, 1), round(x1, 1))
+            groups.setdefault(key, []).append(((x0, x1) if o == 'h' else (y0, y1), ri, t))
+        for key in sorted(groups):
+            cur = None
+            for (a0, a1), ri, t in sorted(groups[key]):
+                if cur and a0 <= cur['a'][1] + 0.6:
+                    cur['a'][1] = max(cur['a'][1], a1)
+                else:
+                    cur = {'o': o, 'c': list(key), 'a': [a0, a1], 'ops': [], 'src': []}
+                    lines.append(cur)
+                cur['src'].append(ri)
+                if t != 'w':
+                    cur['ops'].append([a0, a1, t, ri])
+
+    solid = [b for _, b, _ in segs] + cols                  # where walls meet, the point lands in a wall, not outside
+
+    def inside(x, y):
+        return any(z[0] <= x <= z[2] and z[1] <= y <= z[3] for z in zones) or \
+            any(b[0] - 1 <= x <= b[2] + 1 and b[1] - 1 <= y <= b[3] + 1 for b in solid)
+
+    def facade_at(L, a):
+        """Façade here: glazing, or no floor on one side of the wall."""
+        if any(op[0] <= a <= op[1] and op[2] in ('win', 'gl') for op in L['ops']):
+            return True
+        c0, c1 = L['c']; mid = (c0 + c1) / 2; off = (c1 - c0) / 2 + 20
+        p, q = ((a, mid - off), (a, mid + off)) if L['o'] == 'h' else ((mid - off, a), (mid + off, a))
+        return not (inside(*p) and inside(*q))
+
+    # a run that is façade for part of its length (a bedroom wall that carries on past the house as the garden wall)
+    # is cut where it changes, so only the façade part is locked
+    cut = []
+    for L in lines:
+        a0, a1 = L['a']; n = max(2, int((a1 - a0) / 5))
+        st = [facade_at(L, a0 + (a1 - a0) * (j + .5) / n) for j in range(n)]
+        runs = []
+        for j, v in enumerate(st):
+            if runs and runs[-1][2] == v:
+                runs[-1][1] = j
+            else:
+                runs.append([j, j, v])
+        while len(runs) > 1 and any((r[1] - r[0] + 1) * (a1 - a0) / n < 15 for r in runs):   # ignore slivers under 15 cm
+            k = min(range(len(runs)), key=lambda i: runs[i][1] - runs[i][0])
+            m = k - 1 if k else 1
+            runs[m][0], runs[m][1] = min(runs[m][0], runs[k][0]), max(runs[m][1], runs[k][1]); runs.pop(k)
+            j = 0
+            while j < len(runs) - 1:                        # neighbours left with the same status join again
+                if runs[j][2] == runs[j + 1][2]:
+                    runs[j][1] = runs[j + 1][1]; runs.pop(j + 1)
+                else:
+                    j += 1
+        if len(runs) == 1:
+            L['fac'] = runs[0][2]; cut.append(L); continue
+        for r0, r1, v in runs:
+            b0 = a0 + (a1 - a0) * r0 / n if r0 else a0
+            b1 = a0 + (a1 - a0) * (r1 + 1) / n if r1 < n - 1 else a1
+            cut.append({'o': L['o'], 'c': L['c'], 'a': [round(b0, 1), round(b1, 1)], 'src': L['src'], 'fac': v,
+                        'ops': [op for op in L['ops'] if op[1] > b0 and op[0] < b1]})
+    lines = cut
+    for i, L in enumerate(lines):
+        L['id'] = i
+        c0, c1 = L['c']; a0, a1 = L['a']
+        box_ = (a0, c0, a1, c1) if L['o'] == 'h' else (c0, a0, c1, a1)
+        area = max(1, (box_[2] - box_[0]) * (box_[3] - box_[1]))
+        conc = sum(max(0, min(box_[2], c[2]) - max(box_[0], c[0])) * max(0, min(box_[3], c[3]) - max(box_[1], c[1])) for c in cols)
+        if L.pop('fac'):
+            L['lock'] = 'façade'
+        elif conc > .5 * area:
+            L['lock'] = 'concrete'
+    doors = []
+    for ri, r in enumerate(R):
+        if r['kind'] != 'door' or 'garden-door' in r['cls']:
+            continue
+        hx, hy = r['hinge']
+        d = {'hinge': list(r['hinge']), 'leaf': list(r['leaf']), 'shut': list(r['shut']), 'cls': r['cls'], 'src': ri, 'line': None}
+        for L in lines:
+            c0, c1 = L['c']; along, across = (hx, hy) if L['o'] == 'h' else (hy, hx)
+            if c0 - 3 <= across <= c1 + 3 and any(op[0] - 3 <= along <= op[1] + 3 for op in L['ops'] if op[2] == 'door'):
+                d['line'] = L['id']
+                break
+        doors.append(d)
+    return {'lines': lines, 'doors': doors, 'cols': cols, 'zones': zones,
+            'head': HEAD, 'ceil': CEIL, 'skirt': [SKIRT_T, SKIRT_H]}
+
+
 def build(skip=(), doors_shut=False, layout='existing'):
     """skip: record kinds left out (a renderer that models those itself); 'rect:table' skips tables.
     layout: which plan to build (a key of LAYOUTS)."""
@@ -580,10 +689,10 @@ def build(skip=(), doors_shut=False, layout='existing'):
                 pc['dn'] = int(dn[0])
             pieces.append(pc)
 
-    for r in R:
+    for ri, r in enumerate(R):
         k, ctx = r['kind'], (r['ctx'][-1] if r['ctx'] else None)
         FURN[0] = furn_class(r)
-        n0 = len(items)
+        n0, np0 = len(items), len(pieces)
         if k in skip or (k == 'rect' and r.get('cls') == 'table' and 'rect:table' in skip):
             continue
         if k == 'rect':
@@ -960,9 +1069,17 @@ def build(skip=(), doors_shut=False, layout='existing'):
             box(x0, y0, x1, y1, 0, 110, 'white')
             box(x0 - 8, y0 - 8, x1 + 8, y1 + 8, 110, 125, 'oak')
         add_piece(r, n0)
+        if (k == 'rect' and r.get('cls') in ('wall', 'wall neww')) or k == 'opening' or k == 'door':
+            for it in items[n0:]:                   # which plan record made it: the editable plan rebuilds these
+                it['s'] = ri
+            for pc in pieces[np0:]:
+                pc['s'] = ri
 
     FURN[0] = None
+    nsk = len(items)
     skirting(R)
+    for it in items[nsk:]:
+        it['sk'] = 1                                # skirting: the editable plan lays it again along moved walls
     FURN[0] = 'built'
     details(layout)
     FURN[0] = None
@@ -977,7 +1094,7 @@ def build(skip=(), doors_shut=False, layout='existing'):
     rooms = [{'n': r['name'], 'at': list(r['at']), 'r': list(r['rect']) if r['rect'] else None, 'd': r['dims']}
              for r in R if r['kind'] == 'room' and r.get('dims')]
     x0, y0, x1, y1 = apartment.extent(0)
-    out = {'items': list(items), 'labels': labels_for(layout, rooms), 'rooms': rooms, 'pieces': pieces,
+    out = {'items': list(items), 'labels': labels_for(layout, rooms), 'rooms': rooms, 'pieces': pieces, 'plan2d': plan2d(R),
            'lights': lighting(layout, rooms), 'garden': garden(), 'site': site_rect(), 'bounds': [x0, y0, x1, y1]}
     return finish(out, layout)
 

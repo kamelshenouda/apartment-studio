@@ -70,6 +70,11 @@ When the owner asks for this (or anything like it), go through these steps in or
   - **Overlays** read sizes from `LAY`, never from the page, inside the frame loop.
   - **Timing.** Time changes with `?bench=1&q=fixed` (`APT3D.stats.last` then includes the graphics card's work).
 
+- **The editable plan** (the 3D page's 2D button) works from `plan2d`, which `build_3d.py` writes for each layout,
+  and from the `s` (source plan record) and `sk` (skirting) tags on the 3D items. If you change how walls, openings or
+  doors are built in Python, change `pe3dScene` in `viewer.html` to match. Trials stay in the visitor's browser; the
+  plan lock is untouched until the owner sends a trial and approves it.
+
 ## Where things are
 
 | Path | What |
