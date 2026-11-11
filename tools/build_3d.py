@@ -489,7 +489,8 @@ def plan2d(R):
     windows = [r['box'] for r in R if r['kind'] == 'window']
     sliders = [r['box'] for r in R if r['kind'] == 'slider']
     cols = [list(r['box']) for r in R if r['kind'] == 'rect' and r.get('cls') == 'col']
-    zones = [list(r['box']) + [r['cls'][2:]] for r in R if r['kind'] == 'rect' and str(r.get('cls', '')).startswith('z ')]
+    zones = [list(r['box']) + [r['cls'][2:], ri, (r['ctx'][-1] if r['ctx'] else None)] for ri, r in enumerate(R)
+             if r['kind'] == 'rect' and str(r.get('cls', '')).startswith('z ')]
     segs = []
     for ri, r in enumerate(R):
         if r['kind'] == 'rect' and r.get('cls') in ('wall', 'wall neww'):
@@ -520,6 +521,19 @@ def plan2d(R):
                 if t != 'w':
                     cur['ops'].append([a0, a1, t, ri])
 
+    # a square the drawing puts where two walls meet is the end of the wall it caps, not a wall of its own
+    keep = []
+    for S in lines:
+        if (S['a'][1] - S['a'][0]) <= (S['c'][1] - S['c'][0]) + 1 and not S['ops']:
+            M = next((M for M in lines if M is not S and M['o'] != S['o'] and abs(M['c'][0] - S['a'][0]) <= .6 and abs(M['c'][1] - S['a'][1]) <= .6
+                      and (abs(M['a'][0] - S['c'][1]) <= 1 or abs(M['a'][1] - S['c'][0]) <= 1 or S['c'][0] - 1 <= M['a'][0] <= S['c'][1] + 1
+                           or S['c'][0] - 1 <= M['a'][1] <= S['c'][1] + 1)), None)
+            if M:
+                M['a'] = [min(M['a'][0], S['c'][0]), max(M['a'][1], S['c'][1])]
+                M['src'] += S['src']
+                continue
+        keep.append(S)
+    lines = keep
     solid = [b for _, b, _ in segs] + cols                  # where walls meet, the point lands in a wall, not outside
 
     def inside(x, y):
@@ -1069,11 +1083,10 @@ def build(skip=(), doors_shut=False, layout='existing'):
             box(x0, y0, x1, y1, 0, 110, 'white')
             box(x0 - 8, y0 - 8, x1 + 8, y1 + 8, 110, 125, 'oak')
         add_piece(r, n0)
-        if (k == 'rect' and r.get('cls') in ('wall', 'wall neww')) or k == 'opening' or k == 'door':
-            for it in items[n0:]:                   # which plan record made it: the editable plan rebuilds these
-                it['s'] = ri
-            for pc in pieces[np0:]:
-                pc['s'] = ri
+        for it in items[n0:]:                       # which plan record made it: the editable plan rebuilds walls,
+            it['s'] = ri                            # doors and floors from these, and moves furniture by them
+        for pc in pieces[np0:]:
+            pc['s'] = ri
 
     FURN[0] = None
     nsk = len(items)
