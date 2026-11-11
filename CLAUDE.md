@@ -65,7 +65,8 @@ When the owner asks for this (or anything like it), go through these steps in or
 - **Keep the 3D fast** when changing `tools/viewer.html`.
   - **Glass.** Any transmissive glass in view makes three.js draw the whole scene again behind it, on every scene render, so keep glass out of passes that only want depth (`withoutGlass`).
   - **Lights.** Lights shine on every pixel, so hide a light at zero rather than leaving it in.
-  - **Window lights** are a fixed pool, so the shaders are never rebuilt.
+  - **Window lights and lamps** are fixed pools, so the number of lights never changes and the shaders are never rebuilt.
+  - **Extra quality.** New slow effects go behind a switch in More > Extra quality (`HQ`), off by default.
   - **Overlays** read sizes from `LAY`, never from the page, inside the frame loop.
   - **Timing.** Time changes with `?bench=1&q=fixed` (`APT3D.stats.last` then includes the graphics card's work).
 

@@ -10,13 +10,13 @@
   --accent:#2E5A74; --accent-ink:#FFFFFF; --oak:#A87A4B;
   --display:"Montserrat","Helvetica Neue",Arial,sans-serif; --mono:"Montserrat","Helvetica Neue",Arial,sans-serif;
   --glass:rgba(251,250,247,.6); --glass-line:rgba(255,255,255,.55); --pw:300px;
-  --btn:rgba(255,255,255,.55); --btn-line:rgba(29,33,37,.12);
+  --btn:rgba(255,255,255,.55); --btn-line:rgba(29,33,37,.12); --warn:#9A5B12;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){--glass:rgba(22,24,27,.6);--glass-line:rgba(255,255,255,.1);--btn:rgba(255,255,255,.07);--btn-line:rgba(255,255,255,.12)}
-  :root:not([data-theme="light"]){color-scheme:dark;--paper:#131517;--sheet:#1A1D20;--ink:#E8E6E1;--ink2:#BFC2C4;--muted:#979DA2;--line:#34383C;--accent:#8DB6D1;--accent-ink:#0F1418;--oak:#CDA06E}
+  :root:not([data-theme="light"]){color-scheme:dark;--paper:#131517;--sheet:#1A1D20;--ink:#E8E6E1;--ink2:#BFC2C4;--muted:#979DA2;--line:#34383C;--accent:#8DB6D1;--accent-ink:#0F1418;--oak:#CDA06E;--warn:#E3A862}
 }
-:root[data-theme="dark"]{--glass:rgba(22,24,27,.6);--glass-line:rgba(255,255,255,.1);--btn:rgba(255,255,255,.07);--btn-line:rgba(255,255,255,.12);color-scheme:dark;--paper:#131517;--sheet:#1A1D20;--ink:#E8E6E1;--ink2:#BFC2C4;--muted:#979DA2;--line:#34383C;--accent:#8DB6D1;--accent-ink:#0F1418;--oak:#CDA06E}
+:root[data-theme="dark"]{--warn:#E3A862;--glass:rgba(22,24,27,.6);--glass-line:rgba(255,255,255,.1);--btn:rgba(255,255,255,.07);--btn-line:rgba(255,255,255,.12);color-scheme:dark;--paper:#131517;--sheet:#1A1D20;--ink:#E8E6E1;--ink2:#BFC2C4;--muted:#979DA2;--line:#34383C;--accent:#8DB6D1;--accent-ink:#0F1418;--oak:#CDA06E}
 [hidden]{display:none!important}
 html,body{height:100%}
 body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.45 var(--display);overflow:hidden}
@@ -347,6 +347,12 @@ h3{font-weight:600}
 .dayviews button[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
 .dayviews button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .dvnote{margin:6px 0 0;font:12px/1.45 var(--mono);color:var(--ink2)}
+.dvshow{margin-top:2px}.dvshow small,.hqrow small{font:11px var(--mono);color:var(--muted)}
+.hqwarn{margin:0;padding:8px 10px;border-radius:8px;background:rgba(196,128,40,.13);color:var(--ink2);font:12px/1.45 var(--mono)}
+.hqwarn b{color:var(--warn)}
+.hqall{font:600 11.5px var(--display);color:var(--accent);background:none;border:0;padding:2px 4px;cursor:pointer}
+.hqrows{display:grid;gap:8px}.hqrow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
+.hqrow span{display:grid;gap:1px;font:600 12px var(--display);color:var(--ink)}
 /* the sun on its path over the model (from above): drag it along the arc */
 .sunh{position:absolute;z-index:3;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none}
 .sunh:hover,.sunh.drag,.sunh:focus-visible{box-shadow:0 0 0 2px rgba(255,255,255,.9),0 0 0 4px rgba(229,145,40,.75);outline:none}
@@ -445,7 +451,8 @@ h3{font-weight:600}
         <div class="bt" id="season"><button type="button" data-v="jun" aria-pressed="false" title="21 June, the longest day">21 Jun</button><button type="button" data-v="mar" aria-pressed="true" title="21 March; 23 September is the same an hour later on the clock">21 Mar</button><button type="button" data-v="dec" aria-pressed="false" title="21 December, the shortest day">21 Dec</button></div>
         <p class="sunnote" id="sunnote"></p>
         <div class="dayviews" id="dayviews" role="group" aria-label="Your view at four times of day"></div>
-        <p class="dvnote" id="dvnote">Your view right now, through the day. They follow you as you move; tap one to go to that time.</p></div>
+        <p class="dvnote" id="dvnote">Your view right now, through the day. They follow you as you move; tap one to go to that time.</p>
+        <button type="button" class="wbtn dvshow" id="dvshow"><span>Show my view at four times of day</span><small>slower</small></button></div>
       <div class="ctl"><div class="cl"><span>Sun path</span></div><div class="bt" data-state="sp"><button type="button" data-v="on" aria-pressed="true" title="From above: the sun's path for the chosen date over the model; drag the sun along it">Show</button><button type="button" data-v="off" aria-pressed="false">Hide</button></div></div>
       <div class="ctl"><div class="cl"><span>Lighting scene</span><kbd class="sk" data-k="7"></kbd></div>
         <select id="lxscene" class="sel" aria-label="Lighting scene"><option value="evening">Evening, all on</option><option value="cooking">Cooking</option><option value="dinner">Dinner / hosting</option><option value="film">Film</option><option value="night">Night path</option><option value="off">All off</option></select></div>
@@ -468,6 +475,9 @@ h3{font-weight:600}
       <button type="button" class="wbtn" id="howbtn"><span>How it works</span></button>
       <button type="button" class="wbtn" id="keysbtn2"><span>Keyboard shortcuts</span><kbd>?</kbd></button>
       <button type="button" class="wbtn" id="cleanbtn"><span>Just the model: hide the controls and labels</span><kbd>I</kbd></button>
+      <div class="ctl hq" id="hqbox"><div class="cl"><span>Extra quality</span><button type="button" class="hqall" id="hqall">All on</button></div>
+        <p class="hqwarn" role="note"><b>Slower.</b> Each of these makes moving and every click slower, a lot on older or smaller computers and phones. They are off so the 3D stays quick; turn one on for a closer look or a picture. Remembered in this browser.</p>
+        <div class="hqrows" id="hqrows"></div></div>
       <div class="ctl"><div class="cl"><span>True size</span></div>
         <p class="hint" id="sum-true"></p>
         <p class="hint">At 100%, standing, things look their real size from where you sit. Set your screen and how far your eyes are from it (most people sit 50–60 cm from a laptop).</p>
@@ -594,6 +604,13 @@ function P(x,y,z){return new T.Vector3(x*S,z*S,y*S);}  // plan (x,y) + height z 
 var Q=new URLSearchParams(location.search);
 var FX={ao:Q.get('ao')||'gtao', glass:Q.get('glass')||'ombre', tone:Q.get('tone')||'neutral', bevel:Q.get('bevel')!=='0',
         bloom:Q.get('bloom')!=='0', prog:Q.get('prog')!=='0', edges:Q.get('edges')!=='0'};
+// extra quality: six effects that look better but make every click and every move slower, most on older or smaller
+// computers. Off by default (the fast 3D); each can be turned on in More > Extra quality and is remembered in this
+// browser. ?hq=all turns them all on (the renders, the film and the previews use it), ?hq=off all off.
+var HQ_KEYS=['dv','win','glass','glide','shadow','ao'], HQ={};
+(function(){ var sv={}; try{ sv=JSON.parse(localStorage.getItem('apt3d-quality')||'{}')||{}; }catch(e){}
+  HQ_KEYS.forEach(function(k){ HQ[k]=Q.get('hq')==='all'?true:Q.get('hq')==='off'?false:!!sv[k]; }); })();
+function hqSave(){ try{ localStorage.setItem('apt3d-quality',JSON.stringify(HQ)); }catch(e){} }
 var loadBar=document.getElementById('loadbar'), loadMsg=document.getElementById('loadmsg');
 var LOADT=[];   // when each loading stage began (ms since navigation), for the performance checks
 function progress(f,msg){ LOADT.push([msg||'',Math.round(performance.now())]); if(loadBar)loadBar.style.width=Math.round(f*100)+'%'; if(msg&&loadMsg)loadMsg.textContent=msg; }
@@ -605,7 +622,8 @@ renderer.debug.checkShaderErrors=Q.get('debug')==='1';   // checking each shader
 var LOWEND=Q.get('tier')?Q.get('tier')==='low':(window.matchMedia&&matchMedia('(pointer:coarse)').matches&&Math.min(screen.width,screen.height)<820)||(navigator.hardwareConcurrency||8)<=2;   // ?tier=low|high to force
 var DPR=Math.min(window.devicePixelRatio||1,LOWEND?1.5:1.75), DPR_MAX=DPR;
 renderer.setPixelRatio(DPR);
-renderer.shadowMap.enabled=true; renderer.shadowMap.type=T.PCFSoftShadowMap; renderer.shadowMap.autoUpdate=false;   // shadows recompute only when the sun or the model changes
+var SHMAP=Q.get('shadow')!=null?+Q.get('shadow')||1024:LOWEND||!HQ.shadow?2048:4096;   // ?shadow=1024|2048|4096, 0 for none
+renderer.shadowMap.enabled=Q.get('shadow')!=='0'; renderer.shadowMap.type=T.PCFSoftShadowMap; renderer.shadowMap.autoUpdate=false;   // shadows recompute only when the sun or the model changes
 renderer.xr.enabled=true; renderer.localClippingEnabled=true;
 renderer.toneMapping={neutral:T.NeutralToneMapping,agx:T.AgXToneMapping,aces:T.ACESFilmicToneMapping}[FX.tone]||T.NeutralToneMapping;
 renderer.toneMappingExposure=+(Q.get('exp')||0.82);
@@ -761,7 +779,7 @@ function getMat(key,tall){
   var id=key+'|'+(tall?1:0)+'|'+state.look; if(MC[id])return MC[id];
   var base=state.look==='model'?modelBase(key):(M[key]||M.wall);
   var m=base;
-  if(tall){ m=base.clone(); m.clippingPlanes=[cutPlane]; if(!m.transmission){ m.side=T.DoubleSide; poche(m); } }
+  if(tall){ m=base.clone(); m.clippingPlanes=[cutPlane]; if(!m.transmission&&!m.userData.glassTx){ m.side=T.DoubleSide; poche(m); } }
   return (MC[id]=m);
 }
 
@@ -845,7 +863,7 @@ function buildModel(){ PCR={}; PCMOVED={}; PCREG=true; (SCENE.pieces||[]).forEac
         cord=new T.Mesh(new T.CylinderGeometry(.004,.004,.98,6),M.black); cord.position.y=.49;
       }
       lamp.add(shade); lamp.add(cord); lamp.position.copy(P(it.c[0],it.c[1],it.z));
-      var pl=new T.PointLight(0xFFDDB4,0,6,2); pl.position.y=it.st==='dome'?.08:-.1; pl.userData.k=it.st==='dome'?.22:1; lamp.add(pl); lamps.push(pl);   // a low woven shade sits close to the table: softer
+      var pl=new T.PointLight(0xFFDDB4,0,6,2); pl.position.y=it.st==='dome'?.08:-.1; pl.userData.k=it.st==='dome'?.22:1; pl.visible=false; lamp.add(pl); lamps.push(pl);   // a low woven shade sits close to the table: softer
       tagged(it.v,lamp); return;
     }
     if(!geo)return;
@@ -968,7 +986,7 @@ function stageFor(ov){
 
 // ---------- light
 var hemi=new T.HemisphereLight(0xDDE8F0,0xB8A58A,1.2); scene.add(hemi);
-var sun=new T.DirectionalLight(0xFFF3E0,5); sun.castShadow=true; sun.shadow.mapSize.set(LOWEND?2048:4096,LOWEND?2048:4096);
+var sun=new T.DirectionalLight(0xFFF3E0,5); sun.castShadow=true; sun.shadow.mapSize.set(SHMAP,SHMAP);
 var<@v40> SHR=Math.max(22,SPAN*S*.75),</@v40> sc=sun.shadow.camera; sc.left=-<@v41>SHR</@v41>;sc.right=<@v42>SHR</@v42>;sc.top=<@v43>SHR</@v43>;sc.bottom=-<@v44>SHR</@v44>;sc.near=1;sc.far=320; sun.shadow.bias=-0.0002; sun.shadow.normalBias=0.025;
 var centre=P(<@v45>CX,CY</@v45>,0); sun.target.position.copy(centre); scene.add(sun); scene.add(sun.target);
 // <@v46>the </@v46>real sun for the site<@v47> in apartment.json;</@v47> plan "up" (-y) <@v48>faces site.facing (a compass bearing)</@v48>
@@ -1025,6 +1043,18 @@ function setSun(){
 // following the sky (none at night). Rooms are lit from the side their light really comes from, as in the renders.
 // Phones and small machines skip it.
 var winLights=[], DAY=1;
+// the pendant lamps light the room through a fixed pool of point lights given to the lit lamps nearest you: the
+// number of lights never changes (a change rebuilds every shader, seconds on some computers), and a lamp that is off
+// costs nothing. Each lamp keeps its own (hidden) light as the record of where and how bright it is.
+var LAMPP=[], LAMPN=4, lampAt=null;
+for(var li=0;li<LAMPN;li++){ var lpp=new T.PointLight(0xFFDDB4,0,6,2); scene.add(lpp); LAMPP.push(lpp); }
+function placeLamps(force){ if(!LAMPP||!LAMPP.length)return;
+  var at=typeof mode!=='undefined'&&mode==='eye'?camera.position:controls.target;
+  if(!force&&lampAt&&lampAt.distanceToSquared(at)<.09)return; lampAt=at.clone();
+  var lit=lamps.filter(function(l){ return l.intensity>0&&l.parent.visible; }).map(function(l){ var w=new T.Vector3(); l.updateWorldMatrix(true,false); l.getWorldPosition(w); return {l:l,w:w,d:w.distanceTo(at)}; })
+    .sort(function(a,b){ return a.d-b.d; });
+  LAMPP.forEach(function(p,i){ var e=lit[i]; if(!e){ p.intensity=0; return; } p.position.copy(e.w); p.intensity=e.l.intensity; p.distance=e.l.distance; p.decay=e.l.decay; p.color.copy(e.l.color); });
+}
 if(!LOWEND&&Q.get('win')!=='0')RectAreaLightUniformsLib.init();
 // Each window light shines on every surface in the flat (they cast no shadow, so through walls too), and each costs
 // every pixel twice where there is glass: only the few nearest you are lit, preferring your own room's, and they are
@@ -1053,7 +1083,7 @@ function placeWindowLights(force){
     .slice(0,winLights.length).forEach(function(e,i){ var l=winLights[i], o=e.o; l.width=o.w; l.height=o.h; l.position.copy(o.pos); l.lookAt(o.look); });
 }
 function setWindowLights(){ var k=Q.get('wink')?+Q.get('wink'):2.2;
-  winLights.forEach(function(l){ l.intensity=(mode==='eye'?k:k*.5)*DAY; l.visible=l.intensity>0; }); }
+  winLights.forEach(function(l){ l.intensity=(mode==='eye'?k:k*.5)*DAY; l.visible=HQ.win; }); }   // kept in even at nought: a change in the number of lights rebuilds every shader
 
 // ---------- the lighting plan (05-package) in 3D: coves, downlights, wall washers, ceiling lights, lamps, under-shelf
 // strips and garden lights, each a glowing fitting with a soft pool or wash of light, grouped by room and driven by the
@@ -1160,7 +1190,7 @@ function setLights(){
     if(u.kind==='body'){ m.visible=state.fu==='all'; return; }
     if(u.kind==='fit'){ m.material.emissiveIntensity=lv*(u.k==='lamp'?.25+.35*NIGHT:1+(u.k==='ceil'?1.2:4)*NIGHT); m.visible=(eye||u.k==='ext'||u.k==='lamp'||(typeof LY!=='undefined'&&LY&&LY.on))&&(u.k!=='lamp'||state.fu==='all'); return; }
     var op=lv*NIGHT*(u.kind==='pool'?.3:u.kind==='band'?.32:.38); m.material.opacity=op; m.visible=op>.004&&(u.k!=='lamp'||state.fu==='all'); });
-  lamps.forEach(function(l){ var p=l.parent.position, g=lxGroup(p.x/S,p.z/S); l.intensity=12*NIGHT*lxLevel('pend',g)*(l.userData.k||1)*lxRamp(g); l.visible=l.intensity>0; });   // a light at nought is left out: every pixel would still work it out
+  lamps.forEach(function(l){ var p=l.parent.position, g=lxGroup(p.x/S,p.z/S); l.intensity=12*NIGHT*lxLevel('pend',g)*(l.userData.k||1)*lxRamp(g); }); placeLamps(true);
   var lit=lamps.some(function(l){return l.intensity>0;}); M.lamp.emissiveIntensity=lit?2.2:LXSCENE==='off'?0:.2; M.rattan.emissiveIntensity=lit?.65:0;
   // every glowing strip and lens follows the scene, so All off is dark: the LED under the wall cupboards (kitchen
   // under-shelf level) and the lens of each ceiling cylinder (the pendant level, by day too)
@@ -1277,7 +1307,7 @@ DV.forEach(function(k){ var b=document.createElement('button'); b.type='button';
   dvBox.appendChild(b); dvBtns.push({k:k[0],n:k[1],b:b,c:c,s:sp}); });
 function dvLabels(){ var t=dvTimes(); dvBtns.forEach(function(d){ d.s.textContent=d.n+' · '+hhmm(t[d.k]);
   d.b.setAttribute('aria-label',d.n+', '+hhmm(t[d.k])+': go to this time'); d.b.setAttribute('aria-pressed',Math.abs(state.hour-t[d.k])<.13?'true':'false'); }); }
-function dvVisible(){ if(document.documentElement.classList.contains('embed')||document.hidden||!dvBox.offsetParent)return false;
+function dvVisible(){ if(!HQ.dv||document.documentElement.classList.contains('embed')||document.hidden||!dvBox.offsetParent)return false;
   var r=dvBox.getBoundingClientRect(); return r.width>0&&r.bottom>0&&r.top<window.innerHeight; }
 // Drawn one picture at a time, each in its own quiet moment, and never in the first seconds after the page opens,
 // so the four views never hold the page up (they cost a frame and two shadow updates each).
@@ -1307,7 +1337,7 @@ var TOD=null, todBtns=[].slice.call(document.querySelectorAll('#todp button'));
 function todTo(k){
   var to=dvTimes()[k]; stopPlay(); if(BA.on)baEnd();
   var wasNight=NIGHT>=.5;
-  if(RM){ setHour(to); if(k==='night'&&!wasNight)startLxRamp(0); return; }
+  if(RM||!HQ.glide){ setHour(to); if(k==='night'&&!wasNight)startLxRamp(0); return; }
   TOD={from:state.hour,to:to,t0:performance.now(),dur:1500,night:k==='night'&&!wasNight,ramped:false};
 }
 function tickTod(now){
@@ -1449,7 +1479,7 @@ function stShow(i){
   ST.i=Math.max(0,Math.min(STEPS.length-1,i)); var s=STEPS[ST.i];
   ST.own=true; goto(s.v,RM?1:2600); ST.own=false;
   if(s.dims&&state.dim!=='on'){ setKey('dim','on',false); makeLabels(); applyState(); } else if(!s.dims&&state.dim==='on'&&ST.keep.dim!=='on'){ setKey('dim','off',false); makeLabels(); applyState(); }
-  if(s.p)todTo(s.p); else if(Math.abs(state.hour-s.h)>.05){ TOD=null; if(RM)setHour(s.h); else TOD={from:state.hour,to:s.h,t0:performance.now(),dur:1500}; }
+  if(s.p)todTo(s.p); else if(Math.abs(state.hour-s.h)>.05){ TOD=null; if(RM||!HQ.glide)setHour(s.h); else TOD={from:state.hour,to:s.h,t0:performance.now(),dur:1500}; }
   statusEl.hidden=true;
   var v=resolveView(s.v); document.getElementById('stk').textContent=(ST.i+1)+' / '+STEPS.length+' · '+s.k;
   document.getElementById('sth').textContent=s.t;
@@ -1513,7 +1543,7 @@ if(FX.ao==='gtao'){
   aoPass.updatePdMaterial({lumaPhi:10,depthPhi:2,normalPhi:3,radius:+(Q.get('pdr')||8),rings:3,samples:+(Q.get('pds')||(LOWEND?12:24))});
   aoPass.normalMaterial&&(aoPass.normalMaterial.clippingPlanes=[cutPlane]);
   aoPass.overrideVisibility=function(){ var cache=this._visibilityCache;   // leave out lines, the invisible shade-casting stand-ins and overlays drawn on top (the sun's path)
-    this.scene.traverse(function(o){ cache.set(o,o.visible); if(o.isPoints||o.isLine||(o.material&&(o.material.colorWrite===false||o.material.depthTest===false||o.material.transmission>0)))o.visible=false; }); };   // glass too: any glass in view makes three draw the whole scene again behind it, on this pass as well
+    this.scene.traverse(function(o){ cache.set(o,o.visible); if(o.isPoints||o.isLine||(o.material&&(o.material.colorWrite===false||o.material.depthTest===false||o.material.transmission>0||o.material.userData.glassTx)))o.visible=false; }); };   // glass too: any glass in view makes three draw the whole scene again behind it, on this pass as well
   // the shading is soft by nature: one sample per screen point is enough, so on a sharp screen (1.5x, 2x) it is worked
   // out at that and not at every device pixel, a third to a half of the work. ?aofull=1 for every pixel.
   if(Q.get('aofull')!=='1'){ var aoSet=aoPass.setSize.bind(aoPass); aoPass.setSize=function(w,h){ var k=Math.min(1,1/DPR); aoSet(Math.max(1,Math.round(w*k)),Math.max(1,Math.round(h*k))); }; }
@@ -1564,11 +1594,23 @@ function applyState(){
   var cut=state.cut==='cut'&&mode==='overview';
   cutPlane.constant=cut?1.25:1e5;
   ceilings.forEach(function(m){m.visible=(mode==='eye');});
-  lamps.forEach(function(l){var lp=l.parent;var grpOn=lp.userData.grpOn!==false;lp.visible=grpOn&&!cut;});
+  lamps.forEach(function(l){var lp=l.parent;var grpOn=lp.userData.grpOn!==false;lp.visible=grpOn&&!cut;}); placeLamps(true);
   furnMeshes.forEach(function(m){if(state.fu==='none'||(state.fu==='built'&&m.userData.f==='loose'))m.visible=false;});
   dimGroup.visible=state.dim==='on';
-  renderer.shadowMap.needsUpdate=true; dirty=true;
+  renderer.shadowMap.needsUpdate=true; dirty=true; glassApply();
   if(typeof summarize==='function')summarize();
+}
+// simple glass (the default): see-through with a tint, its opacity from how frosted the glass is, instead of three's
+// transmission, which draws the whole flat again behind every pane. Each material keeps its real values to go back to.
+function glassApply(){ var seen=new Set();
+  scene.traverse(function(o){ var ms=o.material; if(!ms)return; (Array.isArray(ms)?ms:[ms]).forEach(function(m){ if(seen.has(m))return; seen.add(m);
+    var u=m.userData; if(!(m.transmission>0)&&!u.glassTx)return;
+    if(!u.glassTx)u.glassTx={tx:m.transmission,tr:m.transparent,op:m.opacity,dw:m.depthWrite,sp:m.forceSinglePass};
+    var want=HQ.glass?'real':'simple'; if(u.glassMode===want)return; u.glassMode=want; var g=u.glassTx;
+    if(HQ.glass){ m.transmission=g.tx; m.transparent=g.tr; m.opacity=g.op; m.depthWrite=g.dw; m.forceSinglePass=g.sp; }
+    else { m.transmission=0; m.transparent=true; m.depthWrite=false; m.forceSinglePass=true;
+      m.opacity=Math.min(.72,.1+.5*(m.roughness||0)*g.tx+(1-g.tx)*.8); }
+    m.needsUpdate=true; }); });
 }
 // smart switches: no furniture means bare rooms (no doors, no garden shade); furnishing brings them back.
 // Picking a model sets a matching furniture state until you choose furniture yourself.
@@ -2927,7 +2969,7 @@ function draw(full){
   var t0=performance.now();
   txSize(full);
   sunArc.visible=arcOn();                       // decided before drawing, so a jump into a room never shows the guide for a frame
-  if(aoPass)aoPass.enabled=full||!FX.prog;
+  if(aoPass)aoPass.enabled=HQ.ao&&(full||!FX.prog);
   var dofOn=full&&!LOWEND&&mode==='overview'&&state.dof!=='off'&&!renderer.xr.isPresenting;
   if(dofOn){ var dist=camera.position.distanceTo(controls.target); dofPass.uniforms.focus.value=dist; dofPass.uniforms.aperture.value=.00035*20/Math.max(8,dist); }
   dofPass.enabled=dofOn; if(smaaPass)smaaPass.enabled=full;
@@ -2935,7 +2977,7 @@ function draw(full){
   renderer.info.reset(); composer.render();
   if(BENCH){ var gl=renderer.getContext(); gl.readPixels(0,0,1,1,gl.RGBA,gl.UNSIGNED_BYTE,BENCH); }
   if(BENCH){ var lc={}; scene.traverseVisible(function(o){ if(o.isLight)lc[o.type]=(lc[o.type]||0)+1; var m=o.material; if(m&&!Array.isArray(m)){ if(m.transparent&&m.side===T.DoubleSide&&!m.forceSinglePass)lc.twoPass=(lc.twoPass||0)+1; if(m.transmission>0)lc.glass=(lc.glass||0)+1; } }); STATS.lights=lc; }   // ?bench=1: wait for the frame to be drawn, so the time is real
-  STATS.frames++; STATS.last=performance.now()-t0; STATS.ms+=STATS.last; STATS.calls=renderer.info.render.calls; STATS.tris=renderer.info.render.triangles;
+  STATS.frames++; STATS.progs=renderer.info.programs?renderer.info.programs.length:0; STATS.last=performance.now()-t0; STATS.ms+=STATS.last; STATS.calls=renderer.info.render.calls; STATS.tris=renderer.info.render.triangles;
 }
 var last=performance.now(), idleT=0, needFull=false, flying=false, wasBusy=false, held=0;
 // while a finger or the mouse button is down on the view, a pause in the drag is not the end of it: the full-quality
@@ -2972,7 +3014,7 @@ function loop(now){
   joyShow();
   var moving=!!anim||!!(JOY.f||JOY.t)||KEYS.some(function(k){return keys[k];});
   walk(dt); tickSun(dt); controls.update();
-  placeWindowLights(false);
+  placeWindowLights(false); placeLamps(false);
   var busy=moving||dirty; if(busy&&wasBusy)adaptQuality(raw,now); wasBusy=busy;    // dragging to look counts too
   if(busy){ draw(false); drawLabels(); drawSunArc(); drawChanges(); drawLy(); drawDims(); hud(); drawMinimap(); placeCard(); drawMeasures(); drawFDims(); drawFinCards(); dirty=false; needFull=true; idleT=performance.now(); dvWant=true; dvNext=0; }
   else if(needFull&&!held&&now-idleT>200){ draw(true); needFull=false; idleT=performance.now();       // idle frames skip rendering entirely
@@ -3147,7 +3189,7 @@ function vrStart(){
 }
 function vrEnd(){
   xrSession=null; rig.position.set(0,0,0); rig.rotation.set(0,0,0); tpRing.visible=false;
-  sun.shadow.mapSize.set(LOWEND?2048:4096,LOWEND?2048:4096); if(sun.shadow.map){sun.shadow.map.dispose();sun.shadow.map=null;}
+  sun.shadow.mapSize.set(SHMAP,SHMAP); if(sun.shadow.map){sun.shadow.map.dispose();sun.shadow.map=null;}
   renderer.shadowMap.autoUpdate=false; renderer.shadowMap.needsUpdate=true;
   if(vrSaved){ camera.position.copy(vrSaved.p); controls.target.copy(vrSaved.t); mode=vrSaved.mode; }
   camera.quaternion.identity(); controls.enabled=true; controls.update(); resize(); applyState(); if(mode==='eye')setEyeFov();
@@ -3164,6 +3206,38 @@ vrBtn.addEventListener('click',function(){
     return renderer.xr.setSession(sess).then(vrStart);
   }).catch(function(e){ statusEl.hidden=false; statusEl.textContent='VR could not start: '+(e&&e.message||e); });
 });
+// ---------- More > Extra quality: the six slower effects, each with its own switch (see HQ at the top)
+var HQ_ROWS={dv:['Day previews','Your view at four times of day in the Light tab, redrawn after every change: clicks there about 3× slower'],
+  win:['Window glow','Daylight from each window onto the floors and walls: about a quarter slower'],
+  glass:['Real glass','Glass that bends and blurs what is behind it: about a fifth slower'],
+  glide:['Time glide','Day, Golden and Night slide the sun over 1.5 s instead of jumping: twice the work for those buttons'],
+  shadow:['Finer shadows','Sharper, more exact sun shadows: a little slower'],
+  ao:['Contact shading','Soft shade where things meet, on still views: a little slower']};
+var hqRows=document.getElementById('hqrows'), dvShow=document.getElementById('dvshow'), dvNote=document.getElementById('dvnote');
+HQ_KEYS.forEach(function(k){ if(k==='win'&&(LOWEND||Q.get('win')==='0'))return;
+  var r=document.createElement('div'); r.className='hqrow';
+  r.innerHTML='<span>'+HQ_ROWS[k][0]+'<small>'+HQ_ROWS[k][1]+'</small></span><div class="bt" data-hq="'+k+'" role="group" aria-label="'+HQ_ROWS[k][0]+'"><button type="button" data-v="off">Off</button><button type="button" data-v="on">On</button></div>';
+  hqRows.appendChild(r);
+  [].forEach.call(r.querySelectorAll('button'),function(b){ b.addEventListener('click',function(){ hqSet(k,b.getAttribute('data-v')==='on'); }); }); });
+function hqUI(){
+  [].forEach.call(document.querySelectorAll('[data-hq]'),function(g){ var on=HQ[g.getAttribute('data-hq')];
+    [].forEach.call(g.querySelectorAll('button'),function(b){ b.setAttribute('aria-pressed',String((b.getAttribute('data-v')==='on')===on)); }); });
+  var all=HQ_KEYS.every(function(k){ return HQ[k]; }); document.getElementById('hqall').textContent=all?'All off':'All on';
+  dvBox.hidden=!HQ.dv; dvNote.hidden=!HQ.dv; dvShow.hidden=HQ.dv;
+}
+function hqSet(k,on,quiet){
+  if(HQ[k]===on)return; HQ[k]=on;
+  if(k==='dv'&&on){ dvWant=true; dvNext=0; DV_FROM=performance.now(); }
+  if(k==='win')setWindowLights();
+  if(k==='glass')glassApply();
+  if(k==='shadow'&&Q.get('shadow')==null){ SHMAP=on&&!LOWEND?4096:2048; sun.shadow.mapSize.set(SHMAP,SHMAP); if(sun.shadow.map){ sun.shadow.map.dispose(); sun.shadow.map=null; } }
+  renderer.shadowMap.needsUpdate=true; dirty=true;
+  if(!quiet){ hqSave(); hqUI(); }
+}
+document.getElementById('hqall').addEventListener('click',function(){ var on=!HQ_KEYS.every(function(k){ return HQ[k]; });
+  HQ_KEYS.forEach(function(k){ hqSet(k,on,true); }); hqSave(); hqUI(); });
+dvShow.addEventListener('click',function(){ hqSet('dv',true); });
+hqUI();
 makeWindowLights(); makeLighting();
 var p0=VIEWS.overview; camera.position.copy(P(p0.pos[0],p0.pos[1],p0.pos[2])); controls.target.copy(P(p0.look[0],p0.look[1],p0.look[2]));
 var h0=(location.hash||'').slice(1);
