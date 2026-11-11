@@ -572,9 +572,13 @@ def plan2d(R):
                     j += 1
         if len(runs) == 1:
             L['fac'] = runs[0][2]; cut.append(L); continue
+        def snap(v):                                       # a cut lands on the middle of the wall meeting it there
+            near = [(M['c'][0] + M['c'][1]) / 2 for M in lines if M['o'] != L['o'] and M['a'][0] <= L['c'][1] + 2 and M['a'][1] >= L['c'][0] - 2
+                    and abs((M['c'][0] + M['c'][1]) / 2 - v) <= 8]
+            return min(near, key=lambda m: abs(m - v)) if near else v
         for r0, r1, v in runs:
-            b0 = a0 + (a1 - a0) * r0 / n if r0 else a0
-            b1 = a0 + (a1 - a0) * (r1 + 1) / n if r1 < n - 1 else a1
+            b0 = snap(a0 + (a1 - a0) * r0 / n) if r0 else a0
+            b1 = snap(a0 + (a1 - a0) * (r1 + 1) / n) if r1 < n - 1 else a1
             cut.append({'o': L['o'], 'c': L['c'], 'a': [round(b0, 1), round(b1, 1)], 'src': L['src'], 'fac': v,
                         'ops': [op for op in L['ops'] if op[1] > b0 and op[0] < b1]})
     lines = cut
