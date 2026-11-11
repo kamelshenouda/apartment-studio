@@ -424,7 +424,6 @@ h3{font-weight:600}
       <div class="ctl"><div class="cl"><span>Floors</span></div><div class="bt" data-state="fl"><button type="button" data-v="stone" aria-pressed="true" title="Large porcelain in the living areas, oak in the bedrooms">Porcelain</button><button type="button" data-v="wood" aria-pressed="false" title="Oak wood flooring in every room except the bathrooms, WCs and utility">Oak</button></div></div>
       <div class="ctl"><div class="cl"><span>Dimensions</span><kbd class="sk" data-k="8"></kbd></div><div class="bt" data-state="dim"><button type="button" data-v="off" aria-pressed="true">Off</button><button type="button" data-v="on" aria-pressed="false" title="Room widths and lengths in metres, from the survey">On</button></div></div>
       <div class="ctl" id="wallrow"><div class="cl"><span>Height from above</span><kbd class="sk" data-k="9"></kbd></div><div class="bt" data-state="cut"><button type="button" data-v="full" aria-pressed="true" title="Real height: 2.80 m to the slab">2.80 m</button><button type="button" data-v="cut" aria-pressed="false" title="Cut at 1.25 m to see into the rooms">Cut at 1.25 m</button></div></div>
-      <div class="ctl" id="dofrow"><div class="cl"><span>Depth of field from above</span></div><div class="bt" data-state="dof"><button type="button" data-v="on" aria-pressed="true" title="From above, once the view settles: the model in focus, the far ground softening like a photograph">On</button><button type="button" data-v="off" aria-pressed="false">Off</button></div></div>
       <div class="ctl" id="strow"><div class="cl"><span>Styling</span></div><div class="bt" data-state="st"><button type="button" data-v="off" aria-pressed="true" title="The design as drawn">Off</button><button type="button" data-v="on" aria-pressed="false" title="Cushions, a throw, books, a vase and a lamp: the rooms as they look lived in. Props only, not part of the design">On</button></div></div>
       <div class="ctl" id="pwrow"><div class="cl"><span>Sockets and switches</span></div><div class="bt" data-state="pw"><button type="button" data-v="off" aria-pressed="true">Hide</button><button type="button" data-v="on" aria-pressed="false" title="From the power plan: sockets and data points 30 cm from the floor, light switches and keypads at 1.05 m. Click one for what it is">Show</button></div></div>
 <@v16></@v16>      <div class="ctl"><div class="cl"><span>Layers</span></div>
@@ -604,10 +603,10 @@ function P(x,y,z){return new T.Vector3(x*S,z*S,y*S);}  // plan (x,y) + height z 
 var Q=new URLSearchParams(location.search);
 var FX={ao:Q.get('ao')||'gtao', glass:Q.get('glass')||'ombre', tone:Q.get('tone')||'neutral', bevel:Q.get('bevel')!=='0',
         bloom:Q.get('bloom')!=='0', prog:Q.get('prog')!=='0', edges:Q.get('edges')!=='0'};
-// extra quality: six effects that look better but make every click and every move slower, most on older or smaller
+// extra quality: seven effects that look better but make every click and every move slower, most on older or smaller
 // computers. Off by default (the fast 3D); each can be turned on in More > Extra quality and is remembered in this
 // browser. ?hq=all turns them all on (the renders, the film and the previews use it), ?hq=off all off.
-var HQ_KEYS=['dv','win','glass','glide','shadow','ao'], HQ={};
+var HQ_KEYS=['dv','win','glass','glide','shadow','ao','dof'], HQ={};
 (function(){ var sv={}; try{ sv=JSON.parse(localStorage.getItem('apt3d-quality')||'{}')||{}; }catch(e){}
   HQ_KEYS.forEach(function(k){ HQ[k]=Q.get('hq')==='all'?true:Q.get('hq')==='off'?false:!!sv[k]; }); })();
 function hqSave(){ try{ localStorage.setItem('apt3d-quality',JSON.stringify(HQ)); }catch(e){} }
@@ -2971,7 +2970,7 @@ function draw(full){
   txSize(full);
   sunArc.visible=arcOn();                       // decided before drawing, so a jump into a room never shows the guide for a frame
   if(aoPass)aoPass.enabled=HQ.ao&&(full||!FX.prog);
-  var dofOn=full&&!LOWEND&&mode==='overview'&&state.dof!=='off'&&!renderer.xr.isPresenting;
+  var dofOn=full&&HQ.dof&&!LOWEND&&mode==='overview'&&!renderer.xr.isPresenting;
   if(dofOn){ var dist=camera.position.distanceTo(controls.target); dofPass.uniforms.focus.value=dist; dofPass.uniforms.aperture.value=.00035*20/Math.max(8,dist); }
   dofPass.enabled=dofOn; if(smaaPass)smaaPass.enabled=full;
   if(full&&skyEnvDirty&&mode==='eye')updateSkyEnv();
@@ -3215,7 +3214,8 @@ var HQ_ROWS={dv:['Day previews','Your view at four times of day in the Light tab
   glass:['Real glass','Glass that bends and blurs what is behind it: about a fifth slower'],
   glide:['Time glide','Day, Golden and Night slide the sun over 1.5 s instead of jumping: twice the work for those buttons'],
   shadow:['Finer shadows','Sharper, more exact sun shadows: a little slower'],
-  ao:['Contact shading','Soft shade where things meet, on still views: a little slower']};
+  ao:['Contact shading','Soft shade where things meet, on still views: a little slower'],
+  dof:['Depth of field','From above, what is nearer or further than the middle softens like a photo of a model: the model looks a little hazy when still, and a little slower']};
 var hqRows=document.getElementById('hqrows'), dvShow=document.getElementById('dvshow'), dvNote=document.getElementById('dvnote');
 HQ_KEYS.forEach(function(k){ if(k==='win'&&(LOWEND||Q.get('win')==='0'))return;
   var r=document.createElement('div'); r.className='hqrow';
