@@ -389,6 +389,9 @@ h3{font-weight:600}
 .pe-col{stroke:var(--ink2);stroke-width:1;vector-effect:non-scaling-stroke}
 .pe-win{fill:var(--sheet);stroke:var(--ink2);stroke-width:1;vector-effect:non-scaling-stroke}.pe-glass{stroke:#5B8FB0;stroke-width:2;vector-effect:non-scaling-stroke}
 .pe-hit{fill:transparent;cursor:grab}
+.pe-rh{fill:var(--sheet);stroke:var(--accent);stroke-width:2;vector-effect:non-scaling-stroke}.pe-rh:hover{fill:var(--accent)}
+.pe-dzh{fill:color-mix(in srgb,var(--accent) 10%,transparent);stroke:var(--accent);stroke-width:1.5;stroke-dasharray:5 3;vector-effect:non-scaling-stroke;pointer-events:none}
+.pe-pc.dz .pf{fill:color-mix(in srgb,var(--ink2) 9%,var(--sheet))}
 .pe-door .pe-leaf{stroke:var(--ink);stroke-width:2;vector-effect:non-scaling-stroke}.pe-door .pe-swing{fill:none;stroke:var(--ink2);stroke-width:1;stroke-dasharray:4 3;vector-effect:non-scaling-stroke}
 .pe-door.on .pe-leaf,.pe-door.on .pe-swing{stroke:var(--accent)}.pe-door.on .pe-leaf{stroke-width:3}
 .pe-dim{stroke:var(--accent);stroke-width:1.2;vector-effect:non-scaling-stroke;marker-start:none}.pe-dimt{fill:var(--accent);font-family:var(--mono);font-weight:600}
@@ -796,7 +799,7 @@ function peZones(P){ return P.zones.map(function(z){ return {r:z.slice(0,4),k:z[
 var PE_G={};
 function peGroups(k){ if(PE_G[k])return PE_G[k]; var O=PE_ORIG[k], by={};
   O.items.forEach(function(it){ if(!it.f||it.s==null)return; var b=peItemBox(it); if(!b)return;
-    var g=by[it.s]||(by[it.s]={s:it.s,b:[1e9,1e9,1e9,-1e9,-1e9,-1e9],f:it.f});
+    var g=by[it.s]||(by[it.s]={s:it.s,b:[1e9,1e9,1e9,-1e9,-1e9,-1e9],f:it.f,k:k});
     for(var i=0;i<3;i++){ g.b[i]=Math.min(g.b[i],b[i]); g.b[i+3]=Math.max(g.b[i+3],b[i+3]); } });
   (O.pieces||[]).forEach(function(p){ if(p.s!=null&&by[p.s]&&!by[p.s].n)by[p.s].n=p.n; });
   return (PE_G[k]=Object.keys(by).map(function(s){ var g=by[s]; g.n=g.n||'piece'; return g; })); }
@@ -805,7 +808,10 @@ function peItemBox(it){ if(it.t==='b')return it.b;
   if(it.t==='s'){ var q=it.r, sy=it.sy||1; return [it.c[0]-q,it.c[1]-q,it.z-q*sy,it.c[0]+q,it.c[1]+q,it.z+q*sy]; }
   if(it.t==='p'){ var xs=it.p.map(function(q){ return q[0]; }), ys=it.p.map(function(q){ return q[1]; }); return [Math.min.apply(0,xs),Math.min.apply(0,ys),it.z[0],Math.max.apply(0,xs),Math.max.apply(0,ys),it.z[1]]; }
   return null; }
-function peGroupBox(T,g){ var d=T.shift[g.s]||[0,0]; return [g.b[0]+d[0],g.b[1]+d[1],g.b[2],g.b[3]+d[0],g.b[4]+d[1],g.b[5]]; }
+function peGroupBox(T,g){ var d=T.shift[g.s]||[0,0], b=g.b;
+  if(typeof SCENE!=='undefined'&&g.k===LAYOUT){ var ps=(SCENE.pieces||[]).filter(function(p){ return p.s===g.s; }); if(ps.some(function(p){ return p._moved; })){ var st=ps.filter(function(p){ return !p._moved; });   // some of its pieces moved: what stays
+      if(st.length){ b=[1e9,1e9,g.b[2],-1e9,-1e9,g.b[5]]; st.forEach(function(p){ b[0]=Math.min(b[0],p.b[0]); b[1]=Math.min(b[1],p.b[1]); b[3]=Math.max(b[3],p.b[3]); b[4]=Math.max(b[4],p.b[4]); }); } } }
+  return [b[0]+d[0],b[1]+d[1],b[2],b[3]+d[0],b[4]+d[1],b[5]]; }
 function peLine(T,id){ for(var i=0;i<T.lines.length;i++)if(T.lines[i].id===id)return T.lines[i]; return null; }
 function peDoorPts(T,d){ var L=peLine(T,d.line), h=L.o==='h', face=d.ss>0?L.c[1]:L.c[0];
   function P2(a,c){ return h?[a,c]:[c,a]; }
@@ -1105,11 +1111,20 @@ var PE_MIN=[[/bed|master|nanny|maid|kids/i,7,240,'a bedroom'],[/bath|shower/i,3,
   [/corridor|hall|lobby|foyer|passage/i,0,90,'a passage'],[/laundry|utility|store|dressing/i,1.5,90,'this room']];
 function peFurn(T){ var GS=PE.inBase||typeof furn==='undefined'?{}:pfGoneS(), ON=typeof furn==='undefined'?{}:pfShownS(), out=peGroups(LAYOUT).filter(function(g){ return !GS[g.s]&&pfGroupOn(ON,g)&&g.b[2]<100&&g.b[5]-g.b[2]>25&&!/^rug/i.test(g.n); })
   .map(function(g){ return {n:g.n,b:peGroupBox(T,g),s:g.s}; });
-  if(!PE.inBase&&typeof furn!=='undefined')fList().forEach(function(q){ if(q.t.charAt(0)!=='@'&&fBlocks(q)&&fDim(q).h>25)out.push({n:fDim(q).n,b:fFoot(q),pc:q.id}); });   // and the pieces placed from the catalogue
+  if(!PE.inBase&&typeof furn!=='undefined')fList().forEach(function(q){ if(FDEF[q.t]&&fBlocks(q)&&fDim(q).h>25&&pfDzMoved(q))out.push({n:fDim(q).n,b:fFoot(q),pc:q.id}); });   // and the pieces placed from the catalogue, and the design's pieces moved
   return out; }
 // ----- pieces placed from the catalogue, on the plan: what is around them, closing up to walls, turning to face the room
 var PF_CLR={wc:60,bidet:60,vanity:70,basin:60,bath:70,shower:70,tall:75,base:100,drawers:100,sink:100,hob:100,dw:100,ovens:100,fridge:100,washer:90};   // clear floor in front, cm: the usual minimum
 var PF_WALL=/^(sofa|corner|low|tall|open|bed|bunk|cot|base|drawers|sink|hob|dw|fridge|ovens|wallc|hood|wc|bidet|vanity|basin|shower|bath|rail|heater|washer|mirror|art|screen|ac|acout|deskL|island)$/;
+function pfDzAt(T,x,y,wid){ if(PE.furn===false||typeof furn==='undefined')return null; if(PCREG)pcRegister();     // the design's movable piece under a point (not rugs; right on a wall, the wall)
+  if(wid!=null){ var L=peLine(T,+wid); if(L){ var lb=peLineRect(L); if(x>=lb[0]-1&&x<=lb[2]+1&&y>=lb[1]-1&&y<=lb[3]+1)return null; } }
+  var taken={}, best=null, ba=1e12; fList().forEach(function(q){ if(q.t.charAt(0)==='@')taken[q.t]=1; });
+  (SCENE.pieces||[]).forEach(function(p,i){ var D=FDEF['@'+i]; if(!D||taken['@'+i]||p._moved||!pfVar(p)||/^rug/i.test(p.n)||p.b[5]-p.b[2]<3)return; var b=pfDzBox(T,i);
+    if(b&&x>=b[0]&&x<=b[2]&&y>=b[1]&&y<=b[3]){ var a=(b[2]-b[0])*(b[3]-b[1]); if(a<ba){ ba=a; best=i; } } });
+  return best; }
+function pfDzBox(T,i){ var p=SCENE.pieces[i]; if(!p)return null; var d=(p.s!=null&&T.shift&&T.shift[p.s])||[0,0], b=p.b; return [b[0]+d[0],b[1]+d[1],b[3]+d[0],b[4]+d[1]]; }
+function pfDzTake(T,i){ var b=pfDzBox(T,i), x=Math.round((b[0]+b[2])/2*10)/10, y=Math.round((b[1]+b[3])/2*10)/10, q={id:'@'+i+'-'+Date.now().toString(36),t:'@'+i,k:FDEF['@'+i].k,x:x,y:y,r:0,ox:x,oy:y}; fList().push(q); return q; }
+function pfDzMoved(q){ return q.t.charAt(0)!=='@'||q.ox==null||q.x!==q.ox||q.y!==q.oy||!!q.r||!!q.w||!!q.d; }     // a design piece only checked once it has been changed
 function pfGet(id){ return fList().filter(function(q){ return q.id===id; })[0]; }
 function pfWalls(T){ return T.lines.map(function(L){ var b=peLineRect(L); return {n:'the wall',b:[b[0],b[1],0,b[2],b[3],400],wall:1}; }); }
 function pfObs(T,self){ var out=pfWalls(T);
@@ -1169,7 +1184,7 @@ function peWarnings(T){ var W=[];
       var g1=(h?f.b[1]:f.b[0])-L.c[1], g2=L.c[0]-(h?f.b[4]:f.b[3]), g=g1>=0?g1:g2>=0?g2:-1;
       if(g>=30&&g<75)W.push({x:h?(Math.max(lo,L.a[0])+Math.min(hi,L.a[1]))/2:(g1>=0?L.c[1]+g/2:L.c[0]-g/2),y:h?(g1>=0?L.c[1]+g/2:L.c[0]-g/2):(Math.max(lo,L.a[0])+Math.min(hi,L.a[1]))/2,t:'Walkway '+Math.round(g)+' cm by the '+f.n.toLowerCase()+', under 75',k:'walk',line:L.id,gap:g,side:g1>=0?1:-1,pc:f.pc,s:f.s}); }); });
   // the pieces placed from the catalogue: what they run into, and the floor in front of them
-  if(!PE.inBase)fList().forEach(function(p){ if(p.t.charAt(0)==='@'||!fBlocks(p))return; var D=fDim(p), gp=pfGaps(T,p), nm=D.n.toLowerCase();
+  if(!PE.inBase)fList().forEach(function(p){ if(!FDEF[p.t]||!fBlocks(p)||!pfDzMoved(p))return; var D=fDim(p), gp=pfGaps(T,p), nm=D.n.toLowerCase();
     var ov=gp.over.filter(function(v){ return !v.wall; }); if(ov.length)W.push({x:p.x,y:p.y,t:'The '+nm+' overlaps '+ov[0].n,k:'over',pc:p.id});
     var fp=fFoot(p); if(fp[5]>=120)T.lines.some(function(L){ return L.ops.some(function(op){ if(op[2]!=='win'&&op[2]!=='gl')return false;   // nothing tall in front of a window or a glazed door
       var h=L.o==='h', lo=h?fp[0]:fp[1], hi=h?fp[3]:fp[4]; if(Math.min(hi,op[1])-Math.max(lo,op[0])<10)return false;
@@ -2902,7 +2917,7 @@ function dBuild(pc){ // a designed piece, exactly as the model draws it, centred
 function pcRegister(){ // the designed pieces of this plan that can be moved, as Furnish kinds ('@' and their number)
   Object.keys(FDEF).forEach(function(k){ if(k.charAt(0)==='@')delete FDEF[k]; });
   Object.keys(PCR).forEach(function(i){ var p=SCENE.pieces[i]; if(!p||!PCR[i].some(function(r){ return !r.blob; }))return; var b=p.b;
-    FDEF['@'+i]={t:'@'+i,n:p.n,w:Math.round((b[3]-b[0])*10)/10,d:Math.round((b[4]-b[1])*10)/10,h:b[5],cat:'From the design',k:pcKey(p),pc:+i,v:p.v}; });
+    FDEF['@'+i]={t:'@'+i,n:p.n,w:Math.round((b[3]-b[0])*10)/10,d:Math.round((b[4]-b[1])*10)/10,h:Math.round((b[5]-b[2])*10)/10,y:Math.round(b[2]*10)/10,cat:'From the design',k:pcKey(p),pc:+i,v:p.v}; });
   PCREG=false; }
 function fFromDesign(p0,noMark){ // take a designed piece out of the model as a Furnish piece, where it stands
   var i=pcOf(p0); if(i<0)return null; if(PCREG)pcRegister(); var b=p0.b;
@@ -3044,7 +3059,8 @@ function fSym(D,t){ var w=D.w, d=D.d, hw=w/2, hd=d/2, m=D.m, hi=D.y>=90, o='';
 function fPlace(p){ var o=fObjs[p.id], D=fDim(p), key=p.t+'|'+D.w+'|'+D.d+(p.gone?'|gone':'');
   if(o&&o.userData.key!==key){ scene.remove(o); o.traverse(function(m){if(m.geometry)m.geometry.dispose();}); o=null; }
   if(!o){ o=fBuild(p); o.userData={fid:p.id,key:key}; scene.add(o); fObjs[p.id]=o; }
-  o.position.set(p.x*S,0,p.y*S); o.rotation.y=-p.r*Math.PI/180; o.visible=state.fu==='all'&&fVariantOn(p); }
+  o.position.set(p.x*S,0,p.y*S); o.rotation.y=-p.r*Math.PI/180; o.visible=state.fu==='all'&&fVariantOn(p);
+  if(p.t.charAt(0)==='@'&&FDEF[p.t]){ var F0=FDEF[p.t]; o.scale.set((p.w||F0.w)/F0.w,1,(p.d||F0.d)/F0.d); } }   // a design piece sized in the 2D plan
 function fVariantOn(p){ var D=FDEF[p.t], g=D&&D.v&&groups[D.v]; return !g||!g.length||g[0].userData.grpOn!==false; }   // a moved designed piece follows its switch
 var FAUTO={};
 function fSync(){ var keep={}, out={};
@@ -3085,7 +3101,7 @@ function fInfo(){ fRingShow();
   var p=fGet(); if(!p){ fbar.hidden=true; return; }
   var D=fDim(p), r=fGaps(p), rm=roomAt(p.x,p.y), parts=[];
   fbname.textContent=D.n+(p.t.charAt(0)==='@'?' (from the design)':'')+(p.r?' · turned '+p.r+'°':'')+(rm?' · '+rm.n:'');
-  if(document.activeElement!==fbw)fbw.value=D.w; if(document.activeElement!==fbd)fbd.value=D.d; fbw.disabled=fbd.disabled=p.t.charAt(0)==='@';
+  if(document.activeElement!==fbw)fbw.value=D.w; if(document.activeElement!==fbd)fbd.value=D.d; fbw.disabled=fbd.disabled=false;
   fDims(p,r.g);
   if(r.over.length)parts.push('<span class="bad">Overlaps '+fEsc(r.over.slice(0,2).join(' and '))+'</span>');
   [['left','left'],['right','right'],['top','garden side'],['bottom','entrance side']].forEach(function(k){
@@ -3152,7 +3168,7 @@ function fSnap(p){ var g=fGaps(p).g, n=8;
   if(g.left[0]<n&&g.left[0]>0&&!(g.right[0]<g.left[0]))p.x-=g.left[0]; else if(g.right[0]<n&&g.right[0]>0)p.x+=g.right[0];
   if(g.top[0]<n&&g.top[0]>0&&!(g.bottom[0]<g.top[0]))p.y-=g.top[0]; else if(g.bottom[0]<n&&g.bottom[0]>0)p.y+=g.bottom[0];
   p.x=Math.round(p.x*10)/10; p.y=Math.round(p.y*10)/10; }
-function fResize(w,d){ var p=fGet(); if(!p||p.t.charAt(0)==='@')return; var D=FDEF[p.t];
+function fResize(w,d){ var p=fGet(); if(!p)return; var D=FDEF[p.t];
   w=Math.max(20,Math.min(500,Math.round(w))); d=Math.max(20,Math.min(500,Math.round(d))); if(!isFinite(w)||!isFinite(d))return;
   var c=fDim(p); if(c.w===w&&c.d===d)return; fMark('Resized '+c.n);
   if(w===D.w)delete p.w; else p.w=w; if(d===D.d)delete p.d; else p.d=d; fSync(); fSave(); }
@@ -4025,10 +4041,16 @@ function peDraw(){ if(!PE.on)return; var T=peT(), r=peSvg.getBoundingClientRect(
   var ONS=pfShownS();
   if(PE.furn!==false)peGroups(LAYOUT).forEach(function(gr){ if(GS[gr.s]||!pfGroupOn(ONS,gr))return; var b=peGroupBox(T,gr), mv=T.shift[gr.s]&&(T.shift[gr.s][0]||T.shift[gr.s][1]);
     el('rect',{x:b[0],y:b[1],width:b[3]-b[0],height:b[4]-b[1],class:'pe-furn'+(mv?' mv':'')},g); });
-  if(PE.furn!==false)fList().forEach(function(pc){ if(pc.t.charAt(0)==='@'||!FDEF[pc.t])return; var D=fDim(pc), sel=pfSelIds().indexOf(pc.id)>-1;   // the pieces placed from the catalogue
+  if(PE.furn!==false&&PE.hovDz!=null&&!PE.drag){ var hz=pfDzBox(T,PE.hovDz); if(hz)el('rect',{x:hz[0],y:hz[1],width:hz[2]-hz[0],height:hz[3]-hz[1],class:'pe-dzh'},g); }   // a design piece under the pointer: it can be picked
+  if(PE.furn!==false)fList().forEach(function(pc){ if(pc.gone||!FDEF[pc.t])return; var D=fDim(pc), sel=pfSelIds().indexOf(pc.id)>-1, dz=pc.t.charAt(0)==='@';   // the pieces placed from the catalogue, and the design's pieces taken out
     var bad=fBlocks(pc)&&pfGaps(T,pc).over.length>0;          // a piece on something else is red where it stands
-    var pg=el('g',{transform:'translate('+pc.x+' '+pc.y+') rotate('+(pc.r||0)+')',class:'pe-pc'+(sel?' on':'')+(bad?' bad':'')+(!sel&&PE.hovPc===pc.id?' hov':''),'data-pc':pc.id},g);
+    var pg=el('g',{transform:'translate('+pc.x+' '+pc.y+') rotate('+(pc.r||0)+')',class:'pe-pc'+(dz?' dz':'')+(sel?' on':'')+(bad?' bad':'')+(!sel&&PE.hovPc===pc.id?' hov':''),'data-pc':pc.id},g);
     pg.innerHTML=fSym(D,pc.t); el('rect',{x:-D.w/2,y:-D.d/2,width:D.w,height:D.d,class:'pe-hit','data-pc':pc.id},pg); });
+  PE._hg=null; var rsel=PE.sel&&PE.sel.t==='pc'&&pfSelIds().length===1&&pfGet(PE.sel.id);      // the picked piece's handles: drag a dot to change its width or depth, the other side stays
+  if(rsel&&!rsel.gone&&FDEF[rsel.t]&&PE.furn!==false&&(!PE.drag||PE.drag.t==='rs')){ var RD=fDim(rsel), hw=RD.w/2, hd=RD.d/2, rr=(window.matchMedia&&matchMedia('(pointer:coarse)').matches?9:5.5)*k, rq=((Math.round((rsel.r||0)/90)%2)+2)%2;
+    var hg=el('g',{transform:'translate('+rsel.x+' '+rsel.y+') rotate('+(rsel.r||0)+')'},g); PE._hg=hg;
+    [['e',hw,0],['w',-hw,0],['s',0,hd],['n',0,-hd],['se',hw,hd],['sw',-hw,hd],['ne',hw,-hd],['nw',-hw,-hd]].forEach(function(h){ var cur=h[0].length===2?((h[0]==='se'||h[0]==='nw')!==!!rq?'nwse':'nesw'):((h[0]==='e'||h[0]==='w')!==!!rq?'ew':'ns');
+      var c=el('circle',{cx:h[1],cy:h[2],r:h[0].length===2?rr*.85:rr,class:'pe-rh','data-rh':h[0]},hg); c.style.cursor=cur+'-resize'; var tt=document.createElementNS('http://www.w3.org/2000/svg','title'); tt.textContent=h[0].length===2?'Drag to change the width and depth':(h[0]==='e'||h[0]==='w'?'Drag to change the width':'Drag to change the depth'); c.appendChild(tt); }); }
   if(PE.fr&&PE.fr.prop){ var FR=PE.fr, FRr=pfRm(T,FR.list[FR.i]).r, FX=FR.prop.X;    // the proposal for this room, over what makes way for it
     el('rect',{x:FRr[0],y:FRr[1],width:FRr[2]-FRr[0],height:FRr[3]-FRr[1],class:'pe-frroom'},g);
     if((FR.prop.md||FR.mode)==='replace'){ peGroups(LAYOUT).forEach(function(gr){ if(!FX.clr.s[gr.s]||GS[gr.s])return; var b=peGroupBox(T,gr), cx=(b[0]+b[3])/2, cy=(b[1]+b[4])/2; if(cx>FRr[0]&&cx<FRr[2]&&cy>FRr[1]&&cy<FRr[3])el('rect',{x:b[0],y:b[1],width:b[3]-b[0],height:b[4]-b[1],class:'pe-out'},g); });
@@ -4102,6 +4124,7 @@ function peDraw(){ if(!PE.on)return; var T=peT(), r=peSvg.getBoundingClientRect(
     if(Wb.length){ var bb=document.createElement('button'); bb.type='button'; bb.className='pewb'; bb.setAttribute('aria-expanded',String(!!PE.showBase));
       bb.textContent=(PE.showBase?'Hide':'Show')+' '+Wb.length+' already in the design'; bb.addEventListener('click',function(){ PE.showBase=!PE.showBase; peDraw(); }); peWarn.appendChild(bb);
       if(PE.showBase)Wb.forEach(function(w){ var s=document.createElement('button'); s.type='button'; s.className='pewi base'; s.textContent=w.t; s.addEventListener('click',function(ev){ ev.stopPropagation(); peWarnShow(w.t); }); peWarn.appendChild(s); }); } }
+  if(PE._hg&&!PE.exporting)peSvg.appendChild(PE._hg);     // the handles above the walls, so they can always be taken
   if(!PE.exporting)peWarnPop(T,W);
   peHint.hidden=false; peHint.textContent=peHintText(T); peHint.className='pehint'+(PE.drag&&(PE.drag.stop||PE.drag.stopw||PE.drag.warn)?' stop':'');
   var AP=document.getElementById('peareasp'); AP.hidden=!PE.areas; if(PE.areas){ var RIa=peRoomInfo(T), was=PE.baseRooms[LAYOUT]||{}, tot=0, tot0=0, rows='';
@@ -4116,13 +4139,17 @@ function peDraw(){ if(!PE.on)return; var T=peT(), r=peSvg.getBoundingClientRect(
 function peHintText(T){ var D=PE.drag;
   if(PE.tool==='meas')return PE.mA?'Click the second point · it snaps to wall faces · straight when nearly straight · Esc clears':'Measure: click two points · it snaps to wall faces and 5 cm · Esc clears';
   if(PE.place&&FDEF[PE.place.t]){ var PD=FDEF[PE.place.t]; return PD.n+' · '+PD.w+' × '+PD.d+' cm · click where it goes'+(PF_WALL.test(PD.m)?': it turns its back to the nearest wall':'')+' · R turns it · Alt places it freely · Shift+click places another · Esc stops'; }
+  if(D&&D.t==='rs'){ var rp=pfGet(D.id), RDn=rp&&fDim(rp); D.warn=0; if(!RDn)return ''; var hr=(PE.W||[]).filter(function(w){ return !w.base&&!w.ack&&w.pc===D.id; });
+    if(D.moved&&hr.length){ D.warn=1; return RDn.w+' × '+RDn.d+' cm · here: '+hr[0].t.charAt(0).toLowerCase()+hr[0].t.slice(1)+' · let go and its card offers a fix · Esc puts it back'; }
+    return 'Width '+RDn.w+' cm · depth '+RDn.d+' cm · the other side stays · 5 cm steps, Alt for 1 cm · Esc puts it back'; }
   if(D&&D.t==='pc'){ D.warn=0; if(D.moved){ var dids=D.ids||[D.id], here=(PE.W||[]).filter(function(w){ return !w.base&&!w.ack&&w.pc&&dids.indexOf(w.pc)>-1; });     // live, while it moves: what is wrong where it is now
       if(here.length){ D.warn=1; return 'Here: '+here[0].t.charAt(0).toLowerCase()+here[0].t.slice(1)+(here.length>1?' (and '+(here.length-1)+' more)':'')+' · let go and its card offers a fix · Esc puts it back'; } } }
   if(D&&D.t==='pc'&&D.moved&&PE.guides&&PE.guides.length)return 'Lined up with '+PE.guides.map(function(q){ return q[4]; }).filter(function(v,i,a){ return a.indexOf(v)===i; }).join(' and ')+' · Alt places it freely · Esc puts it back';
   if(D&&D.t==='pc'&&D.moved)return 'Moving it · a face within 8 cm of a wall or piece closes up · Alt places it freely · Esc puts it back';
   if(PE.hovPc&&!D){ var hq=pfGet(PE.hovPc); if(hq){ var HD=fDim(hq); return HD.n+' · '+HD.w+' × '+HD.d+' cm · drag to move · click, then R turns it, Delete removes it, Ctrl+D copies it'; } }
   if(PE.sel&&PE.sel.t==='pc'&&pfSelIds().length>1)return pfSelIds().length+' pieces · drag one to move them together · R turns them as a set · Ctrl+D copies them · Delete removes them · Shift+click adds or takes one away';
-  if(PE.sel&&PE.sel.t==='pc')return 'The numbers are the clear floor to what is around it: type one to set it · W and D change its size · R turns it · Delete removes it';
+  if(PE.hovDz!=null&&!D&&SCENE.pieces[PE.hovDz])return SCENE.pieces[PE.hovDz].n+' · from the design · drag to move it, or click to pick it and change its size';
+  if(PE.sel&&PE.sel.t==='pc')return 'Drag a dot to change its width or depth · drag the piece to move it · the numbers are the clear floor around it: type one to set it · R turns it · Delete removes it';
   if(D&&D.t==='wall'&&D.stop)return 'Stopped: '+D.stop.why+' · release keeps it here · Esc cancels';
   if(D&&D.t==='wall'&&D.moved)return 'Moving the wall · '+(D.done>0?'+':D.done<0?'−':'')+Math.abs(D.done)+' cm · walls joined to it follow · Esc cancels';
   if(D&&D.t==='dw')return D.stopw?'Stopped at '+Math.round(T.doors[D.i].w)+' cm: '+D.stopw+' · Esc cancels':'Door width · '+Math.round(T.doors[D.i].w)+' cm · the other end stays · Esc cancels';
@@ -4184,7 +4211,7 @@ function pfDims(g,T,p,fs){ var b=fFoot(p), gp=pfGaps(T,p).g, need=PF_CLR[fDim(p)
     el('line',{x1:a[0],y1:a[1],x2:z[0],y2:z[1],class:'pe-gap'+(short?' amber':'')},g);
     peTag(g,(a[0]+z[0])/2,(a[1]+z[1])/2,Math.round(cm)+'',fs*.85,!k[1],short?'amber':''); }); }
 function pfUnder(T,x,y,wid){ if(PE.furn===false)return null; if(wid!=null){ var L=peLine(T,+wid); if(L){ var b=peLineRect(L); if(x>=b[0]-1&&x<=b[2]+1&&y>=b[1]-1&&y<=b[3]+1)return null; } }   // right on a wall, the wall
-  var best=null, ba=1e12; fList().forEach(function(q){ if(q.gone||q.t.charAt(0)==='@'||!FDEF[q.t])return; var f=fFoot(q); if(x>=f[0]&&x<=f[3]&&y>=f[1]&&y<=f[4]){ var a=(f[3]-f[0])*(f[4]-f[1]); if(a<ba){ ba=a; best=q; } } });
+  var best=null, ba=1e12; fList().forEach(function(q){ if(q.gone||!FDEF[q.t])return; var f=fFoot(q); if(x>=f[0]&&x<=f[3]&&y>=f[1]&&y<=f[4]){ var a=(f[3]-f[0])*(f[4]-f[1]); if(a<ba){ ba=a; best=q; } } });
   return best; }                                                      // else the smallest piece under the pointer, above a wall's or a door's wider target
 function pfSelIds(){ var s=PE.sel; return s&&s.t==='pc'?(s.ids||[s.id]):[]; }
 function pfBox(ps){ var b=[1e9,1e9,-1e9,-1e9]; ps.forEach(function(q){ var f=fFoot(q); b[0]=Math.min(b[0],f[0]); b[1]=Math.min(b[1],f[1]); b[2]=Math.max(b[2],f[3]); b[3]=Math.max(b[3],f[4]); }); return b; }
@@ -4202,7 +4229,7 @@ function pfGuide(T,p,skip){ var f=fFoot(p), tol=Math.max(3,6*PE.view.k), best={x
   function tryy(ours,target,line){ var d=target-ours; if(Math.abs(d)<Math.abs(best.y[0])||best.y[2]==null&&Math.abs(d)<tol)best.y=[d,target,line]; }
   var rm=T.rooms.filter(function(r){ return p.x>r.r[0]&&p.x<r.r[2]&&p.y>r.r[1]&&p.y<r.r[3]; })[0];
   if(rm){ var rx=(rm.r[0]+rm.r[2])/2, ry=(rm.r[1]+rm.r[3])/2; tryx(p.x,rx,[rx,rm.r[1],rx,rm.r[3],'the middle of '+rm.n]); tryy(p.y,ry,[rm.r[0],ry,rm.r[2],ry,'the middle of '+rm.n]); }
-  fList().forEach(function(q){ if(q===p||q.gone||q.t.charAt(0)==='@'||!FDEF[q.t]||(skip&&skip.indexOf(q.id)>-1))return; var g=fFoot(q);
+  fList().forEach(function(q){ if(q===p||q.gone||!FDEF[q.t]||(skip&&skip.indexOf(q.id)>-1))return; var g=fFoot(q);
     if(Math.abs(q.y-p.y)>400&&Math.abs(q.x-p.x)>400)return;
     var qn='the '+fDim(q).n.toLowerCase();
     [[p.x,q.x],[f[0],g[0]],[f[3],g[3]],[f[0],g[3]],[f[3],g[0]]].forEach(function(c){ tryx(c[0],c[1],[c[1],Math.min(f[1],g[1]),c[1],Math.max(f[4],g[4]),qn]); });
@@ -4309,15 +4336,16 @@ function pfCtx(T,ri,mode,R,open){ var rm=pfRm(T,ri), RR=rm.r; R=R||RR.slice(); o
     if(cx<RR[0]||cx>RR[2]||cy<RR[1]||cy>RR[3]||b[2]>=100||b[5]-b[2]<3||/^rug/i.test(g.n))return; if(mode==='replace'&&clr.s[g.s])return;
     if(!clr.s[g.s]&&X.fixed.indexOf(g.n)<0)X.fixed.push(g.n);
     X.keep.push([b[0],b[1],b[3],b[4],'the '+g.n.toLowerCase(),'design']); });
-  if(mode!=='replace')fList().forEach(function(q){ if(q.gone||q.t.charAt(0)==='@'||!fBlocks(q))return; if(q.x>RR[0]&&q.x<RR[2]&&q.y>RR[1]&&q.y<RR[3]){ var f=fFoot(q); X.keep.push([f[0],f[1],f[3],f[4],'the '+fDim(q).n.toLowerCase()]); } });
+  if(mode!=='replace')fList().forEach(function(q){ if(q.gone||!FDEF[q.t]||!fBlocks(q))return; if(q.x>RR[0]&&q.x<RR[2]&&q.y>RR[1]&&q.y<RR[3]){ var f=fFoot(q); X.keep.push([f[0],f[1],f[3],f[4],'the '+fDim(q).n.toLowerCase()]); } });
   return X; }
 function pfVar(p){ if(!p.v)return true; var g=groups[p.v]; return !!(g&&g.length&&g[0].userData.grpOn!==false); }   // in the chosen variant (whatever the Furniture switch shows)
 function pfShownS(){ var by={}; (SCENE.pieces||[]).forEach(function(p){ if(p.s==null)return; var o=by[p.s]||(by[p.s]={any:0,on:0}); o.any++; if(pfVar(p)&&!p._moved)o.on++; }); return by; }   // the design's records, and whether any of their pieces shows
 function pfGroupOn(by,g){ var o=by[g.s]; return !o||o.on>0; }
 function pfGoneS(){ var o={}; if(PCREG)pcRegister(); fList().forEach(function(q){ if(q.t.charAt(0)==='@'&&FDEF[q.t]){ var P=SCENE.pieces[FDEF[q.t].pc]; if(P&&P.s!=null&&q.gone)o[P.s]=1; } }); return o; }
 function pfClearable(T,ri){ var R=pfRm(T,ri).r, out={pcs:[],s:{},n:0,names:[]}; if(PCREG)pcRegister();   // the design's movable pieces standing in the room
-  (SCENE.pieces||[]).forEach(function(p,i){ var D=FDEF['@'+i]; if(!D)return; var cx=(p.b[0]+p.b[3])/2, cy=(p.b[1]+p.b[4])/2; if(cx<R[0]||cx>R[2]||cy<R[1]||cy>R[3])return;
-    if(!pfVar(p))return; if(fList().some(function(q){ return q.t==='@'+i&&q.gone; }))return;
+  (SCENE.pieces||[]).forEach(function(p,i){ var D=FDEF['@'+i]; if(!D)return; var cx=(p.b[0]+p.b[3])/2, cy=(p.b[1]+p.b[4])/2, ex=fList().filter(function(q){ return q.t==='@'+i; })[0];
+    if(ex){ if(ex.gone)return; cx=ex.x; cy=ex.y; } if(cx<R[0]||cx>R[2]||cy<R[1]||cy>R[3])return;     // where it stands now
+    if(!pfVar(p))return;
     out.pcs.push(i); if(p.s!=null)out.s[p.s]=1; out.n++; out.names.push(p.n); });
   return out; }
 // can the piece stand here? inside the (part of the) room, off the floor kept clear, clear of what is already put, and
@@ -4745,7 +4773,7 @@ function pfSweepHit(T,q){ var f=fFoot(q); if(f[2]>=100)return false; var pts=[];
 function pfFine(T,q,room){ if(fBlocks(q)){ var gp=pfGaps(T,q); if(gp.over.length)return false; var need=PF_CLR[fDim(q).m], v=need&&gp.g[pfFront(q)]; if(v&&v[0]<need-.5)return false; }
   if(pfWinBlock(T,q)||pfSweepHit(T,q))return false;
   var fq=fFoot(q), bq=[fq[0],fq[1],fq[3],fq[4]];      // nor in the clear floor another piece needs in front of it
-  if(fBlocks(q)&&fq[2]<100&&fList().some(function(o){ if(o.id===q.id||o.gone||o.t.charAt(0)==='@'||!fBlocks(o))return false; var D=fDim(o), nd=PF_CLR[D.m]; return !!nd&&pfOv(bq,pfLR(o,-D.w/2,D.d/2,D.w/2,D.d/2+nd),.5); }))return false;
+  if(fBlocks(q)&&fq[2]<100&&fList().some(function(o){ if(o.id===q.id||o.gone||!FDEF[o.t]||!fBlocks(o))return false; var D=fDim(o), nd=PF_CLR[D.m]; return !!nd&&pfOv(bq,pfLR(o,-D.w/2,D.d/2,D.w/2,D.d/2+nd),.5); }))return false;
   if(room){ var f=fFoot(q); if(f[0]<room[0]-.5||f[1]<room[1]-.5||f[3]>room[2]+.5||f[4]>room[3]+.5)return false; }
   return true; }
 function pfRoomOf(T,x,y){ var r=T.rooms.filter(function(q){ return x>q.r[0]&&x<q.r[2]&&y>q.r[1]&&y<q.r[3]; })[0]; return r?r.r:null; }
@@ -4894,14 +4922,17 @@ function peSelUI(){ var T=peT(), s=PE.sel; peSel.innerHTML=''; peSel.hidden=!s||
     btn('Just this one',function(){ PE.multi=false; PE.sel={t:'pc',id:s.id}; peDraw(); },false,'Back to the last one picked');
     btn('Delete',function(){ pfDo(function(){ furn[LAYOUT]=fList().filter(function(q){ return ids.indexOf(q.id)<0; }); }); PE.sel=null; peDraw(); }).className='danger'; return; }
   if(s.t==='pc'){ var pc=pfGet(s.id); if(!pc||!FDEF[pc.t]){ peSel.hidden=true; return; } var D=fDim(pc), Dd=FDEF[pc.t], inR=T.rooms.filter(function(r){ return pc.x>r.r[0]&&pc.x<r.r[2]&&pc.y>r.r[1]&&pc.y<r.r[3]; })[0];
-    lab(D.n+' · '+D.w+' × '+D.d+(D.h>2?' × '+D.h:'')+' cm'+(D.y?' · at '+D.y+' cm':'')+(inR?' · '+inR.n:''));
+    lab(D.n+(pc.t.charAt(0)==='@'?' (design)':'')+' · '+D.w+' × '+D.d+(D.h>2?' × '+D.h:'')+' cm'+(D.y?' · at '+D.y+' cm':'')+(inR?' · '+inR.n:''));
     var gp2=pfGaps(T,pc).g; [['left','←',1],['right','→',-1],['top','↑',1],['bottom','↓',-1]].forEach(function(k){ var v=gp2[k[0]]; if(v[0]>400)return;
       num(k[1],v[0],function(nv){ pfDo(function(){ var q=pfGet(s.id); if(k[0]==='left'||k[0]==='right')q.x+=k[2]*(nv-v[0]); else q.y+=k[2]*(nv-v[0]); }); },'Clear distance to '+v[1]); });
-    num('W',D.w,function(v){ pfDo(function(){ var q=pfGet(s.id); v=Math.max(10,Math.min(600,Math.round(v))); if(v===Dd.w)delete q.w; else q.w=v; }); },'Width, cm (standard '+Dd.w+')');
-    num('D',D.d,function(v){ pfDo(function(){ var q=pfGet(s.id); v=Math.max(3,Math.min(600,Math.round(v))); if(v===Dd.d)delete q.d; else q.d=v; }); },'Depth, cm (standard '+Dd.d+')');
-    if(pc.w||pc.d)btn('Standard size',function(){ pfDo(function(){ var q=pfGet(s.id); delete q.w; delete q.d; }); },false,Dd.w+' × '+Dd.d+' cm');
+    var isDz=pc.t.charAt(0)==='@', std=isDz?'as designed ':'standard ';
+    num('W',D.w,function(v){ pfDo(function(){ var q=pfGet(s.id); v=Math.max(10,Math.min(1200,Math.round(v))); if(v===Dd.w)delete q.w; else q.w=v; }); },'Width, cm ('+std+Dd.w+') · or drag a dot at its side');
+    num('D',D.d,function(v){ pfDo(function(){ var q=pfGet(s.id); v=Math.max(3,Math.min(1200,Math.round(v))); if(v===Dd.d)delete q.d; else q.d=v; }); },'Depth, cm ('+std+Dd.d+') · or drag a dot at its front or back');
+    if(pc.w||pc.d)btn(isDz?'Size as designed':'Standard size',function(){ pfDo(function(){ var q=pfGet(s.id); delete q.w; delete q.d; }); },false,Dd.w+' × '+Dd.d+' cm');
     btn('⟳ 90°',function(){ pfDo(function(){ var q=pfGet(s.id); q.r=((q.r||0)+90)%360; }); },false,'Turn it (R; Shift+R 15°)');
     btn('Pick more',function(){ PE.multi=!PE.multi; peDraw(); },!!PE.multi,'Tap other pieces to move, turn or copy them together (or Shift+click)');
+    if(isDz){ btn('Put it back',function(){ pfDo(function(){ furn[LAYOUT]=fList().filter(function(q){ return q.id!==s.id; }); }); PE.sel=null; peDraw(); },false,'Where the design has it, at its designed size');
+      btn('Clear it',function(){ pfDo(function(){ var q=pfGet(s.id); q.gone=1; delete q.w; delete q.d; var P0=SCENE.pieces[Dd.pc]; q.x=Math.round((P0.b[0]+P0.b[3])/2*10)/10; q.y=Math.round((P0.b[1]+P0.b[4])/2*10)/10; q.r=0; }); PE.sel=null; peDraw(); },false,'Take it out of this trial (Back to the design brings it)').className='danger'; return; }
     btn('Copy',function(){ var nids=pfCopy(T,[s.id]); if(nids.length)PE.sel={t:'pc',id:nids[0]}; peDraw(); },false,'Another one beside it (Ctrl+D)');
     btn('Delete',function(){ pfDo(function(){ furn[LAYOUT]=fList().filter(function(q){ return q.id!==s.id; }); }); PE.sel=null; peDraw(); }).className='danger'; }
   if(s.t==='room'){ var rm=T.rooms[s.i]; if(!rm){ peSel.hidden=true; return; } var RIr=peRoomInfo(T)[s.i]; lab('Room · '+RIr.a.toFixed(1)+' m² · '+Math.round(RIr.w*100)+' × '+Math.round(RIr.d*100)+' cm');
@@ -4921,6 +4952,8 @@ peSvg.addEventListener('pointerdown',function(e){ if(e.button>0)return; peSvg.se
   var T=peT(), p=peToPlan(e.clientX,e.clientY), tg=e.target, wid=tg.getAttribute('data-wall'), di=tg.closest&&tg.closest('[data-door]'), ri=tg.getAttribute('data-room');
   if(PE.place&&PE.tool==='sel'){ var pl=pfPlace(p[0],p[1],e.altKey); if(!e.shiftKey)pfPick(null); else PE.sel={t:'pc',id:pl.id}; return; }   // Shift keeps placing the same piece
   if(PE.tool==='wall'){ var sp=peSnap(T,p[0],p[1]); PE.drag={t:'draw',p0:sp,p1:sp}; return; }
+  var rh=tg.getAttribute&&tg.getAttribute('data-rh'); if(rh&&PE.sel&&PE.sel.t==='pc'){ var rq=pfGet(PE.sel.id); if(rq){ var RD0=fDim(rq), wk={}; (PE.W||[]).forEach(function(w){ if(w.pc===rq.id)wk[peWKey(T,w)]=1; });   // a handle: the piece's width or depth
+      PE.drag={t:'rs',id:rq.id,ids:[rq.id],h:rh,x0:rq.x,y0:rq.y,w0:RD0.w,d0:RD0.d,r:rq.r||0,base:JSON.stringify(fList()),moved:false,wk:wk}; return; } }
   var wt=tg.getAttribute&&tg.getAttribute('data-w'), ww=wt&&(PE.W||[]).filter(function(q){ return q.t===wt; })[0]; if(wt&&!(ww&&ww.pc&&pfGet(ww.pc)&&PE.tool==='sel')){ PE.drag=null; peWarnShow(wt); return; }      // a warning's mark: its card (on a piece, a click opens it and a drag moves the piece)
   if(PE.tool==='meas'){ var mp=peMeasPt(T,p,PE.mA); if(!PE.mA){ PE.mA=mp; PE.mLive=mp; } else { PE.measures=(PE.measures||[]).concat([[PE.mA,mp]]).slice(-4); PE.mA=null; } peDraw(); return; }
   var pcEl=PE.tool==='sel'&&tg.closest&&tg.closest('[data-pc]'), und=PE.tool==='sel'&&!pcEl&&tg.getAttribute('data-dh')==null&&!/pe-r[nd]/.test(tg.getAttribute('class')||'')?(wt?pfGet(ww.pc):pfUnder(T,p[0],p[1],wid)):null;
@@ -4928,6 +4961,9 @@ peSvg.addEventListener('pointerdown',function(e){ if(e.button>0)return; peSvg.se
     if(e.shiftKey||PE.multi){ var cur=pfSelIds().slice(), ix=cur.indexOf(pid); if(ix>-1)cur.splice(ix,1); else cur.push(pid); PE.sel=cur.length?{t:'pc',id:cur[cur.length-1],ids:cur}:null; PE.drag=null; peDraw(); return; }   // Shift+click adds or takes away
     var cur2=pfSelIds(), grp=cur2.length>1&&cur2.indexOf(pid)>-1?cur2.slice():[pid], st0={}; grp.forEach(function(i){ var q=pfGet(i); if(q)st0[i]=[q.x,q.y]; });
     PE.sel=grp.length>1?{t:'pc',id:pid,ids:grp}:{t:'pc',id:pid}; var w0={}; (PE.W||[]).forEach(function(w){ if(w.pc&&grp.indexOf(w.pc)>-1)w0[peWKey(T,w)]=1; }); PE.drag={t:'pc',id:pid,ids:grp,st:st0,p0:p,x0:pq.x,y0:pq.y,base:JSON.stringify(fList()),moved:false,w0:w0,wclick:wt||null}; peDraw(); return; } }
+  if(PE.tool==='sel'&&!di&&tg.getAttribute('data-dh')==null&&!/pe-r[nd]/.test(tg.getAttribute('class')||'')){ var dzi=pfDzAt(T,p[0],p[1],wid);     // a piece of the design: taken out where it stands, picked, and moved if dragged
+    if(dzi!=null){ var b0=JSON.stringify(fList()), dq=pfDzTake(T,dzi); PE.hovDz=null; PE.sel={t:'pc',id:dq.id}; if(e.pointerType==='touch'){ PE.undo.push('F'+b0); PE.redo=[]; pfCommit(); PE.drag=null; peDraw(); return; }   // on a touch screen a tap picks it, so a finger on the floor still pans
+      PE.drag={t:'pc',id:dq.id,ids:[dq.id],st:{},p0:p,x0:dq.x,y0:dq.y,base:b0,moved:false,w0:{}}; peDraw(); return; } }
   var dh=tg.getAttribute('data-dh'); if(dh!=null&&PE.sel&&PE.sel.t==='door'){ var dd=T.doors[PE.sel.i]; PE.drag={t:'dw',e:+dh,i:PE.sel.i,base:JSON.stringify(T),o0:peDoorOp(dd),at0:dd.at,sa0:dd.sa,w0:dd.w}; return; }
   if(PE.tool==='door'){ if(wid==null){ toast('','Click on a wall'); return; } var L=peLine(T,+wid), h=L.o==='h', side=(h?p[1]:p[0])<(L.c[0]+L.c[1])/2?-1:1;
     if(peDo(function(T){ return peAddDoor(T,peLine(T,+wid),Math.round(h?p[0]:p[1]),side); })){ PE.sel={t:'door',i:T.doors.length-1}; peTool('sel'); peDraw(); } return; }
@@ -4951,10 +4987,11 @@ peSvg.addEventListener('pointermove',function(e){ if(!PE.pts[e.pointerId]){ if(e
       if(hh!=null){ hv=null; hdv=null; hrv=null; PE.hovDh=true; } else PE.hovDh=false;
       var hpe=tg2.closest&&tg2.closest('[data-pc]'), hpc=hpe&&hv==null&&hdv==null?hpe.getAttribute('data-pc'):null;
       if(!hpc&&hh==null&&PE.tool==='sel'){ var hp=peToPlan(e.clientX,e.clientY), hu=pfUnder(peT(),hp[0],hp[1],hv); if(hu){ hpc=hu.id; hv=null; hdv=null; } }   // a piece wins over a wall's or door's wider target
+      var hzv=null; if(!hpc&&hh==null&&hdv==null&&PE.tool==='sel'&&!PE.place){ var hp2=peToPlan(e.clientX,e.clientY); hzv=pfDzAt(peT(),hp2[0],hp2[1],hv); if(hzv!=null){ hv=null; hrv=null; } }   // a piece of the design
       if(hpc)hrv=null;
       if(PE.place){ PE.placeAt=peToPlan(e.clientX,e.clientY); PE.placeAlt=e.altKey; peDraw(); return; }
       if(PE.tool==='meas'){ if(PE.mA){ PE.mLive=peMeasPt(peT(),peToPlan(e.clientX,e.clientY),PE.mA); peDraw(); } return; }
-      if(hv!==PE.hov||hdv!==PE.hovDoor||hrv!==PE.hovRoom||hpc!==PE.hovPc){ PE.hov=hv; PE.hovDoor=hdv; PE.hovRoom=hrv; PE.hovPc=hpc; peDraw(); } } return; } PE.pts[e.pointerId]={x:e.clientX,y:e.clientY}; var D=PE.drag; if(!D)return; var T=peT();
+      if(hv!==PE.hov||hdv!==PE.hovDoor||hrv!==PE.hovRoom||hpc!==PE.hovPc||hzv!==PE.hovDz){ PE.hov=hv; PE.hovDoor=hdv; PE.hovRoom=hrv; PE.hovPc=hpc; PE.hovDz=hzv; peDraw(); } } return; } PE.pts[e.pointerId]={x:e.clientX,y:e.clientY}; var D=PE.drag; if(!D)return; var T=peT();
   if(D.t==='pinch'&&Object.keys(PE.pts).length===2){ var m=peMid(), r=peSvg.getBoundingClientRect(), k=Math.max(.15,Math.min(8,D.k0*D.d0/peDist()));
     PE.view={k:k,x:D.c[0]-(m[0]-r.left)*k,y:D.c[1]-(m[1]-r.top)*k}; peDraw(); return; }
   if(D.t==='pan'){ if(!D.moved&&Math.hypot(e.clientX-D.c0[0],e.clientY-D.c0[1])<4)return; D.moved=true;
@@ -4964,6 +5001,12 @@ peSvg.addEventListener('pointermove',function(e){ if(!PE.pts[e.pointerId]){ if(e
     var err3=peDoorEdit(T,dq,function(q){ var lo=D.e?fixed:fixed-nw, hi=D.e?fixed+nw:fixed; if(D.sa0>0){ q.at=lo; q.sa=1; } else { q.at=hi; q.sa=-1; } q.w=nw; });   // the hinge stays on its side
     D.moved=!err3||D.moved; D.stopw=err3?'no room for it there: an end would reach the wall\'s end or another opening':''; peDraw(); return; }
   var p=peToPlan(e.clientX,e.clientY);
+  if(D.t==='rs'){ var rq2=pfGet(D.id); if(!rq2)return; var ra=D.r*Math.PI/180, ux=[Math.cos(ra),Math.sin(ra)], uy=[-Math.sin(ra),Math.cos(ra)], rdx=p[0]-D.x0, rdy=p[1]-D.y0, lx=rdx*ux[0]+rdy*ux[1], ly=rdx*uy[0]+rdy*uy[1], rst=e.altKey?1:5, nw=D.w0, nd=D.d0, ccx=0, ccy=0;
+    if(/e/.test(D.h)){ nw=Math.max(10,Math.round((lx+D.w0/2)/rst)*rst); ccx=(nw-D.w0)/2; } if(/w/.test(D.h)){ nw=Math.max(10,Math.round((D.w0/2-lx)/rst)*rst); ccx=-(nw-D.w0)/2; }     // the opposite side stays where it is
+    if(/s/.test(D.h)){ nd=Math.max(3,Math.round((ly+D.d0/2)/rst)*rst); ccy=(nd-D.d0)/2; } if(/n/.test(D.h)){ nd=Math.max(3,Math.round((D.d0/2-ly)/rst)*rst); ccy=-(nd-D.d0)/2; }
+    nw=Math.min(nw,1200); nd=Math.min(nd,1200); if(!D.moved&&nw===D.w0&&nd===D.d0)return; D.moved=true; var F0=FDEF[rq2.t];
+    if(nw===F0.w)delete rq2.w; else rq2.w=nw; if(nd===F0.d)delete rq2.d; else rq2.d=nd;
+    rq2.x=Math.round((D.x0+ccx*ux[0]+ccy*uy[0])*10)/10; rq2.y=Math.round((D.y0+ccx*ux[1]+ccy*uy[1])*10)/10; peDraw(); return; }
   if(D.t==='pc'){ var pm=pfGet(D.id); if(!pm)return; var stp=e.altKey?1:5, nx=D.x0+Math.round((p[0]-D.p0[0])/stp)*stp, ny=D.y0+Math.round((p[1]-D.p0[1])/stp)*stp;
     if(!D.moved&&Math.abs(nx-D.x0)<2&&Math.abs(ny-D.y0)<2)return; D.moved=true; pm.x=nx; pm.y=ny; PE.guides=[];
     if(!e.altKey){ if(D.ids.length===1)pfSnap(T,pm); var gg=pfGaps(T,pm).g, gd=pfGuide(T,pm,D.ids);           // closes up to walls first, then lines up with the room or other pieces
@@ -4989,6 +5032,8 @@ function peUp(e){ delete PE.pts[e.pointerId]; var D=PE.drag; if(!D)return; var T
   if(D.t==='pinch'){ PE.drag=null; return; }
   if(D.t==='pan'){ PE.drag=null; if(!D.moved){ PE.sel=D.room!=null?{t:'room',i:D.room}:null; } peDraw(); return; }
   if(D.t==='dw'){ PE.drag=null; if(JSON.stringify(T)!==D.base){ PE.undo.push(D.base); PE.redo=[]; peSave(LAYOUT); } peDraw(); return; }
+  if(D.t==='rs'){ PE.drag=null; var rch=D.moved&&JSON.stringify(fList())!==D.base; if(rch){ PE.undo.push('F'+D.base); PE.redo=[]; pfCommit(); } peDraw();
+    if(rch){ var T4=peT(), nw4=(PE.W||[]).filter(function(w){ return !w.base&&!w.ack&&w.pc===D.id&&!D.wk[peWKey(T4,w)]; }); if(nw4.length){ PE.wsel=nw4[0].t; peDraw(); } } return; }   // a new size where something is wrong: its card
   if(D.t==='pc'){ PE.drag=null; PE.guides=[]; var mv=D.moved&&JSON.stringify(fList())!==D.base; if(mv){ PE.undo.push('F'+D.base); PE.redo=[]; pfCommit(); }
     else if(!D.moved&&D.ids.length>1)PE.sel={t:'pc',id:D.id};      // a plain click on one of a set picks just that one
     if(!D.moved&&D.wclick)PE.wsel=D.wclick;
@@ -5077,7 +5122,7 @@ window.addEventListener('keydown',function(e){ if(!PE.on||/input|textarea|select
   else if(PE.fr&&(k==='escape'||k==='enter'||k==='a'||k==='s')&&!mod){ if(k==='escape')pfFrEnd(); else if(k==='enter'){ if(PE.fr.prop&&PE.fr.prop.pieces.length)pfFrUse(); else if(PE.fr.list.length>1)pfFrSkip(); else pfFrEnd(); } else if(k==='a')pfFrAlt(); else if(PE.fr.list.length>1)pfFrSkip(); }
   else if(k==='escape'&&PE.wsel){ PE.wsel=null; peDraw(); }
   else if(k==='escape'){ var DD=PE.drag; if(DD&&(DD.t==='wall'||DD.t==='door'||DD.t==='dw')&&DD.base){ PE_T[LAYOUT]=JSON.parse(DD.base); PE.drag=null; peDraw(); toast('','Move cancelled'); }   // Esc while dragging puts it back
-    else if(DD&&DD.t==='pc'){ furn[LAYOUT]=JSON.parse(DD.base); PE.drag=null; peDraw(); toast('','Move cancelled'); }
+    else if(DD&&(DD.t==='pc'||DD.t==='rs')){ furn[LAYOUT]=JSON.parse(DD.base); PE.drag=null; peDraw(); toast('','Move cancelled'); }
     else if(PE.tool==='meas'&&(PE.mA||(PE.measures||[]).length)){ PE.mA=null; PE.measures=[]; peDraw(); }
     else if(PE.place){ pfPick(null); } else if(PE.sel){ PE.sel=null; PE.multi=false; peDraw(); } else if(PE.tool!=='sel')peTool('sel'); else if(PE.cat)pfCat(false); }   // Esc steps back and never leaves the plan: P or the button does
   else if(e.key==='?'){ showGuide(true); }
