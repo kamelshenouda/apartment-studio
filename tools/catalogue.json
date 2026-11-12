@@ -7,84 +7,140 @@
     "name": "Sofa, 3 seats",
     "w": 220,
     "d": 95,
-    "h": 80
+    "h": 80,
+    "m": "sofa"
    },
    {
     "t": "sofa2",
     "name": "Sofa, 2 seats",
     "w": 170,
     "d": 90,
-    "h": 80
+    "h": 80,
+    "m": "sofa"
+   },
+   {
+    "t": "sofa4",
+    "name": "Sofa, 4 seats",
+    "w": 270,
+    "d": 100,
+    "h": 80,
+    "m": "sofa"
    },
    {
     "t": "corner",
     "name": "Corner sofa",
     "w": 280,
     "d": 200,
-    "h": 80
+    "h": 80,
+    "m": "corner"
+   },
+   {
+    "t": "chaise",
+    "name": "Sofa with chaise",
+    "w": 260,
+    "d": 160,
+    "h": 80,
+    "m": "corner"
    },
    {
     "t": "arm",
     "name": "Armchair",
     "w": 85,
     "d": 85,
-    "h": 80
+    "h": 80,
+    "m": "sofa"
+   },
+   {
+    "t": "pouf",
+    "name": "Ottoman",
+    "w": 60,
+    "d": 60,
+    "h": 42,
+    "m": "pouf"
    },
    {
     "t": "coffee",
     "name": "Coffee table",
     "w": 120,
     "d": 60,
-    "h": 40
+    "h": 40,
+    "m": "low"
    },
    {
     "t": "coffeeR",
     "name": "Round coffee table",
     "w": 90,
     "d": 90,
-    "h": 40
+    "h": 40,
+    "m": "tableR"
    },
    {
     "t": "side",
     "name": "Side table",
     "w": 45,
     "d": 45,
-    "h": 50
+    "h": 50,
+    "m": "tableR"
    },
    {
     "t": "tvunit",
     "name": "TV unit",
     "w": 200,
     "d": 45,
-    "h": 50
+    "h": 50,
+    "m": "low"
+   },
+   {
+    "t": "tv65",
+    "name": "TV, 65\"",
+    "w": 145,
+    "d": 6,
+    "h": 84,
+    "m": "screen",
+    "y": 95
    },
    {
     "t": "rugL",
     "name": "Rug",
     "w": 300,
     "d": 200,
-    "h": 1.5
+    "h": 1.5,
+    "m": "rug",
+    "o": 0
    },
    {
     "t": "rugM",
     "name": "Rug",
     "w": 230,
     "d": 160,
-    "h": 1.5
+    "h": 1.5,
+    "m": "rug",
+    "o": 0
+   },
+   {
+    "t": "rugR",
+    "name": "Round rug",
+    "w": 200,
+    "d": 200,
+    "h": 1.5,
+    "m": "rugR",
+    "o": 0
    },
    {
     "t": "flamp",
     "name": "Floor lamp",
     "w": 40,
     "d": 40,
-    "h": 160
+    "h": 160,
+    "m": "flamp"
    },
    {
     "t": "books",
     "name": "Bookcase",
     "w": 90,
     "d": 35,
-    "h": 200
+    "h": 200,
+    "m": "open"
    }
   ]
  },
@@ -92,39 +148,94 @@
   "group": "Dining",
   "pieces": [
    {
+    "t": "dt4",
+    "name": "Dining table, 4",
+    "w": 140,
+    "d": 80,
+    "h": 75,
+    "m": "table"
+   },
+   {
     "t": "dt6",
     "name": "Dining table, 6",
     "w": 180,
     "d": 90,
-    "h": 75
+    "h": 75,
+    "m": "table"
    },
    {
     "t": "dt8",
     "name": "Dining table, 8",
     "w": 240,
     "d": 100,
-    "h": 75
+    "h": 75,
+    "m": "table"
+   },
+   {
+    "t": "dt10",
+    "name": "Dining table, 10",
+    "w": 280,
+    "d": 110,
+    "h": 75,
+    "m": "table"
+   },
+   {
+    "t": "dtR4",
+    "name": "Round table, 4",
+    "w": 100,
+    "d": 100,
+    "h": 75,
+    "m": "tableR"
    },
    {
     "t": "dtR",
-    "name": "Round table",
+    "name": "Round table, 6",
     "w": 120,
     "d": 120,
-    "h": 75
+    "h": 75,
+    "m": "tableR"
    },
    {
     "t": "dchair",
     "name": "Dining chair",
     "w": 45,
     "d": 52,
-    "h": 85
+    "h": 85,
+    "m": "chair"
+   },
+   {
+    "t": "dbench",
+    "name": "Dining bench",
+    "w": 140,
+    "d": 40,
+    "h": 45,
+    "m": "low"
    },
    {
     "t": "sideboard",
     "name": "Sideboard",
     "w": 180,
     "d": 45,
-    "h": 80
+    "h": 80,
+    "m": "low"
+   },
+   {
+    "t": "vitrine",
+    "name": "Display cabinet",
+    "w": 100,
+    "d": 45,
+    "h": 200,
+    "m": "tall",
+    "mat": "oakdark"
+   },
+   {
+    "t": "barcart",
+    "name": "Bar cart",
+    "w": 80,
+    "d": 45,
+    "h": 85,
+    "m": "table",
+    "mat": "black"
    }
   ]
  },
@@ -136,89 +247,797 @@
     "name": "King bed",
     "w": 195,
     "d": 215,
-    "h": 110
+    "h": 110,
+    "m": "bed"
    },
    {
     "t": "bedD",
     "name": "Double bed",
     "w": 175,
     "d": 215,
-    "h": 110
+    "h": 110,
+    "m": "bed"
+   },
+   {
+    "t": "bedQ",
+    "name": "Double bed, 160",
+    "w": 170,
+    "d": 210,
+    "h": 110,
+    "m": "bed"
+   },
+   {
+    "t": "bed120",
+    "name": "Bed, 120",
+    "w": 130,
+    "d": 210,
+    "h": 100,
+    "m": "bed"
    },
    {
     "t": "bedS",
     "name": "Single bed",
     "w": 100,
     "d": 210,
-    "h": 90
+    "h": 90,
+    "m": "bed"
    },
    {
     "t": "night",
     "name": "Bedside table",
     "w": 50,
     "d": 40,
-    "h": 55
+    "h": 55,
+    "m": "low"
    },
    {
     "t": "ward1",
     "name": "Wardrobe",
     "w": 100,
     "d": 60,
-    "h": 240
+    "h": 240,
+    "m": "tall"
    },
    {
     "t": "ward2",
     "name": "Wardrobe",
     "w": 200,
     "d": 60,
-    "h": 240
+    "h": 240,
+    "m": "tall"
    },
    {
     "t": "dresser",
     "name": "Dresser",
     "w": 120,
     "d": 50,
-    "h": 80
+    "h": 80,
+    "m": "low"
    },
+   {
+    "t": "chest",
+    "name": "Chest of drawers",
+    "w": 80,
+    "d": 45,
+    "h": 110,
+    "m": "low"
+   },
+   {
+    "t": "vanityt",
+    "name": "Dressing table",
+    "w": 100,
+    "d": 45,
+    "h": 75,
+    "m": "table"
+   },
+   {
+    "t": "bedbench",
+    "name": "Bed bench",
+    "w": 120,
+    "d": 40,
+    "h": 45,
+    "m": "pouf"
+   }
+  ]
+ },
+ {
+  "group": "Kids and nursery",
+  "pieces": [
    {
     "t": "cot",
     "name": "Cot",
     "w": 75,
     "d": 140,
-    "h": 90
-   }
-  ]
- },
- {
-  "group": "Work and play",
-  "pieces": [
-   {
-    "t": "desk",
-    "name": "Desk",
-    "w": 140,
-    "d": 70,
-    "h": 75
+    "h": 90,
+    "m": "cot"
    },
    {
-    "t": "ochair",
-    "name": "Office chair",
-    "w": 60,
-    "d": 60,
-    "h": 100
+    "t": "changing",
+    "name": "Changing table",
+    "w": 90,
+    "d": 55,
+    "h": 95,
+    "m": "low",
+    "mat": "white"
+   },
+   {
+    "t": "nursing",
+    "name": "Nursing chair",
+    "w": 75,
+    "d": 80,
+    "h": 85,
+    "m": "sofa"
+   },
+   {
+    "t": "bedKid",
+    "name": "Kids bed",
+    "w": 95,
+    "d": 205,
+    "h": 80,
+    "m": "bed"
+   },
+   {
+    "t": "bunk",
+    "name": "Bunk bed",
+    "w": 100,
+    "d": 210,
+    "h": 165,
+    "m": "bunk"
    },
    {
     "t": "kdesk",
     "name": "Kids desk",
     "w": 100,
     "d": 55,
-    "h": 65
+    "h": 65,
+    "m": "table"
+   },
+   {
+    "t": "kchair",
+    "name": "Kids chair",
+    "w": 35,
+    "d": 35,
+    "h": 55,
+    "m": "chair"
    },
    {
     "t": "toys",
     "name": "Toy storage",
     "w": 80,
     "d": 40,
-    "h": 80
+    "h": 80,
+    "m": "low"
+   },
+   {
+    "t": "playmat",
+    "name": "Play mat",
+    "w": 150,
+    "d": 150,
+    "h": 1.5,
+    "m": "rug",
+    "o": 0
+   },
+   {
+    "t": "tent",
+    "name": "Play tent",
+    "w": 120,
+    "d": 120,
+    "h": 140,
+    "m": "tent"
+   }
+  ]
+ },
+ {
+  "group": "Work",
+  "pieces": [
+   {
+    "t": "desk",
+    "name": "Desk",
+    "w": 140,
+    "d": 70,
+    "h": 75,
+    "m": "table"
+   },
+   {
+    "t": "desk120",
+    "name": "Desk, compact",
+    "w": 120,
+    "d": 60,
+    "h": 75,
+    "m": "table"
+   },
+   {
+    "t": "deskL",
+    "name": "Corner desk",
+    "w": 160,
+    "d": 140,
+    "h": 75,
+    "m": "deskL"
+   },
+   {
+    "t": "ochair",
+    "name": "Office chair",
+    "w": 60,
+    "d": 60,
+    "h": 100,
+    "m": "chair",
+    "mat": "black"
+   },
+   {
+    "t": "filing",
+    "name": "Drawer unit",
+    "w": 45,
+    "d": 60,
+    "h": 70,
+    "m": "low",
+    "mat": "white"
+   },
+   {
+    "t": "shelf",
+    "name": "Shelving",
+    "w": 80,
+    "d": 30,
+    "h": 180,
+    "m": "open"
+   },
+   {
+    "t": "sofabed",
+    "name": "Sofa bed",
+    "w": 200,
+    "d": 95,
+    "h": 85,
+    "m": "sofa"
+   }
+  ]
+ },
+ {
+  "group": "Entrance",
+  "pieces": [
+   {
+    "t": "console",
+    "name": "Console table",
+    "w": 120,
+    "d": 35,
+    "h": 80,
+    "m": "table"
+   },
+   {
+    "t": "shoe",
+    "name": "Shoe cabinet",
+    "w": 100,
+    "d": 35,
+    "h": 110,
+    "m": "low",
+    "mat": "front"
+   },
+   {
+    "t": "ebench",
+    "name": "Entrance bench",
+    "w": 100,
+    "d": 40,
+    "h": 45,
+    "m": "low"
+   },
+   {
+    "t": "coat",
+    "name": "Coat stand",
+    "w": 45,
+    "d": 45,
+    "h": 180,
+    "m": "coat"
+   },
+   {
+    "t": "emirror",
+    "name": "Wall mirror",
+    "w": 60,
+    "d": 3,
+    "h": 150,
+    "m": "mirror",
+    "y": 40
+   }
+  ]
+ },
+ {
+  "group": "Kitchen",
+  "pieces": [
+   {
+    "t": "base30",
+    "name": "Base cabinet, 30",
+    "w": 30,
+    "d": 60,
+    "h": 90,
+    "m": "base"
+   },
+   {
+    "t": "base45",
+    "name": "Base cabinet, 45",
+    "w": 45,
+    "d": 60,
+    "h": 90,
+    "m": "base"
+   },
+   {
+    "t": "base60",
+    "name": "Base cabinet, 60",
+    "w": 60,
+    "d": 60,
+    "h": 90,
+    "m": "base"
+   },
+   {
+    "t": "base80",
+    "name": "Base cabinet, 80",
+    "w": 80,
+    "d": 60,
+    "h": 90,
+    "m": "base"
+   },
+   {
+    "t": "base90",
+    "name": "Base cabinet, 90",
+    "w": 90,
+    "d": 60,
+    "h": 90,
+    "m": "base"
+   },
+   {
+    "t": "base120",
+    "name": "Base cabinet, 120",
+    "w": 120,
+    "d": 60,
+    "h": 90,
+    "m": "base"
+   },
+   {
+    "t": "drawer60",
+    "name": "Drawer unit, 60",
+    "w": 60,
+    "d": 60,
+    "h": 90,
+    "m": "drawers"
+   },
+   {
+    "t": "cbase",
+    "name": "Corner base cabinet",
+    "w": 90,
+    "d": 90,
+    "h": 90,
+    "m": "base"
+   },
+   {
+    "t": "sink80",
+    "name": "Sink unit, 80",
+    "w": 80,
+    "d": 60,
+    "h": 90,
+    "m": "sink"
+   },
+   {
+    "t": "sink100",
+    "name": "Sink unit, double, 100",
+    "w": 100,
+    "d": 60,
+    "h": 90,
+    "m": "sink"
+   },
+   {
+    "t": "hob60",
+    "name": "Hob and oven, 60",
+    "w": 60,
+    "d": 60,
+    "h": 90,
+    "m": "hob"
+   },
+   {
+    "t": "hob90",
+    "name": "Hob and oven, 90",
+    "w": 90,
+    "d": 60,
+    "h": 90,
+    "m": "hob"
+   },
+   {
+    "t": "dw60",
+    "name": "Dishwasher, 60",
+    "w": 60,
+    "d": 60,
+    "h": 90,
+    "m": "dw"
+   },
+   {
+    "t": "fridge60",
+    "name": "Fridge-freezer, 60",
+    "w": 60,
+    "d": 65,
+    "h": 185,
+    "m": "fridge"
+   },
+   {
+    "t": "fridge90",
+    "name": "Fridge, side by side",
+    "w": 90,
+    "d": 70,
+    "h": 180,
+    "m": "fridge"
+   },
+   {
+    "t": "tall60",
+    "name": "Tall unit, 60",
+    "w": 60,
+    "d": 60,
+    "h": 220,
+    "m": "tall",
+    "mat": "front"
+   },
+   {
+    "t": "ovens",
+    "name": "Oven tower, 60",
+    "w": 60,
+    "d": 60,
+    "h": 220,
+    "m": "ovens"
+   },
+   {
+    "t": "wall40",
+    "name": "Wall cabinet, 40",
+    "w": 40,
+    "d": 35,
+    "h": 72,
+    "m": "wallc",
+    "y": 145
+   },
+   {
+    "t": "wall60",
+    "name": "Wall cabinet, 60",
+    "w": 60,
+    "d": 35,
+    "h": 72,
+    "m": "wallc",
+    "y": 145
+   },
+   {
+    "t": "wall80",
+    "name": "Wall cabinet, 80",
+    "w": 80,
+    "d": 35,
+    "h": 72,
+    "m": "wallc",
+    "y": 145
+   },
+   {
+    "t": "hood60",
+    "name": "Cooker hood, 60",
+    "w": 60,
+    "d": 50,
+    "h": 60,
+    "m": "hood",
+    "y": 155
+   },
+   {
+    "t": "hood90",
+    "name": "Cooker hood, 90",
+    "w": 90,
+    "d": 50,
+    "h": 60,
+    "m": "hood",
+    "y": 155
+   },
+   {
+    "t": "island",
+    "name": "Island",
+    "w": 240,
+    "d": 100,
+    "h": 90,
+    "m": "island"
+   },
+   {
+    "t": "island180",
+    "name": "Island, small",
+    "w": 180,
+    "d": 90,
+    "h": 90,
+    "m": "island"
+   },
+   {
+    "t": "stool",
+    "name": "Counter stool",
+    "w": 40,
+    "d": 40,
+    "h": 65,
+    "m": "stool"
+   },
+   {
+    "t": "btable",
+    "name": "Breakfast table",
+    "w": 80,
+    "d": 80,
+    "h": 75,
+    "m": "tableR"
+   }
+  ]
+ },
+ {
+  "group": "Bathroom",
+  "pieces": [
+   {
+    "t": "wc",
+    "name": "WC",
+    "w": 38,
+    "d": 65,
+    "h": 80,
+    "m": "wc"
+   },
+   {
+    "t": "wcwall",
+    "name": "WC, wall-hung",
+    "w": 36,
+    "d": 54,
+    "h": 40,
+    "m": "wc",
+    "y": 0
+   },
+   {
+    "t": "bidet",
+    "name": "Bidet",
+    "w": 36,
+    "d": 54,
+    "h": 40,
+    "m": "bidet"
+   },
+   {
+    "t": "van60",
+    "name": "Vanity, 60",
+    "w": 60,
+    "d": 46,
+    "h": 85,
+    "m": "vanity"
+   },
+   {
+    "t": "van80",
+    "name": "Vanity, 80",
+    "w": 80,
+    "d": 46,
+    "h": 85,
+    "m": "vanity"
+   },
+   {
+    "t": "van120",
+    "name": "Double vanity, 120",
+    "w": 120,
+    "d": 46,
+    "h": 85,
+    "m": "vanity"
+   },
+   {
+    "t": "basinW",
+    "name": "Wall basin",
+    "w": 50,
+    "d": 40,
+    "h": 15,
+    "m": "basin",
+    "y": 70
+   },
+   {
+    "t": "sh80",
+    "name": "Shower, 80",
+    "w": 80,
+    "d": 80,
+    "h": 200,
+    "m": "shower"
+   },
+   {
+    "t": "sh90",
+    "name": "Shower, 90",
+    "w": 90,
+    "d": 90,
+    "h": 200,
+    "m": "shower"
+   },
+   {
+    "t": "sh120",
+    "name": "Walk-in shower",
+    "w": 120,
+    "d": 90,
+    "h": 200,
+    "m": "shower"
+   },
+   {
+    "t": "bath170",
+    "name": "Bath, 170",
+    "w": 170,
+    "d": 75,
+    "h": 55,
+    "m": "bath"
+   },
+   {
+    "t": "bath180",
+    "name": "Bath, 180",
+    "w": 180,
+    "d": 80,
+    "h": 55,
+    "m": "bath"
+   },
+   {
+    "t": "towel",
+    "name": "Towel rail",
+    "w": 60,
+    "d": 10,
+    "h": 80,
+    "m": "rail",
+    "y": 90
+   },
+   {
+    "t": "bmirror",
+    "name": "Mirror cabinet",
+    "w": 60,
+    "d": 15,
+    "h": 70,
+    "m": "mirror",
+    "y": 115
+   },
+   {
+    "t": "heater",
+    "name": "Water heater, 50 L",
+    "w": 45,
+    "d": 45,
+    "h": 75,
+    "m": "heater",
+    "y": 150
+   }
+  ]
+ },
+ {
+  "group": "Laundry",
+  "pieces": [
+   {
+    "t": "washer",
+    "name": "Washing machine",
+    "w": 60,
+    "d": 60,
+    "h": 85,
+    "m": "washer"
+   },
+   {
+    "t": "dryer",
+    "name": "Dryer",
+    "w": 60,
+    "d": 60,
+    "h": 85,
+    "m": "washer"
+   },
+   {
+    "t": "stack",
+    "name": "Washer and dryer, stacked",
+    "w": 60,
+    "d": 65,
+    "h": 170,
+    "m": "washer"
+   },
+   {
+    "t": "lsink",
+    "name": "Laundry sink",
+    "w": 60,
+    "d": 50,
+    "h": 90,
+    "m": "sink",
+    "mat": "white"
+   },
+   {
+    "t": "ironing",
+    "name": "Ironing board",
+    "w": 120,
+    "d": 38,
+    "h": 90,
+    "m": "table",
+    "mat": "white"
+   },
+   {
+    "t": "rack",
+    "name": "Drying rack",
+    "w": 180,
+    "d": 55,
+    "h": 100,
+    "m": "rack"
+   },
+   {
+    "t": "utall",
+    "name": "Utility cupboard",
+    "w": 60,
+    "d": 60,
+    "h": 220,
+    "m": "tall",
+    "mat": "white"
+   }
+  ]
+ },
+ {
+  "group": "Built-in storage",
+  "pieces": [
+   {
+    "t": "bw100",
+    "name": "Built-in wardrobe, 100",
+    "w": 100,
+    "d": 60,
+    "h": 260,
+    "m": "tall",
+    "mat": "front"
+   },
+   {
+    "t": "bw150",
+    "name": "Built-in wardrobe, 150",
+    "w": 150,
+    "d": 60,
+    "h": 260,
+    "m": "tall",
+    "mat": "front"
+   },
+   {
+    "t": "bw200",
+    "name": "Built-in wardrobe, 200",
+    "w": 200,
+    "d": 60,
+    "h": 260,
+    "m": "tall",
+    "mat": "front"
+   },
+   {
+    "t": "bw300",
+    "name": "Built-in wardrobe, 300",
+    "w": 300,
+    "d": 60,
+    "h": 260,
+    "m": "tall",
+    "mat": "front"
+   },
+   {
+    "t": "dressU",
+    "name": "Dressing unit, open",
+    "w": 100,
+    "d": 45,
+    "h": 240,
+    "m": "open"
+   },
+   {
+    "t": "dressI",
+    "name": "Dressing island",
+    "w": 120,
+    "d": 60,
+    "h": 90,
+    "m": "low",
+    "mat": "front"
+   },
+   {
+    "t": "shoewall",
+    "name": "Shoe wall",
+    "w": 120,
+    "d": 35,
+    "h": 240,
+    "m": "open"
+   },
+   {
+    "t": "bookwall",
+    "name": "Bookshelf wall",
+    "w": 240,
+    "d": 35,
+    "h": 240,
+    "m": "open"
+   },
+   {
+    "t": "tvwall",
+    "name": "TV wall unit",
+    "w": 300,
+    "d": 45,
+    "h": 240,
+    "m": "open"
+   },
+   {
+    "t": "linen",
+    "name": "Linen cupboard",
+    "w": 60,
+    "d": 45,
+    "h": 240,
+    "m": "tall",
+    "mat": "front"
    }
   ]
  },
@@ -230,14 +1049,240 @@
     "name": "Lounger",
     "w": 200,
     "d": 70,
-    "h": 35
+    "h": 35,
+    "m": "lounger"
    },
    {
     "t": "otable",
     "name": "Outdoor table",
     "w": 160,
     "d": 90,
-    "h": 74
+    "h": 74,
+    "m": "table"
+   },
+   {
+    "t": "ochairO",
+    "name": "Outdoor chair",
+    "w": 55,
+    "d": 60,
+    "h": 85,
+    "m": "chair"
+   },
+   {
+    "t": "osofa",
+    "name": "Outdoor sofa",
+    "w": 200,
+    "d": 85,
+    "h": 70,
+    "m": "sofa"
+   },
+   {
+    "t": "oarm",
+    "name": "Outdoor armchair",
+    "w": 80,
+    "d": 85,
+    "h": 70,
+    "m": "sofa"
+   },
+   {
+    "t": "ocoffee",
+    "name": "Outdoor coffee table",
+    "w": 100,
+    "d": 60,
+    "h": 35,
+    "m": "low"
+   },
+   {
+    "t": "obench",
+    "name": "Garden bench",
+    "w": 150,
+    "d": 45,
+    "h": 45,
+    "m": "low"
+   },
+   {
+    "t": "parasol",
+    "name": "Parasol, 3 m",
+    "w": 300,
+    "d": 300,
+    "h": 250,
+    "m": "parasol",
+    "o": 0
+   },
+   {
+    "t": "bbq",
+    "name": "Barbecue",
+    "w": 120,
+    "d": 55,
+    "h": 95,
+    "m": "bbq"
+   },
+   {
+    "t": "planter",
+    "name": "Planter",
+    "w": 100,
+    "d": 40,
+    "h": 45,
+    "m": "planter"
+   },
+   {
+    "t": "potL",
+    "name": "Large pot plant",
+    "w": 60,
+    "d": 60,
+    "h": 120,
+    "m": "plant"
+   },
+   {
+    "t": "treeP",
+    "name": "Olive tree in a pot",
+    "w": 80,
+    "d": 80,
+    "h": 200,
+    "m": "tree"
+   },
+   {
+    "t": "gbox",
+    "name": "Garden storage box",
+    "w": 130,
+    "d": 60,
+    "h": 60,
+    "m": "low",
+    "mat": "oakdark"
+   }
+  ]
+ },
+ {
+  "group": "Decor and lighting",
+  "pieces": [
+   {
+    "t": "plantS",
+    "name": "Plant",
+    "w": 40,
+    "d": 40,
+    "h": 80,
+    "m": "plant"
+   },
+   {
+    "t": "plantL",
+    "name": "Tall plant",
+    "w": 60,
+    "d": 60,
+    "h": 160,
+    "m": "plant"
+   },
+   {
+    "t": "pendant",
+    "name": "Pendant light",
+    "w": 50,
+    "d": 50,
+    "h": 30,
+    "m": "pendant",
+    "y": 175,
+    "o": 0
+   },
+   {
+    "t": "art",
+    "name": "Picture",
+    "w": 100,
+    "d": 3,
+    "h": 70,
+    "m": "art",
+    "y": 140
+   },
+   {
+    "t": "artL",
+    "name": "Large picture",
+    "w": 150,
+    "d": 3,
+    "h": 100,
+    "m": "art",
+    "y": 120
+   },
+   {
+    "t": "mirrorF",
+    "name": "Floor mirror",
+    "w": 60,
+    "d": 5,
+    "h": 170,
+    "m": "mirror"
+   },
+   {
+    "t": "mirrorR",
+    "name": "Round mirror",
+    "w": 80,
+    "d": 3,
+    "h": 80,
+    "m": "mirror",
+    "y": 130
+   }
+  ]
+ },
+ {
+  "group": "Climate",
+  "pieces": [
+   {
+    "t": "ac15",
+    "name": "Air conditioner, 1.5 HP",
+    "w": 80,
+    "d": 25,
+    "h": 30,
+    "m": "ac",
+    "y": 215
+   },
+   {
+    "t": "ac25",
+    "name": "Air conditioner, 2.25 HP",
+    "w": 100,
+    "d": 25,
+    "h": 32,
+    "m": "ac",
+    "y": 215
+   },
+   {
+    "t": "acfloor",
+    "name": "Floor air conditioner",
+    "w": 50,
+    "d": 40,
+    "h": 180,
+    "m": "fridge",
+    "mat": "white"
+   },
+   {
+    "t": "acout",
+    "name": "AC outdoor unit",
+    "w": 80,
+    "d": 30,
+    "h": 55,
+    "m": "acout"
+   },
+   {
+    "t": "fan",
+    "name": "Ceiling fan",
+    "w": 130,
+    "d": 130,
+    "h": 35,
+    "m": "fan",
+    "y": 235,
+    "o": 0
+   },
+   {
+    "t": "water",
+    "name": "Water dispenser",
+    "w": 35,
+    "d": 35,
+    "h": 110,
+    "m": "fridge",
+    "mat": "white"
+   },
+   {
+    "t": "purifier",
+    "name": "Air purifier",
+    "w": 35,
+    "d": 35,
+    "h": 60,
+    "m": "pouf",
+    "mat": "white"
    }
   ]
  }

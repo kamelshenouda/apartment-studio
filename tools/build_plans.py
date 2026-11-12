@@ -294,42 +294,161 @@ _CAT = next(p for p in (os.path.join(HERE, 'catalogue.json'), os.path.join(_ENGI
 CATALOGUE = {p['t']: p for g in json.load(open(_CAT)) for p in g['pieces']}
 
 
-def placed_symbol(t, w, d):
-    """One catalogue piece centred on (0, 0), its back towards -y, as in the viewer."""
-    hw, hd = w / 2, d / 2
-    R = lambda x0, y0, x1, y1, c, rx=0: (f'<rect x="{f(x0)}" y="{f(y0)}" width="{f(x1-x0)}" height="{f(y1-y0)}"'
-                                         + (f' rx="{f(rx)}"' if rx else '') + f' class="{c}"/>')
-    C = lambda r, c: f'<circle r="{f(r)}" class="{c}"/>'
-    if t.startswith('sofa') or t == 'arm':
-        return R(-hw, -hd, hw, hd, 'sofa', 4) + R(-hw, -hd, hw, -hd + 18, 'furl', 3) + R(-hw, -hd + 18, -hw + 16, hd, 'furl', 3) + R(hw - 16, -hd + 18, hw, hd, 'furl', 3)
-    if t == 'corner':
-        return (f'<path d="M{f(-hw)} {f(-hd)} H{f(hw)} V{f(-hd + 95)} H{f(-hw + 95)} V{f(hd)} H{f(-hw)} Z" class="sofa"/>'
-                + R(-hw, -hd, hw, -hd + 18, 'furl', 3) + R(-hw, -hd + 18, -hw + 18, hd, 'furl', 3))
-    if t in ('coffeeR', 'side', 'dtR'):
-        return C(hw, 'table')
-    if t.startswith('rug'):
-        return R(-hw, -hd, hw, hd, 'rug', 6)
-    if t == 'flamp':
-        return C(hw / 2 + 4, 'fur') + C(4, 'furl')
-    if t.startswith('dt') or t in ('otable', 'desk', 'kdesk', 'coffee'):
-        return R(-hw, -hd, hw, hd, 'table', 4)
-    if t in ('dchair', 'ochair'):
-        return R(-hw, -hd, hw, hd, 'fur', 6) + R(-hw, -hd, hw, -hd + 7, 'furd', 2)
-    if t.startswith('bed'):
-        n = 2 if w >= 150 else 1
-        pw = (w - 30) / 2 if n == 2 else w - 30
-        s = R(-hw, -hd, hw, hd, 'fur', 4) + R(-hw, -hd, hw, -hd + 8, 'furd')
-        for i in range(n):
-            cx = ((1 if i else -1) * (pw / 2 + 5)) if n == 2 else 0
-            s += R(cx - pw / 2, -hd + 16, cx + pw / 2, -hd + 56, 'pil', 4)
-        return s + f'<line x1="{f(-hw)}" y1="{f(-hd + d * .45)}" x2="{f(hw)}" y2="{f(-hd + d * .45)}" class="furl"/>'
-    if t == 'cot':
-        return R(-hw, -hd, hw, hd, 'fur', 4) + R(-hw + 8, -hd + 8, hw - 8, hd - 8, 'furl', 3)
-    if t.startswith('ward') or t in ('books', 'sideboard', 'tvunit', 'dresser', 'toys', 'night'):
-        return R(-hw, -hd, hw, hd, 'fur', 2) + f'<line x1="{f(-hw)}" y1="{f(-hd + 4)}" x2="{f(hw)}" y2="{f(-hd + 4)}" class="furl"/>'
-    if t == 'lounger':
-        return R(-hw, -hd, hw, hd, 'sofa', 8)
-    return R(-hw, -hd, hw, hd, 'fur', 3)
+def placed_symbol(t, w, d, c=None):
+    """One catalogue piece centred on (0, 0), its back towards -y: the same symbol the viewer's 2D plan draws (fSym)."""
+    c = c or CATALOGUE.get(t) or {}
+    m, y, h = c.get('m', 'box'), c.get('y', 0), c.get('h', 0)
+    hw, hd, hi = w / 2, d / 2, c.get('y', 0) >= 90
+    o = []
+    cls = {'pf': 'fur', 'pfl': 'furl', 'pfd': 'furd', 'pfs': 'pil', 'pfr': 'rug'}
+    def k(c_):
+        if c_ == 'pfh':
+            return 'class="furl" style="stroke-dasharray:6 4"'
+        if c_ == 'pfg':
+            return 'class="furl" style="fill:#5E7F4A33;stroke:#5E7F4A"'
+        return f'class="{cls[c_]}"'
+    def R(x0, y0, x1, y1, c_, rx=0):
+        o.append(f'<rect x="{f(x0)}" y="{f(y0)}" width="{f(x1-x0)}" height="{f(y1-y0)}"' + (f' rx="{f(rx)}"' if rx else '') + f' {k(c_)}/>')
+    def C(x, y_, r, c_):
+        o.append(f'<circle cx="{f(x)}" cy="{f(y_)}" r="{f(r)}" {k(c_)}/>')
+    def E(x, y_, rx, ry, c_):
+        o.append(f'<ellipse cx="{f(x)}" cy="{f(y_)}" rx="{f(rx)}" ry="{f(ry)}" {k(c_)}/>')
+    def Ln(x1, y1, x2, y2, c_='pfl'):
+        o.append(f'<line x1="{f(x1)}" y1="{f(y1)}" x2="{f(x2)}" y2="{f(y2)}" {k(c_)}/>')
+    def X():
+        Ln(-hw, -hd, hw, hd); Ln(-hw, hd, hw, -hd)
+    B = 'pfh' if hi else 'pf'
+    if m == 'sofa':
+        o.append(f'<rect x="{f(-hw)}" y="{f(-hd)}" width="{f(w)}" height="{f(d)}" rx="4" class="sofa"/>')
+        R(-hw, -hd, hw, -hd + 18, 'pfl', 3); R(-hw, -hd + 18, -hw + 16, hd, 'pfl', 3); R(hw - 16, -hd + 18, hw, hd, 'pfl', 3)
+    elif m == 'corner':
+        o.append(f'<path d="M{f(-hw)} {f(-hd)} H{f(hw)} V{f(-hd + 95)} H{f(-hw + 95)} V{f(hd)} H{f(-hw)} Z" class="sofa"/>')
+        R(-hw, -hd, hw, -hd + 18, 'pfl', 3); R(-hw, -hd + 18, -hw + 18, hd, 'pfl', 3)
+    elif m in ('pouf', 'lounger'):
+        R(-hw, -hd, hw, hd, B, min(8, hw / 3))
+        if m == 'lounger':
+            Ln(-hw + 55, -hd, -hw + 55, hd)
+    elif m in ('low', 'screen'):
+        R(-hw, -hd, hw, hd, B, 1.5)
+        if m == 'low':
+            Ln(-hw, -hd + 4, hw, -hd + 4)
+    elif m in ('tall', 'wallc'):
+        R(-hw, -hd, hw, hd, B, 1); Ln(-hw + 3, 0, hw - 3, 0, 'pfh' if hi else 'pfl')
+        if m == 'tall' and d >= 50:
+            hx = -hw + 12
+            while hx < hw - 6:
+                Ln(hx - 3, -6, hx + 3, 6); hx += 14
+    elif m == 'open':
+        R(-hw, -hd, hw, hd, B, 1); Ln(-hw, -hd + 2, hw, -hd + 2)
+        n = max(1, round(w / 90))
+        for u in range(1, n):
+            Ln(-hw + u * w / n, -hd, -hw + u * w / n, hd)
+    elif m in ('table', 'island'):
+        R(-hw, -hd, hw, hd, B, 3)
+        if m == 'island':
+            Ln(-hw, hd - 25, hw, hd - 25, 'pfh')
+    elif m == 'deskL':
+        o.append(f'<path d="M{f(-hw)} {f(-hd)} H{f(hw)} V{f(-hd + 70)} H{f(-hw + 70)} V{f(hd)} H{f(-hw)} Z" class="fur"/>')
+    elif m in ('tableR', 'stool'):
+        E(0, 0, hw, hd, B)
+    elif m == 'chair':
+        R(-hw, -hd, hw, hd, B, 6); R(-hw, -hd, hw, -hd + 7, 'pfd', 2)
+    elif m in ('bed', 'bunk'):
+        nb = 2 if w >= 150 else 1
+        pw = (w - 30) / 2 if nb == 2 else w - 30
+        R(-hw, -hd, hw, hd, B, 4); R(-hw, -hd, hw, -hd + 8, 'pfd')
+        for i in range(nb):
+            cx = ((1 if i else -1) * (pw / 2 + 5)) if nb == 2 else 0
+            R(cx - pw / 2, -hd + 16, cx + pw / 2, -hd + 56, 'pfs', 4)
+        Ln(-hw, -hd + d * .45, hw, -hd + d * .45)
+        if m == 'bunk':
+            Ln(hw - 6, hd - 50, hw - 6, hd - 10, 'pfd')
+    elif m == 'cot':
+        R(-hw, -hd, hw, hd, B, 4); R(-hw + 6, -hd + 6, hw - 6, hd - 6, 'pfl', 3)
+    elif m == 'rug':
+        R(-hw, -hd, hw, hd, 'pfr', 4)
+    elif m == 'rugR':
+        E(0, 0, hw, hd, 'pfr')
+    elif m in ('flamp', 'coat'):
+        C(0, 0, hw * .5 + 4, 'pf'); C(0, 0, 3, 'pfd')
+    elif m == 'pendant':
+        C(0, 0, hw, 'pfh'); Ln(-hw * .6, 0, hw * .6, 0, 'pfh'); Ln(0, -hw * .6, 0, hw * .6, 'pfh')
+    elif m == 'fan':
+        C(0, 0, hw, 'pfh'); C(0, 0, 9, 'pfh')
+        for fb in range(3):
+            a = fb * 2.094
+            Ln(math.cos(a) * 10, math.sin(a) * 10, math.cos(a) * (hw - 3), math.sin(a) * (hw - 3), 'pfh')
+    elif m == 'tent':
+        R(-hw, -hd, hw, hd, B); X()
+    elif m in ('mirror', 'art', 'rail', 'ac'):
+        R(-hw, -hd, hw, hd, B, hd if t.endswith('R') else 0)
+    elif m in ('base', 'drawers'):
+        R(-hw, -hd, hw, hd, B); Ln(-hw, hd - 3, hw, hd - 3)
+    elif m == 'sink':
+        R(-hw, -hd, hw, hd, B)
+        nbw = 2 if w >= 100 else 1
+        bw = (w - 22) / 2 if nbw == 2 else min(w - 20, 60)
+        for bi in range(nbw):
+            bx = ((1 if bi else -1) * (bw / 2 + 3)) if nbw == 2 else 0
+            R(bx - bw / 2, -hd + 12, bx + bw / 2, hd - 6, 'pfs', 5); C(bx, 4, 2.5, 'pfl')
+    elif m == 'hob':
+        R(-hw, -hd, hw, hd, B)
+        nr = 5 if w >= 90 else 4
+        for hr in range(nr):
+            if nr == 5 and hr == 4:
+                C(0, 2, 10, 'pfl')
+                continue
+            C((1 if hr % 2 else -1) * (w / 4.6), (-1 if hr < 2 else 1) * 11 + 2, 7, 'pfl')
+    elif m in ('dw', 'fridge', 'ovens', 'hood', 'bbq'):
+        R(-hw, -hd, hw, hd, 'pfh' if m == 'hood' else B); X()
+    elif m in ('washer', 'acout'):
+        R(-hw, -hd, hw, hd, B, 2); C(0, 0 if m == 'acout' else 3, min(hw, hd) * .62, 'pfl')
+    elif m == 'wc':
+        wl = h <= 45
+        if not wl:
+            R(-hw, -hd, hw, -hd + 18, B, 2)
+        else:
+            R(-hw * .8, -hd, hw * .8, -hd + 6, B, 1)
+        by = -hd + 6 if wl else -hd + 18
+        E(0, (by + hd) / 2, hw - (0 if wl else 3), (hd - by) / 2, 'pf'); E(0, (by + hd) / 2 + 3, hw - 9, (hd - by) / 2 - 8, 'pfs')
+    elif m == 'bidet':
+        E(0, 0, hw, hd, 'pf'); E(0, 2, hw - 8, hd - 9, 'pfs')
+    elif m in ('vanity', 'basin'):
+        R(-hw, -hd, hw, hd, B, 2)
+        nt = 2 if w >= 110 else 1
+        for vi in range(nt):
+            vx = ((1 if vi else -1) * w / 4) if nt == 2 else 0
+            E(vx, 3, min(22, w / nt / 2 - 6), hd - 9, 'pfs')
+    elif m == 'shower':
+        R(-hw, -hd, hw, hd, B); X(); C(0, 0, 4, 'pfl')
+    elif m == 'bath':
+        R(-hw, -hd, hw, hd, B, 6); R(-hw + 7, -hd + 7, hw - 7, hd - 7, 'pfs', min(18, hd - 7)); C(-hw + 16, 0, 2.5, 'pfl')
+    elif m == 'heater':
+        C(0, 0, hw, B)
+    elif m == 'rack':
+        R(-hw, -hd, hw, hd, B)
+        rz = -hd + 8
+        while rz < hd:
+            Ln(-hw, rz, hw, rz); rz += 8
+    elif m == 'parasol':
+        C(0, 0, hw, 'pfh')
+        for pa in range(4):
+            a = pa * math.pi / 4
+            Ln(-math.cos(a) * hw, -math.sin(a) * hw, math.cos(a) * hw, math.sin(a) * hw, 'pfh')
+        R(-22, -22, 22, 22, 'pf')
+    elif m == 'planter':
+        R(-hw, -hd, hw, hd, B, 2)
+        pi = -hw + hd
+        while pi < hw:
+            C(pi, 0, hd * .7, 'pfg'); pi += d
+    elif m in ('plant', 'tree'):
+        C(0, 0, hw, 'pfg'); C(0, 0, hw * .5, 'pf')
+        for lk in range(8):
+            la = lk * math.pi / 4
+            Ln(math.cos(la) * hw * .5, math.sin(la) * hw * .5, math.cos(la) * hw * .95, math.sin(la) * hw * .95)
+    else:
+        R(-hw, -hd, hw, hd, B, 2)
+    return ''.join(o)
 
 def placed_furniture(layout):
     fj = os.path.join(ROOT, 'furnish.json')
