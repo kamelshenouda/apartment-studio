@@ -896,7 +896,21 @@ function pe3dScene(k,T){
 function peLoad(){ Object.keys(ALL.layouts).forEach(function(k){ var L=ALL.layouts[k]; if(!L.plan2d)return; PE_ORIG[k]=L;
   try{ var s=localStorage.getItem(peKey(k)); if(s){ PE_T[k]=JSON.parse(s); if(!PE_T[k].zones)PE_T[k].zones=peZones(L.plan2d); if(!PE_T[k].shift)PE_T[k].shift={}; ALL.layouts[k]=pe3dScene(k,PE_T[k]); PE.built[k]=s; } }catch(e){} }); }
 function peHas(k){ return !!PE_T[k]&&JSON.stringify(PE_T[k])!==(PE.base[k]||(PE.base[k]=JSON.stringify(peFromPlan(k)))); }   // a trial with a change in it
-function peSave(k){ try{ if(peHas(k))localStorage.setItem(peKey(k),JSON.stringify(PE_T[k])); else localStorage.removeItem(peKey(k)); }catch(e){} }
+function peSave(k){ try{ if(peHas(k))localStorage.setItem(peKey(k),JSON.stringify(PE_T[k])); else localStorage.removeItem(peKey(k)); }catch(e){} peIndex(k); }
+// the trials of every plan, as the plan page reads them (same site, same browser): the walls, doors and rooms of the
+// trial with their areas, a line saying what changed, the pieces placed (with their sizes and plan symbol family) and
+// the design's pieces cleared to make way
+var PF_KEY='<@v105>apt3d</@v105>';
+function peIndex(k){ if(typeof furn==='undefined')return; try{ var key=PF_KEY+'-trials', idx=JSON.parse(localStorage.getItem(key)||'{}')||{}, was=idx[k]||{}, e={name:(PE_ORIG[k]||ALL.layouts[k]).name,at:new Date().toISOString()};
+  if(peHas(k)){ var T=PE_T[k]; peBaseRooms(k); var RI=peRoomInfo(T); e.sum=peSummary(k);
+    e.lines=T.lines.map(function(L){ var o={o:L.o,c:L.c,a:L.a,ops:L.ops}; if(L.lock)o.lock=L.lock; if(L.nw)o.nw=1; if(L.moved)o.moved=1; return o; });
+    e.doors=T.doors.map(function(d){ var p=peDoorPts(T,d); return {h:p.hinge,l:p.leaf,s:p.shut,w:d.w,slide:d.kind==='slide'?1:0,o:peLine(T,d.line).o,c:peLine(T,d.line).c,op:peDoorOp(d)}; });
+    e.rooms=T.rooms.map(function(r,i){ return {n:r.n,r:r.r,a:Math.round(RI[i].a*100)/100,w:Math.round(RI[i].w*100),d:Math.round(RI[i].d*100)}; });
+    var B=peFromPlan(k); e.was=B.lines.filter(function(L0){ var cov=0; T.lines.forEach(function(q){ if(q.o===L0.o&&q.c[0]===L0.c[0]&&q.c[1]===L0.c[1])cov+=Math.max(0,Math.min(q.a[1],L0.a[1])-Math.max(q.a[0],L0.a[0])); }); return cov<L0.a[1]-L0.a[0]-1; }).map(function(L){ return peLineRect(L); }); }
+  var F=furn[k]||[]; e.pcs=F.filter(function(q){ return !q.gone&&q.t.charAt(0)!=='@'&&FDEF[q.t]; }).map(function(q){ var D=fDim(q); return {t:q.t,x:q.x,y:q.y,r:q.r||0,w:D.w,d:D.d,h:D.h,y0:D.y,m:D.m,n:D.n}; });
+  e.gone=k===LAYOUT?F.filter(function(q){ return q.gone&&FDEF[q.t]; }).map(function(q){ var D=FDEF[q.t]; return {n:D.n,x:q.x,y:q.y,w:D.w,d:D.d}; }):(was.gone||[]);
+  if(!e.lines&&!e.pcs.length&&!e.gone.length)delete idx[k]; else idx[k]=e; localStorage.setItem(key,JSON.stringify(idx)); }catch(er){} }
+function peBaseRooms(k){ if(PE.baseRooms[k])return; PE.baseRooms[k]={}; var B0=peFromPlan(k), I0=peRoomInfo(B0); B0.rooms.forEach(function(q,i){ PE.baseRooms[k][q.n]=I0[i].a; }); PE.riKey=null; }
 
 // ----- editing: each returns an error text (nothing changed) or '' (done)
 var PE_TOL=1.5;
@@ -3039,7 +3053,7 @@ function fInfo(){ fRingShow();
   if(window.innerWidth>760){ fbar.style.left=(panelCover()+12)+'px'; fbar.style.right='64px'; fbar.style.transform='none'; fbar.style.width='auto'; fbar.style.maxWidth='none'; }
 }
 function fSave(){ // this browser at once; the artifact's store a moment after the last change, one write at a time
-  try{ localStorage.setItem('<@v105>apt3d</@v105>-furnish',JSON.stringify(furn)); }catch(e){}
+  try{ localStorage.setItem('<@v105>apt3d</@v105>-furnish',JSON.stringify(furn)); }catch(e){} peIndex(LAYOUT);
   if(!fStore||!fCanWrite)return;
   var L=LAYOUT; clearTimeout(fSaveT); fSaveT=setTimeout(function go(){
     if(fSaving){ fDirtySave=true; return; } fSaving=true;
@@ -3937,7 +3951,7 @@ function peSummary(k){ if(!peHas(k))return ''; var T=PE_T[k], B=peFromPlan(k), p
   var dd=T.doors.length-B.doors.length; if(dd)parts.push((dd>0?'+':'')+dd+(Math.abs(dd)===1?' door':' doors'));
   var RI=peRoomInfo(T), was=PE.baseRooms[k]||{}, ch=[];
   T.rooms.forEach(function(r,i){ var w=was[r.o||r.n]; if(w==null)ch.push(r.n+' '+RI[i].a.toFixed(1)+' m²'); else if(Math.abs(RI[i].a-w)>=.05)ch.push(r.n+' '+(RI[i].a>w?'+':'−')+Math.abs(RI[i].a-w).toFixed(1)+' m²'); });
-  return 'Your trial of '+SCENE.name.split(' · ')[0]+': '+(parts.join(', ')||'changes')+(ch.length?' · '+ch.slice(0,3).join(', ')+(ch.length>3?'…':''):''); }
+  return 'Your trial of '+(PE_ORIG[k]||SCENE).name.split(' · ')[0]+': '+(parts.join(', ')||'changes')+(ch.length?' · '+ch.slice(0,3).join(', ')+(ch.length>3?'…':''):''); }
 function peBadge(){ [].forEach.call(document.querySelectorAll('#layout button'),function(b){ b.classList.toggle('trial',peHas(b.getAttribute('data-v'))); }); }
 function peTool(t){ PE.tool=t; if(t!=='sel'&&PE.place)pfPick(null); [].forEach.call(document.querySelectorAll('#pe [data-tool]'),function(b){ b.setAttribute('aria-pressed',String(b.getAttribute('data-tool')===t)); });
   peHint.textContent=t==='wall'?'Drag on the plan to draw a wall. It snaps to the walls it meets.':t==='door'?'Click a wall where the door should go, on the side it should open into.':
@@ -3945,7 +3959,7 @@ function peTool(t){ PE.tool=t; if(t!=='sel'&&PE.place)pfPick(null); [].forEach.c
 function el(tag,a,parent){ var e=document.createElementNS(SVGNS,tag); for(var k in a)e.setAttribute(k,a[k]); if(parent)parent.appendChild(e); return e; }
 function peLineBox(L){ return L.o==='h'?[L.a[0],L.c[0],L.a[1],L.c[1]]:[L.c[0],L.a[0],L.c[1],L.a[1]]; }
 function peDraw(){ if(!PE.on)return; var T=peT(), r=peSvg.getBoundingClientRect(), v=PE.view, k=v.k;
-  if(!PE.baseRooms[LAYOUT]){ PE.baseRooms[LAYOUT]={}; var B0=peFromPlan(LAYOUT), I0=peRoomInfo(B0); B0.rooms.forEach(function(q,i){ PE.baseRooms[LAYOUT][q.n]=I0[i].a; }); PE.riKey=null; }
+  peBaseRooms(LAYOUT);
   peSvg.setAttribute('viewBox',[v.x,v.y,r.width*k,r.height*k].join(' ')); peSvg.textContent='';
   var defs=el('defs',{},peSvg), pat=el('pattern',{id:'pehatch',width:8,height:8,patternUnits:'userSpaceOnUse',patternTransform:'rotate(45)'},defs);
   el('rect',{width:8,height:8,class:'pe-lockbg'},pat); el('line',{x1:0,y1:0,x2:0,y2:8,class:'pe-lockln','stroke-width':3},pat);
@@ -4634,6 +4648,8 @@ if(renderer.compileAsync){ try{ await Promise.race([renderer.compileAsync(scene,
 progress(1,'Ready');
 var ld=document.getElementById('loading'); if(ld){ ld.classList.add('done'); setTimeout(function(){ ld.remove(); },700); }
 window.<@v134>APT_READY</@v134>=true;
+try{ peIndex(LAYOUT); }catch(e){}
+if(new URLSearchParams(location.search).get('edit')==='1'||location.hash==='#edit')(function go(n){ setTimeout(function(){ if(!PE.on)peOpen(true); if(!PE.on&&n<8)go(n+1); },n?250:120); })(0);   // from the plan page's Edit in 2D
 adapt.t0=performance.now(); renderer.setAnimationLoop(loop);
 </script>
 

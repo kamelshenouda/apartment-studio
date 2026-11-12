@@ -475,7 +475,7 @@ def svg(body):
     W, H = x1 - x0, y1 - y0 + 140
     a = math.radians(180 - sunpath.FACING)
     nx, ny = x1 - 70, y1 + 50
-    return (f'<svg class="plan" viewBox="{f(x0)} {f(y0)} {f(W)} {f(H)}" role="img" aria-label="Floor plan of {htmlmod.escape(apartment.NAME)}" '
+    return (f'<svg class="plan" id="plan-existing" viewBox="{f(x0)} {f(y0)} {f(W)} {f(H)}" role="img" aria-label="Floor plan of {htmlmod.escape(apartment.NAME)}" '
             f'xmlns="http://www.w3.org/2000/svg">{garden_layer()}{body}'
             f'<g class="north" transform="translate({f(nx)} {f(ny)})"><circle r="34" class="nc"/>'
             f'<path d="M0 30 L-13 -8 L0 0 L13 -8 Z" class="na" transform="rotate({180 - sunpath.FACING})"/>'
@@ -511,6 +511,17 @@ def openings_table():
     return ''.join(rows)
 
 
+def trial_script(prefix='apt3d', page3d='3d.html'):
+    """The plan page's part of the trial (plan_trial.js): a bar per plan with Design or Your trial and Edit in 2D, and
+    your trial drawn over the design. The plan symbols are the 3D page's own (fSym in viewer.html), copied in here."""
+    eng = os.path.dirname(os.path.abspath(__import__('sys')._getframe().f_code.co_filename))
+    js = open(os.path.join(eng, 'plan_trial.js'), encoding='utf-8').read()
+    vw = open(os.path.join(eng, 'viewer.html'), encoding='utf-8').read()
+    fsym = vw[vw.index('function fSym('):vw.index('function fPlace(')].rstrip()
+    js = js.replace('__PREFIX__', prefix).replace('__PAGE3D__', page3d).replace('__FSYM__', fsym)
+    return '<script>\n' + js + '\n</script>'
+
+
 def page():
     tpl = open(os.path.join(HERE, 'plan_template.html')).read()
     sf = sunpath.facts()
@@ -524,7 +535,7 @@ def page():
                .replace('{{FACING}}', f'{round(sunpath.FACING)}° {sunpath.compass(sunpath.FACING)}')
                .replace('{{SUNPATH}}', sunpath.svg()))
     html = re.sub(r'\{\{SUN\.(\w+)\.(\w+)\}\}', lambda m: str(sf[m.group(1)][m.group(2)]), html)
-    return html
+    return html.replace('</body>', trial_script() + '\n</body>')
 
 
 if __name__ == '__main__':

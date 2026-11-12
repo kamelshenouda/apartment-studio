@@ -85,6 +85,7 @@ When the owner asks for this (or anything like it), go through these steps in or
 | `tools/dxf_import.py`, `tools/pdf_import.py` | drawing → draft `apartment.json` + `check.html` |
 | `tools/build_all.py` | lock check, plan page, 3D, home page, private-word check → `site/` |
 | `tools/build_plans.py`, `tools/plan_template.html` | the plan page |
+| `tools/plan_trial.js` | the plan page's part of the trial: Design or Your trial, Edit in 2D (`build_plans.trial_script`, which copies in the viewer's `fSym`) |
 | `tools/build_3d.py`, `tools/viewer.html` | the 3D (three.js, served from `tools/vendor`); places a project words or sets up differently are marked `<@name>default</@name>` in the viewer, and a project can give its own text for them (`build_3d.viewer_html(overrides)`) |
 | `tools/build_site.py`, `tools/index_template.html` | the home page |
 | `tools/plan_lock.py`, `plan-lock.json`, `plan-lock-log.md` | the plan lock and its history |
