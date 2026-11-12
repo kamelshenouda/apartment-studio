@@ -74,6 +74,16 @@ When the owner asks for this (or anything like it), go through these steps in or
   and from the `s` (source plan record) and `sk` (skirting) tags on the 3D items. If you change how walls, openings or
   doors are built in Python, change `pe3dScene` in `viewer.html` to match. Trials stay in the visitor's browser; the
   plan lock is untouched until the owner sends a trial and approves it.
+- **A trial sent to you** ("Send to Claude" in the 2D plan) arrives three ways:
+  - in the 3D artifact's store, under the `trials` collection with the plan as the document (read it with the artifact data tool: `get`, collection `trials`, document `c`);
+  - as text pasted in the chat, with a JSON block;
+  - as a saved `.json` file.
+
+  `python3 tools/trial_report.py trial.json --page site/3d.html` turns it into the report and checks it was made on
+  the plan as it is now.
+- **Making a sent trial official.** Walls and doors change only in the plan source, after the owner approves, then
+  `tools/plan_lock.py --accept "why"`. Furniture goes into `furnish.json` with `--furnish --write`, also only once
+  approved.
 
 ## Where things are
 
@@ -85,6 +95,7 @@ When the owner asks for this (or anything like it), go through these steps in or
 | `tools/dxf_import.py`, `tools/pdf_import.py` | drawing → draft `apartment.json` + `check.html` |
 | `tools/build_all.py` | lock check, plan page, 3D, home page, private-word check → `site/` |
 | `tools/build_plans.py`, `tools/plan_template.html` | the plan page |
+| `tools/trial_report.py` | a trial sent from the 2D plan as an architect's report; puts its furniture in `furnish.json` with `--furnish --write` |
 | `tools/plan_trial.js` | the plan page's part of the trial: Design or Your trial, Edit in 2D (`build_plans.trial_script`, which copies in the viewer's `fSym`) |
 | `tools/build_3d.py`, `tools/viewer.html` | the 3D (three.js, served from `tools/vendor`); places a project words or sets up differently are marked `<@name>default</@name>` in the viewer, and a project can give its own text for them (`build_3d.viewer_html(overrides)`) |
 | `tools/build_site.py`, `tools/index_template.html` | the home page |

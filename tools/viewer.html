@@ -116,6 +116,10 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .pcard .px:hover{background:rgba(0,0,0,.06)}
 .picdlg{max-width:min(960px,calc(100vw - 32px));width:100%;border:0;border-radius:10px;padding:14px;background:#FBFAF7;color:#1D2125;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 .picdlg::backdrop{background:rgba(20,22,24,.55)}
+.senddlg{max-width:min(760px,calc(100vw - 32px))}.senddlg h3{margin:0 0 4px;font:600 17px var(--display)}
+.senddlg pre{max-height:min(46vh,420px);overflow:auto;white-space:pre-wrap;font:12.5px/1.5 var(--mono);background:#F2F1ED;border-radius:8px;padding:10px 12px;margin:8px 0}
+.senddlg .ftools button{appearance:none;border:1px solid #C9C6BF;background:#fff;color:#1D2125;font:600 13px var(--display);padding:8px 12px;border-radius:6px;cursor:pointer}
+.senddlg .ftools button.pri{background:#2E5A74;border-color:#2E5A74;color:#fff}.senddlg .ftools button:focus-visible{outline:2px solid #2E5A74;outline-offset:2px}
 .picdlg img{display:block;width:100%;height:auto;border-radius:6px;margin-bottom:10px}
 .picdlg .ftools a{display:inline-flex;align-items:center;border:1px solid #2E5A74;background:#2E5A74;color:#fff;font:600 13px var(--display);padding:8px 12px;border-radius:6px;text-decoration:none}
 .picdlg .hint{margin:8px 0 0;color:#4A4F54}
@@ -358,6 +362,7 @@ h3{font-weight:600}
 .pe{position:absolute;inset:0;z-index:4;background:var(--paper);display:grid;grid-template-rows:auto 1fr;touch-action:none}
 .pebar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 14px 8px;font:600 12.5px var(--display)}
 .pebar .pet{margin-right:auto;font:600 14px var(--display);color:var(--ink)}
+@media (max-width:1560px) and (min-width:761px){.pebar{gap:5px}.pebar button{padding:7px 8px}.pebar .pet{flex:1 1 60px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
 .pegrp{display:flex;gap:2px;padding:2px;border-radius:9px;background:var(--btn);border:1px solid var(--btn-line)}
 .pebar button,.pesel button{appearance:none;border:1px solid var(--btn-line);background:var(--btn);color:var(--ink);font:600 12.5px var(--display);padding:7px 11px;border-radius:8px;cursor:pointer}
 .pegrp button{border:0;background:transparent}
@@ -370,9 +375,9 @@ h3{font-weight:600}
 .pesel b{font:600 12.5px var(--display);color:var(--ink);margin-right:4px}
 .pesel input{font:600 13px var(--display);padding:6px 8px;border-radius:7px;border:1px solid var(--line);background:var(--sheet);color:var(--ink);width:14em;max-width:50vw}
 .pesel button.danger{color:#B03A2E}
-.pewarn{position:absolute;right:14px;top:96px;display:grid;gap:4px;max-width:min(340px,calc(100% - 28px));padding:9px 11px;border-radius:10px;background:var(--sheet);border:1px solid rgba(196,128,40,.45);font:12px/1.4 var(--mono);color:var(--ink2);box-shadow:0 4px 18px rgba(0,0,0,.08)}
+.pewarn{position:absolute;right:14px;top:calc(var(--pbh,52px) + 44px);display:grid;gap:4px;max-width:min(340px,calc(100% - 28px));padding:9px 11px;border-radius:10px;background:var(--sheet);border:1px solid rgba(196,128,40,.45);font:12px/1.4 var(--mono);color:var(--ink2);box-shadow:0 4px 18px rgba(0,0,0,.08)}
 .pewarn b{color:var(--warn);font:600 12.5px var(--display)}
-.pehint{position:absolute;left:50%;transform:translateX(-50%);top:58px;margin:0;pointer-events:none;z-index:2;background:rgba(29,33,37,.88);color:#fff!important;padding:5px 12px;border-radius:7px;font:500 12px/1.4 var(--display)!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100% - 40px)!important;max-width:min(380px,40%);font:12px/1.4 var(--mono);color:var(--muted)}
+.pehint{position:absolute;left:50%;transform:translateX(-50%);top:calc(var(--pbh,52px) + 6px);margin:0;pointer-events:none;z-index:2;background:rgba(29,33,37,.88);color:#fff!important;padding:5px 12px;border-radius:7px;font:500 12px/1.4 var(--display)!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100% - 40px)!important;max-width:min(380px,40%);font:12px/1.4 var(--mono);color:var(--muted)}
 @media (max-width:700px){ .pehint{display:none} .pewarn{top:auto;bottom:74px;right:12px} }
 .pe-floor{fill:var(--sheet)}.pe-garden{fill:rgba(125,145,97,.16)}
 .pe-furn{fill:color-mix(in srgb,var(--sheet) 70%,transparent);stroke:var(--muted);stroke-width:.8;opacity:.6;vector-effect:non-scaling-stroke;pointer-events:none}
@@ -431,7 +436,7 @@ h3{font-weight:600}
 .pe-pc.ghost{opacity:.7;pointer-events:none}.pe-pc.ghost .pf{stroke:var(--accent);stroke-dasharray:5 3}
 .pe-tag.amber rect{fill:var(--warn,#9A5B12);stroke:var(--warn,#9A5B12)}.pe-tag.amber text{fill:#fff}
 .pe-gap{stroke:var(--accent);stroke-width:1;vector-effect:non-scaling-stroke;pointer-events:none}.pe-gap.amber{stroke:var(--warn,#9A5B12)}
-.pecat{position:absolute;left:12px;top:64px;bottom:12px;width:296px;max-width:calc(100% - 24px);z-index:4;display:flex;flex-direction:column;background:var(--sheet);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.12)}
+.pecat{position:absolute;left:12px;top:calc(var(--pbh,52px) + 12px);bottom:12px;width:296px;max-width:calc(100% - 24px);z-index:4;display:flex;flex-direction:column;background:var(--sheet);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.12)}
 .pecath{display:flex;align-items:baseline;gap:8px;padding:10px 12px 8px}.pecath b{font:600 14px var(--display);color:var(--ink)}.pecath span{font:500 11px var(--mono);color:var(--muted);margin-right:auto}
 .pecath button{appearance:none;border:0;background:none;color:var(--muted);font:500 18px var(--display);cursor:pointer;padding:0 4px}
 .pecatl{overflow:auto;padding:0 12px 12px;display:grid;gap:4px;align-content:start;overscroll-behavior:contain}
@@ -656,7 +661,7 @@ h3{font-weight:600}
       <div class="pebar" role="toolbar" aria-label="Plan tools"><b class="pet" id="petitle"></b>
         <div class="pegrp"><button type="button" data-tool="sel" title="Move walls and doors (V)">Move</button><button type="button" data-tool="wall" title="Draw a wall (W)">+ Wall</button><button type="button" data-tool="door" title="Put a door in a wall (D)">+ Door</button><button type="button" id="pecatb" aria-pressed="false" aria-controls="pecat" title="The catalogue: furniture, kitchen, bathroom and more, at standard sizes (F)">+ Furniture</button></div>
         <div class="pegrp"><button type="button" id="peundo" title="Undo (Ctrl+Z, ⌘Z)" aria-label="Undo">↶</button><button type="button" id="peredo" title="Redo (Shift+Ctrl+Z)" aria-label="Redo">↷</button></div>
-        <div class="pegrp"><button type="button" id="pedims" aria-pressed="true" title="Overall dimensions, scale bar and north">Dims</button><button type="button" id="pefurn" aria-pressed="true" title="Show the furniture on the plan">Furniture</button><button type="button" id="peareas" aria-pressed="false" title="The area of every room, and the total">Areas</button><button type="button" id="pesave" title="Save this plan as a picture">Save</button></div>
+        <div class="pegrp"><button type="button" id="pedims" aria-pressed="true" title="Overall dimensions, scale bar and north">Dims</button><button type="button" id="pefurn" aria-pressed="true" title="Show the furniture on the plan">Furniture</button><button type="button" id="peareas" aria-pressed="false" title="The area of every room, and the total">Areas</button><button type="button" id="pesave" title="Save this plan as a picture">Save</button><button type="button" id="pesend" title="Send your trial to Claude: what changed, in an architect's terms, with the exact data">Send to Claude</button></div>
         <button type="button" id="pereset" title="Drop this trial: back to the plan as designed">Back to the design</button>
         <button type="button" class="pri" id="pe3d">See it in 3D</button></div>
       <svg class="pesvg" id="pesvg" role="img" aria-label="Editable plan"></svg>
@@ -664,6 +669,10 @@ h3{font-weight:600}
       <div class="pewarn" id="pewarn" hidden role="status"></div>
       <div class="peareas" id="peareasp" hidden></div>
       <p class="pehint" id="pehint"></p>
+      <dialog class="picdlg senddlg" id="sendlg" aria-labelledby="sendh"><h3 id="sendh">Send your trial to Claude</h3>
+        <p class="hint">What changed, in an architect's terms, with the exact data. The design does not change: Claude reads it and, once you agree, makes it a revision of the plan through the plan lock.</p>
+        <pre id="sendtxt" tabindex="0"></pre><p class="hint" id="sendmsg"></p>
+        <div class="ftools"><button type="button" class="pri" id="sendgo">Send</button><button type="button" id="sendcopy">Copy for Claude</button><button type="button" id="sendfile">Save as a file</button><button type="button" id="sendclose">Close</button></div></dialog>
       <div class="pesel pefr" id="pefr" hidden role="region" aria-label="Furnish room by room"></div>
       <div class="pecat" id="pecat" hidden role="region" aria-label="Catalogue"><div class="pecath"><b>Catalogue</b><span>standard sizes, cm</span><button type="button" id="pecatx" aria-label="Close the catalogue">×</button></div>
         <div class="pecatl" id="pecatl"><button type="button" class="pefrgo" id="pefrgo" title="A standard set for each room, shown before it is used: use it or skip it, room by room">Furnish room by room</button><p>Click a piece, then click the plan where it goes; or drag it there. It turns its back to the nearest wall and closes up to it. It shows in the 3D too.</p></div></div>
@@ -1159,7 +1168,7 @@ function peDoorSnap(T,d,na){ var was=d.at; d.at=na; var g=peDoorGaps(T,d); d.at=
   cands.forEach(function(c){ var dd=c[1]-c[0]; if(Math.abs(dd)<6&&(!best||Math.abs(dd)<Math.abs(best)))best=dd; });
   return best!=null?na+best:na; }
 peLoad();
-window.APT_PLAN={trials:PE_T,fromPlan:peFromPlan,orig:PE_ORIG,has:function(k){ return peHas(k); }, pieces:function(){ return fList(); }, dbg:function(){ return {view:PE.view,svg:peSvg.getBoundingClientRect().toJSON(),fu:state.fu,L:LAYOUT,ps:fList().map(function(p){ return [p.id,p.gone?1:0,fVariantOn(p),!!fObjs[p.id]&&fObjs[p.id].visible,FDEF[p.t]&&FDEF[p.t].v]; })}; }, ctx:function(ri,mode){ var X=pfCtx(peT(),ri,mode||'replace'); return {R:X.R,keep:X.keep.map(function(k){ return k.map(function(v){ return typeof v==='number'?Math.round(v):v; }); }),ops:X.ops,win:X.win,glz:X.glz,door:X.door}; }, prof:function(){ var T=peT(), out=[]; T.rooms.forEach(function(r,i){ var t0=performance.now(); pfPropose(T,i,'replace',0); out.push([r.n,Math.round(performance.now()-t0)]); }); var t1=performance.now(); for(var k=0;k<20;k++)pfShownS(); var t2=performance.now(); for(k=0;k<20;k++)pfGoneS(); var t3=performance.now(); for(k=0;k<5;k++)peDraw(); out.push(['shown x20',Math.round(t2-t1)],['gone x20',Math.round(performance.now()-t2)],['peDraw x5',Math.round(performance.now()-t3)]); return out; }, layout:function(ri,mode,v){ var P=pfPropose(peT(),ri,mode||'replace',v||0); return P.pieces.map(function(q){ return [q.t,Math.round(q.x),Math.round(q.y),q.r]; }); }, propose:function(ri,mode,v){ var P=pfPropose(peT(),ri,mode||'replace',v||0); return {room:peT().rooms[ri].n,ty:P.ty,main:P.main,fitted:!!P.fitted,fixed:P.X.fixed,names:pfNames(P.pieces),n:P.pieces.length,clr:P.X.clr.n}; }, objs:function(){ return Object.keys(fObjs).map(function(k){ var o=fObjs[k]; return [k,o.visible,o.children.length]; }); },   // for the tests and the plan page
+window.APT_PLAN={trials:PE_T,fromPlan:peFromPlan,orig:PE_ORIG,has:function(k){ return peHas(k); }, pieces:function(){ return fList(); }, pack:function(){ return pePack(LAYOUT); }, dbg:function(){ return {view:PE.view,svg:peSvg.getBoundingClientRect().toJSON(),fu:state.fu,L:LAYOUT,ps:fList().map(function(p){ return [p.id,p.gone?1:0,fVariantOn(p),!!fObjs[p.id]&&fObjs[p.id].visible,FDEF[p.t]&&FDEF[p.t].v]; })}; }, ctx:function(ri,mode){ var X=pfCtx(peT(),ri,mode||'replace'); return {R:X.R,keep:X.keep.map(function(k){ return k.map(function(v){ return typeof v==='number'?Math.round(v):v; }); }),ops:X.ops,win:X.win,glz:X.glz,door:X.door}; }, prof:function(){ var T=peT(), out=[]; T.rooms.forEach(function(r,i){ var t0=performance.now(); pfPropose(T,i,'replace',0); out.push([r.n,Math.round(performance.now()-t0)]); }); var t1=performance.now(); for(var k=0;k<20;k++)pfShownS(); var t2=performance.now(); for(k=0;k<20;k++)pfGoneS(); var t3=performance.now(); for(k=0;k<5;k++)peDraw(); out.push(['shown x20',Math.round(t2-t1)],['gone x20',Math.round(performance.now()-t2)],['peDraw x5',Math.round(performance.now()-t3)]); return out; }, layout:function(ri,mode,v){ var P=pfPropose(peT(),ri,mode||'replace',v||0); return P.pieces.map(function(q){ return [q.t,Math.round(q.x),Math.round(q.y),q.r]; }); }, propose:function(ri,mode,v){ var P=pfPropose(peT(),ri,mode||'replace',v||0); return {room:peT().rooms[ri].n,ty:P.ty,main:P.main,fitted:!!P.fitted,fixed:P.X.fixed,names:pfNames(P.pieces),n:P.pieces.length,clr:P.X.clr.n}; }, objs:function(){ return Object.keys(fObjs).map(function(k){ var o=fObjs[k]; return [k,o.visible,o.children.length]; }); },   // for the tests and the plan page
   scene:function(k){ return ALL.layouts[k]; },
   leak:function(a,b){ var T=peT(); PE.riKey=null; peRoomInfo(T); var D=PE.riDbg, id=PE.riReg[a]; var cells=D.info[id]?D.info[id].cells:[];
     var R=T.rooms[b].r, out=[]; cells.forEach(function(c){ var i=c%D.nx, j=(c-i)/D.nx, x0=D.xs[i],x1=D.xs[i+1],y0=D.ys[j],y1=D.ys[j+1]; if(x1>R[0]&&x0<R[2]&&y1>R[1]&&y0<R[3])out.push([x0,y0,x1,y1]); }); return out.slice(0,10); },
@@ -3959,6 +3968,7 @@ function peTool(t){ PE.tool=t; if(t!=='sel'&&PE.place)pfPick(null); [].forEach.c
 function el(tag,a,parent){ var e=document.createElementNS(SVGNS,tag); for(var k in a)e.setAttribute(k,a[k]); if(parent)parent.appendChild(e); return e; }
 function peLineBox(L){ return L.o==='h'?[L.a[0],L.c[0],L.a[1],L.c[1]]:[L.c[0],L.a[0],L.c[1],L.a[1]]; }
 function peDraw(){ if(!PE.on)return; var T=peT(), r=peSvg.getBoundingClientRect(), v=PE.view, k=v.k;
+  var pbh=Math.round(document.querySelector('#pe .pebar').getBoundingClientRect().height); if(pbh&&pbh!==PE.pbh){ PE.pbh=pbh; peEl.style.setProperty('--pbh',pbh+'px'); }   // what sits under the toolbar follows its height
   peBaseRooms(LAYOUT);
   peSvg.setAttribute('viewBox',[v.x,v.y,r.width*k,r.height*k].join(' ')); peSvg.textContent='';
   var defs=el('defs',{},peSvg), pat=el('pattern',{id:'pehatch',width:8,height:8,patternUnits:'userSpaceOnUse',patternTransform:'rotate(45)'},defs);
@@ -4402,6 +4412,79 @@ function pfFrUI(){ var box=document.getElementById('pefr'), F=PE.fr; box.hidden=
   if(P.pieces.length&&P.alts>1)bt('Another arrangement',pfFrAlt,null,'Another wall or spot for the main piece (A)');
   if(c.n)bt(F.mode==='replace'?'Keep the design\'s pieces':'Clear the design\'s pieces',function(){ F.mode=F.mode==='replace'?'add':'replace'; F.v=0; pfFrShow(); });
   if(F.list.length>1)bt('Skip',pfFrSkip,null,'Leave this room as it is (S)'); bt(F.list.length>1?'Stop':'Close',pfFrEnd,null,'Esc'); }
+// ----- send the trial to Claude: what changed, in an architect's terms, with the exact data, so that Claude can make
+// it a revision of the plan through the plan lock once you agree. Inside Claude it goes into this page's store
+// (trials/<plan>); anywhere, it can be copied to paste in a chat, or downloaded as a file.
+function peDiff(k){ var B=peFromPlan(k), T=peHas(k)?PE_T[k]:B, out={moved:[],added:[],removed:[],thick:[],doors:{added:[],removed:[],changed:[]}};
+  function ov(L,M){ return Math.min(L.a[1],M.a[1])-Math.max(L.a[0],M.a[0]); }
+  function mid(L){ return (L.c[0]+L.c[1])/2; }
+  function beside(L){ var n=[]; T.rooms.forEach(function(r){ var R=r.r, a=L.o==='h'?[R[0],R[2]]:[R[1],R[3]], lo=L.o==='h'?R[1]:R[0], hi=L.o==='h'?R[3]:R[2];
+      if(Math.min(a[1],L.a[1])-Math.max(a[0],L.a[0])>20&&(Math.abs(hi-L.c[0])<12||Math.abs(lo-L.c[1])<12))n.push(r.n); }); return n; }
+  function r1(v){ return Math.round(v*10)/10; }
+  T.lines.forEach(function(L){ if(L.lock)return; var at=B.lines.filter(function(M){ return M.o===L.o&&ov(L,M)>1; });
+    if(L.nw||!at.length){ out.added.push({o:L.o,c:L.c,a:L.a,t:r1(L.c[1]-L.c[0]),len:r1(L.a[1]-L.a[0]),rooms:beside(L)}); return; }
+    if(at.some(function(M){ return Math.abs(M.c[0]-L.c[0])<.5&&Math.abs(M.c[1]-L.c[1])<.5; }))return;
+    var near=at.slice().sort(function(p,q){ return Math.abs(mid(p)-mid(L))-Math.abs(mid(q)-mid(L)); })[0], d=r1(mid(L)-mid(near));
+    if(Math.abs(d)<.5)out.thick.push({o:L.o,c:L.c,a:L.a,was:r1(near.c[1]-near.c[0]),now:r1(L.c[1]-L.c[0]),rooms:beside(L)});
+    else out.moved.push({o:L.o,a:[Math.max(L.a[0],near.a[0]),Math.min(L.a[1],near.a[1])],was:near.c,now:L.c,by:d,rooms:beside(L)}); });
+  out.moved.sort(function(p,q){ var a=p.o+p.was+'|'+p.now, b=q.o+q.was+'|'+q.now; return a<b?-1:a>b?1:p.a[0]-q.a[0]; });   // a wall moved in pieces reads as one
+  out.moved=out.moved.reduce(function(acc,m){ var g=acc[acc.length-1];
+    if(g&&g.o===m.o&&String(g.was)===String(m.was)&&String(g.now)===String(m.now)&&m.a[0]-g.a[1]<12){ g.a=[Math.min(g.a[0],m.a[0]),Math.max(g.a[1],m.a[1])]; m.rooms.forEach(function(n){ if(g.rooms.indexOf(n)<0)g.rooms.push(n); }); }
+    else acc.push(m); return acc; },[]);
+  B.lines.forEach(function(M){ if(M.lock)return; var cov=0;          // what is left of a wall of the design nowhere near where it was: taken out
+    T.lines.forEach(function(L){ if(L.o===M.o&&Math.abs(mid(L)-mid(M))<250)cov+=Math.max(0,ov(L,M)); });
+    if(cov<M.a[1]-M.a[0]-1)out.removed.push({o:M.o,c:M.c,a:M.a,len:r1(M.a[1]-M.a[0]-cov)}); });
+  var bySrc={}; B.doors.forEach(function(d){ if(d.src!=null)bySrc[d.src]=d; });
+  function dd(d,TT){ var L=peLine(TT,d.line); return {w:d.w,o:L.o,c:L.c,op:peDoorOp(d).map(r1),kind:d.kind==='slide'?'sliding':'hinged',rooms:(function(){ var TT0=T; return beside(L); })()}; }
+  T.doors.forEach(function(d){ var o=d.src!=null&&bySrc[d.src]; if(!o){ out.doors.added.push(dd(d,T)); return; } delete bySrc[d.src];
+    var a=dd(o,B), b=dd(d,T); if(a.w!==b.w||a.kind!==b.kind||Math.abs(a.op[0]-b.op[0])>.5||a.c[0]!==b.c[0]||o.ss!==d.ss||o.sa!==d.sa)out.doors.changed.push({was:a,now:b,flip:o.sa!==d.sa,swing:o.ss!==d.ss}); });
+  Object.keys(bySrc).forEach(function(s){ out.doors.removed.push(dd(bySrc[s],B)); });
+  var RIb=peRoomInfo(B), rb={}; B.rooms.forEach(function(r,i){ rb[r.o||r.n]=RIb[i].a; }); var RIt=peRoomInfo(T);
+  out.rooms=T.rooms.map(function(r,i){ var w=rb[r.o||r.n]; return {n:r.n,was:w==null?null:Math.round(w*1000)/1000,now:Math.round(RIt[i].a*1000)/1000,w:Math.round(RIt[i].w*100),d:Math.round(RIt[i].d*100)}; });
+  return out; }
+function pePack(k){ var D=peDiff(k), T=peHas(k)?PE_T[k]:null, F=(furn[k]||[]), O=PE_ORIG[k]||ALL.layouts[k], TT=T||peFromPlan(k);
+  function roomOf(x,y){ var r=TT.rooms.filter(function(q){ return x>q.r[0]&&x<q.r[2]&&y>q.r[1]&&y<q.r[3]; })[0]; return r?r.n:''; }
+  var placed=F.filter(function(q){ return !q.gone&&q.t.charAt(0)!=='@'&&FDEF[q.t]; }).map(function(q){ var Dm=fDim(q); return {t:q.t,name:Dm.n,w:Dm.w,d:Dm.d,h:Dm.h,at:Dm.y||0,x:q.x,y:q.y,r:q.r||0,room:roomOf(q.x,q.y)}; });
+  var cleared=F.filter(function(q){ return q.gone&&FDEF[q.t]; }).map(function(q){ return {name:FDEF[q.t].n,x:q.x,y:q.y,room:roomOf(q.x,q.y)}; });
+  var moved=F.filter(function(q){ return !q.gone&&q.t.charAt(0)==='@'&&FDEF[q.t]; }).map(function(q){ return {name:FDEF[q.t].n,x:q.x,y:q.y,r:q.r||0,room:roomOf(q.x,q.y)}; });
+  var W=T?peWarnings(T).filter(function(w){ return !w.base; }).map(function(w){ return w.t; }):[];
+  var fj={}; fj[k]={pieces:F.filter(function(q){ return !q.gone&&q.t.charAt(0)!=='@'&&FDEF[q.t]; }).map(function(q){ var o={t:q.t,x:q.x,y:q.y,r:q.r||0}; if(q.w)o.w=q.w; if(q.d)o.d=q.d; return o; })};
+  var pk={kind:'apartment-trial',v:1,plan:{id:k,name:O.name},made:new Date().toISOString(),fingerprint:peKey(k),summary:peHas(k)?peSummary(k):'Your trial of '+O.name.split(' · ')[0]+': walls and doors as designed',
+    walls:{moved:D.moved,added:D.added,removed:D.removed,thickness:D.thick},doors:D.doors,rooms:D.rooms,furniture:{placed:placed,cleared:cleared,moved:moved,furnish_json:fj},warnings:W,trial:T,furn:F};
+  pk.text=peText(pk); return pk; }
+function peText(p){ var L=[], n=function(v){ return Math.round(v*10)/10; };
+  function where(o,c,a){ return (o==='h'?'the wall along y '+n(c[0])+'–'+n(c[1])+', from x '+n(a[0])+' to '+n(a[1]):'the wall along x '+n(c[0])+'–'+n(c[1])+', from y '+n(a[0])+' to '+n(a[1])); }
+  function rooms(r){ return r&&r.length?(r.length>1?'between '+r.slice(0,-1).join(', ')+' and '+r[r.length-1]:'in '+r[0]):''; }
+  L.push(p.summary.replace(/[.…]+$/,'')+'.'); L.push('Plan: '+p.plan.name+' ('+p.plan.id+'). Made in the 2D plan on '+p.made.slice(0,10)+'. Plan centimetres: x to the right, y down the plan.');
+  var w=p.walls; if(w.moved.length||w.added.length||w.removed.length||w.thickness.length){ L.push(''); L.push('Walls:');
+    w.moved.forEach(function(m){ L.push('- Moved '+Math.abs(m.by)+' cm '+(m.o==='h'?(m.by>0?'down the plan':'up the plan'):(m.by>0?'to the right':'to the left'))+': '+rooms(m.rooms)+' ('+where(m.o,m.was,m.a)+', now at '+(m.o==='h'?'y ':'x ')+n(m.now[0])+'–'+n(m.now[1])+').'); });
+    w.added.forEach(function(m){ L.push('- New wall, '+m.t+' cm thick, '+m.len+' cm long: '+rooms(m.rooms)+' ('+where(m.o,m.c,m.a)+').'); });
+    w.removed.forEach(function(m){ L.push('- Taken out: '+m.len+' cm of '+where(m.o,m.c,m.a)+'.'); });
+    w.thickness.forEach(function(m){ L.push('- Thickness '+m.was+' → '+m.now+' cm: '+rooms(m.rooms)+' ('+where(m.o,m.c,m.a)+').'); }); }
+  var d=p.doors; if(d.added.length||d.removed.length||d.changed.length){ L.push(''); L.push('Doors:');
+    d.added.forEach(function(x){ L.push('- New '+x.kind+' door, '+x.w+' cm: '+rooms(x.rooms)+' (opening '+x.op.join('–')+' along '+where(x.o,x.c,x.op).replace(/, from .*/,'')+').'); });
+    d.removed.forEach(function(x){ L.push('- Taken out: the '+x.w+' cm door '+rooms(x.rooms)+'.'); });
+    d.changed.forEach(function(x){ var ch=[]; if(x.was.w!==x.now.w)ch.push('width '+x.was.w+' → '+x.now.w+' cm'); if(x.was.kind!==x.now.kind)ch.push(x.now.kind); if(Math.abs(x.was.op[0]-x.now.op[0])>.5)ch.push('moved, opening now '+x.now.op.join('–')); if(x.flip)ch.push('hinge on the other side'); if(x.swing)ch.push('opens the other way');
+      L.push('- Door '+rooms(x.now.rooms)+': '+ch.join(', ')+'.'); }); }
+  var rc=p.rooms.filter(function(r){ return r.was==null||Math.abs(r.now-r.was)>=.05; }); if(rc.length){ L.push(''); L.push('Rooms (clear floor, m²):');
+    rc.forEach(function(r){ L.push('- '+r.n+': '+(r.was==null?'new, ':r.was.toFixed(1)+' → ')+r.now.toFixed(1)+(r.was!=null?' ('+(r.now>r.was?'+':'−')+(Math.round(Math.abs(r.now-r.was)*10)/10).toFixed(1)+')':'')+', '+r.w+' × '+r.d+' cm.'); }); }
+  var f=p.furniture; if(f.placed.length||f.cleared.length||f.moved.length){ L.push(''); L.push('Furniture:'); var by={};
+    f.placed.forEach(function(q){ (by[q.room||'Outside the rooms']=by[q.room||'Outside the rooms']||[]).push(q.name+' '+q.w+'×'+q.d); });
+    Object.keys(by).forEach(function(r){ L.push('- '+r+': '+by[r].join(', ')+'.'); });
+    if(f.cleared.length)L.push('- Cleared from the design: '+f.cleared.map(function(q){ return q.name.toLowerCase()+(q.room?' ('+q.room+')':''); }).join(', ')+'.');
+    if(f.moved.length)L.push('- Moved from where the design has them: '+f.moved.map(function(q){ return q.name.toLowerCase(); }).join(', ')+'.'); }
+  if(p.warnings.length){ L.push(''); L.push('To check:'); p.warnings.forEach(function(t){ L.push('- '+t); }); }
+  return L.join('\n'); }
+var SEND={store:null};
+function peSendOpen(){ var k=LAYOUT, pk=pePack(k), dl=document.getElementById('sendlg');
+  document.getElementById('sendtxt').textContent=pk.text; SEND.pk=pk;
+  document.getElementById('sendgo').hidden=!fStore; document.getElementById('sendmsg').textContent=fStore?(fCanWrite?'Send puts it in this page\'s store, where Claude reads it. Then say so in your conversation with Claude.':'Only the owner and editors can send from here: copy it instead, and paste it in your conversation with Claude.'):'Copy it and paste it in your conversation with Claude, or save it as a file to attach.';
+  if(fStore&&!fCanWrite)document.getElementById('sendgo').hidden=true;
+  var none=!peHas(k)&&!pk.furniture.placed.length&&!pk.furniture.cleared.length&&!pk.furniture.moved.length;   // nothing tried yet on this plan
+  ['sendgo','sendcopy','sendfile'].forEach(function(id){ if(none)document.getElementById(id).hidden=true; else if(id!=='sendgo')document.getElementById(id).hidden=false; });
+  if(none){ document.getElementById('sendtxt').textContent='There is no trial on '+pk.plan.name.split(' · ')[0]+' yet.'; document.getElementById('sendmsg').textContent='Move a wall or a door, or place furniture, then send it.'; }
+  try{ dl.showModal(); }catch(e){ dl.setAttribute('open',''); } }
+function peSendText(){ var pk=SEND.pk; return 'Here is my trial of '+pk.plan.name+' from the 2D plan. Please look at it and tell me whether it should become a revision of the plan.\n\n'+pk.text+'\n\nThe data:\n```json\n'+JSON.stringify(Object.assign({},pk,{text:undefined}))+'\n```\n'; }
 function peSelUI(){ var T=peT(), s=PE.sel; peSel.innerHTML=''; peSel.hidden=!s||!!PE.fr; pfFrUI(); if(!s||PE.fr)return;
   function btn(txt,f,on,title){ var b=document.createElement('button'); b.type='button'; b.textContent=txt; if(on)b.setAttribute('aria-pressed','true'); if(title)b.title=title; b.addEventListener('click',f); peSel.appendChild(b); return b; }
   function lab(txt){ var e=document.createElement('b'); e.textContent=txt; peSel.appendChild(e); }
@@ -4539,6 +4622,17 @@ document.getElementById('pego').addEventListener('click',function(){ peOpen(true
 PE.coarse=!!(window.matchMedia&&matchMedia('(pointer:coarse)').matches);
 document.getElementById('pedims').addEventListener('click',function(){ PE.dims=PE.dims===false; this.setAttribute('aria-pressed',String(PE.dims!==false)); peDraw(); });
 document.getElementById('pecatb').addEventListener('click',function(){ pfCat(!PE.cat); });
+document.getElementById('pesend').addEventListener('click',peSendOpen);
+document.getElementById('sendclose').addEventListener('click',function(){ document.getElementById('sendlg').close(); });
+document.getElementById('sendgo').addEventListener('click',function(){ var pk=SEND.pk, b=this, m=document.getElementById('sendmsg'); if(!fStore||!pk)return; b.disabled=true;
+  fStore.doc('trials/'+pk.plan.id).set(JSON.parse(JSON.stringify(pk))).then(function(){ m.textContent='Sent. Tell Claude in your conversation that the trial of '+pk.plan.name.split(' · ')[0]+' is waiting; it stays there until you send another.'; toast('','Sent to Claude'); },
+    function(e){ m.textContent=e&&e.code==='invalid_argument'?'Only the owner and editors can send from here: copy it instead.':'It could not be sent ('+((e&&e.code)||'error')+'): copy it instead.'; }).then(function(){ b.disabled=false; }); });
+document.getElementById('sendcopy').addEventListener('click',function(){ var t=peSendText(), m=document.getElementById('sendmsg');
+  function fail(){ var pre=document.getElementById('sendtxt'); pre.textContent=t; var r=document.createRange(); r.selectNodeContents(pre); var sl=getSelection(); sl.removeAllRanges(); sl.addRange(r); m.textContent='Copying is blocked here: the text is selected, press Ctrl+C (⌘C).'; }
+  try{ navigator.clipboard.writeText(t).then(function(){ m.textContent='Copied: paste it in your conversation with Claude.'; },fail); }catch(e){ fail(); } });
+document.getElementById('sendfile').addEventListener('click',function(){ var pk=SEND.pk; if(!pk)return; var blob=new Blob([JSON.stringify(pk,null,1)],{type:'application/json'}), name=('trial-'+pk.plan.name.split(' · ')[0]+'-'+pk.made.slice(0,10)).replace(/[^\w]+/g,'-').toLowerCase()+'.json';
+  if(picSaver){ picSaver.save({filename:name,data:blob}).then(function(){ toast('','Saved '+name); },function(){}); return; }
+  var a=document.createElement('a'), u=URL.createObjectURL(blob); a.href=u; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(u); },4000); });
 document.getElementById('pefrgo').addEventListener('click',function(){ pfFrStart(peT().rooms.map(function(r,i){ return i; })); });
 document.getElementById('ffr').addEventListener('click',function(){ if(fOn)setFurnish(false); peOpen(true); if(!PE.on)return; pfCat(true); pfFrStart(peT().rooms.map(function(r,i){ return i; })); });
 document.getElementById('pecatx').addEventListener('click',function(){ pfCat(false); });
