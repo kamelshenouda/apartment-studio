@@ -74,6 +74,15 @@ When the owner asks for this (or anything like it), go through these steps in or
   and from the `s` (source plan record) and `sk` (skirting) tags on the 3D items. If you change how walls, openings or
   doors are built in Python, change `pe3dScene` in `viewer.html` to match. Trials stay in the visitor's browser; the
   plan lock is untouched until the owner sends a trial and approves it.
+  - **Warnings and their fixes.** `peWarnings` gives each problem a kind `k` (room, pocket, swing, thru, walk, over,
+    win, front, noway, wet) and what it concerns. `peFixes` builds the card's solutions, each tried on a copy first.
+    A new kind of warning needs a line in `PE_WHY` and its fixes in `peFixes`. A spot for a piece comes from
+    `pfRelocate`, which takes only spots that add no warning (`pfAddsNone`).
+  - **Sets per room.** `PF_STY` lists each room type's sets, the usual one first. A set function reads `X.st`. It
+    sets `X.miss` to a plain reason when an asked-for set does not fit; the usual set (`X.def`) never sets one. The
+    garden is the walk's room `'g'`, the largest rectangle in its outline (`pfGardenRect`). `pfGroup` places a set of
+    pieces anywhere in a room.
+  - **Test handle.** `APT_PLAN.ev(src)` evaluates inside the page, so tests can reach these functions.
 - **A trial sent to you** ("Send to Claude" in the 2D plan) arrives three ways:
   - in the 3D artifact's store, under the `trials` collection with the plan as the document (read it with the artifact data tool: `get`, collection `trials`, document `c`);
   - as text pasted in the chat, with a JSON block;

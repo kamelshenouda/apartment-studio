@@ -438,6 +438,18 @@ h3{font-weight:600}
 @media (max-width:760px){.pebar{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:8px 8px 6px;gap:6px}.pebar::-webkit-scrollbar{display:none}.pebar>*{flex:none}.pebar .pet{display:none}
   .pesel{left:8px;right:8px;transform:none;bottom:8px;max-width:none;max-height:42%;overflow:auto;gap:5px;padding:7px 8px}.pesel .penum input{width:4.2em}.pesel b{flex:1 1 100%}}
 @media (max-width:760px){.pewarn{cursor:pointer;max-width:calc(100% - 24px);right:12px}.pewarn:not(.open)>span,.pewarn:not(.open)>.pewb{display:none}.pewarn>b::after{content:' ▾';font-weight:400}.pewarn.open>b::after{content:' ▴'}}
+.pe-warnc{pointer-events:auto!important;cursor:pointer}.pe-warnt{pointer-events:none}
+.pe-whl{fill:rgba(192,57,43,.08);stroke:#C0392B;stroke-width:2;stroke-dasharray:6 4;vector-effect:non-scaling-stroke;pointer-events:none}
+.pe-wring{fill:none;stroke:#C0392B;stroke-width:2;vector-effect:non-scaling-stroke;pointer-events:none}
+.pewarn .pewi{appearance:none;border:0;background:none;padding:0;text-align:left;font:inherit;color:inherit;cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}
+.pewarn .pewi:hover,.pewarn .pewi.on{color:#B03A2E}.pewarn .pewi.base{opacity:.7}.pewarn .pewi:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.pewpop{position:absolute;z-index:6;width:min(340px,calc(100% - 16px));box-sizing:border-box;padding:12px 30px 12px 13px;border-radius:12px;background:var(--sheet);border:1px solid rgba(192,57,43,.45);box-shadow:0 12px 32px rgba(0,0,0,.18);font:500 12.5px/1.45 var(--display);color:var(--ink)}
+.pewpop b{display:block;font:600 13.5px/1.35 var(--display);color:#B03A2E;margin-bottom:4px}.pewpop p{margin:0 0 8px;color:var(--ink2)}.pewpop p.pwn{color:var(--muted);font-style:italic}
+.pewpop .pwf{display:flex;flex-direction:column;gap:5px}.pewpop .pwf button{appearance:none;text-align:left;border:1px solid var(--btn-line);background:var(--btn);color:var(--ink);font:600 12.5px var(--display);padding:7px 10px;border-radius:8px;cursor:pointer}
+.pewpop .pwf button.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}.pewpop .pwf button.danger{color:#B03A2E}.pewpop button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.pewpop.dock{width:calc(100% - 16px);padding:10px 30px 10px 12px}.pewpop.dock p{margin-bottom:6px}.pewpop.dock .pwf{flex-direction:row;flex-wrap:wrap}.pewpop.dock .pwf button{padding:6px 9px;font-size:12px}
+.pewpop .pwx{position:absolute;right:6px;top:6px;appearance:none;border:0;background:none;font:500 18px var(--display);color:var(--muted);cursor:pointer;padding:0 4px}
+.pe-pc.bad .pf,.pe-pc.bad .pfh{stroke:#C0392B;stroke-width:2}
 .pe-guide{stroke:#C2185B;stroke-width:1;stroke-dasharray:5 4;vector-effect:non-scaling-stroke;pointer-events:none}
 .pe-grpbox{fill:none;stroke:var(--accent);stroke-width:1.2;stroke-dasharray:6 4;vector-effect:non-scaling-stroke;pointer-events:none}
 .pe-meas{stroke:#C2185B;stroke-width:1.6;vector-effect:non-scaling-stroke;pointer-events:none}.pe-measd{fill:#C2185B;pointer-events:none}
@@ -460,6 +472,9 @@ h3{font-weight:600}
 .pefr .frh{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.pefr .frh b{font:600 15px var(--display)}.pefr .frh span{font:500 12px var(--mono);color:var(--muted)}
 .pefr p{margin:0;font:500 13px/1.45 var(--display);color:var(--ink)}.pefr p.frn{font-size:12px;color:var(--muted)}
 .pefr .frb{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.pefr .frs{display:flex;flex-wrap:wrap;gap:5px}.pefr .frs button{appearance:none;border:1px solid var(--btn-line);background:transparent;color:var(--ink);font:600 12px var(--display);padding:5px 10px;border-radius:999px;cursor:pointer}
+.pefr .frs button[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--sheet)}.pefr .frs button.off{opacity:.5;text-decoration:line-through;text-decoration-thickness:1px}
+.pefr .frs button:focus-visible,.pefr .frb button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.pefr p.frw{font-size:12px;color:var(--warn)}
 .pefr .frb button{appearance:none;border:1px solid var(--btn-line);background:var(--btn);color:var(--ink);font:600 12.5px var(--display);padding:7px 11px;border-radius:8px;cursor:pointer}
 .pefr .frb button.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}.pefr .frb button:disabled{opacity:.45;cursor:default}
 .pe.catopen .pefr{left:calc(50% + 154px);max-width:calc(100% - 352px)}
@@ -469,7 +484,8 @@ h3{font-weight:600}
 .pe-out{fill:rgba(192,57,43,.07);stroke:#C0392B;stroke-width:1;stroke-dasharray:4 3;vector-effect:non-scaling-stroke;pointer-events:none}
 @media (max-width:760px){.pe.catopen .pefr{left:50%;max-width:calc(100% - 24px);bottom:calc(48% + 8px)}
   .pefr{bottom:8px;padding:9px 11px!important;gap:4px!important;width:calc(100% - 16px)}.pefr p.frn{display:none}.pefr p{font-size:12.5px}.pefr .frh b{font-size:14px}
-  .pefr .frb button{padding:6px 9px;font-size:12px}}
+  .pefr .frb button{padding:6px 9px;font-size:12px}
+  .pefr .frs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -11px;padding:1px 11px}.pefr .frs::-webkit-scrollbar{display:none}.pefr .frs button{flex:0 0 auto;padding:5px 9px;font-size:11.5px}}
 @media (max-width:760px){.pecat{top:auto;height:48%;left:8px;right:8px;width:auto}}
 .pe-was{fill:none;stroke:#C0572E;stroke-width:1.3;stroke-dasharray:5 4;vector-effect:non-scaling-stroke;pointer-events:none}
 .pe-warnc.base{fill:var(--muted);opacity:.6}
@@ -674,6 +690,7 @@ h3{font-weight:600}
       <svg class="pesvg" id="pesvg" role="img" aria-label="Editable plan"></svg>
       <div class="pesel" id="pesel" hidden></div>
       <div class="pewarn" id="pewarn" hidden role="status"></div>
+      <div class="pewpop" id="pewpop" hidden role="dialog" aria-label="A problem and its solutions"></div>
       <div class="peareas" id="peareasp" hidden></div>
       <p class="pehint" id="pehint"></p>
       <dialog class="picdlg senddlg" id="sendlg" aria-labelledby="sendh"><h3 id="sendh">Send your trial to Claude</h3>
@@ -1125,49 +1142,55 @@ function pfAuto(T,p){ var D=fDim(p); if(!PF_WALL.test(D.m))return;       // its 
     if(best[1]===0)p.y-=best[0]-dd; if(best[1]===180)p.y+=best[0]-dd; if(best[1]===270)p.x-=best[0]-dd; if(best[1]===90)p.x+=best[0]-dd; } }
 function pfFront(p){ return ['bottom','left','top','right'][Math.round((((p.r||0)%360)+360)%360/90)%4]; }   // the side the piece is used from
 function peLineRect(L){ return L.o==='h'?[L.a[0],L.c[0],L.a[1],L.c[1]]:[L.c[0],L.a[0],L.c[1],L.a[1]]; }
+// what a door's leaf meets as it swings: another door's leaf, a wall, or a piece ({n, pc|s}), or nothing
+function peDoorHit(T,di,furn,rects){ var d=T.doors[di]; if(!d||d.kind==='slide'||d.cls==='door hidden')return null; var p=peDoorPts(T,d), L=peLine(T,d.line), hit=null;
+  furn=furn||peFurn(T); rects=rects||T.lines.map(function(M){ return {L:M,b:peLineRect(M)}; });
+  function inBox(x,y,b,m){ return x>b[0]+m&&x<(b.length>4?b[3]:b[2])-m&&y>b[1]+m&&y<(b.length>4?b[4]:b[3])-m; }
+  T.doors.forEach(function(d2,dj){ if(dj===di||hit||d2.kind==='slide')return; var q=peDoorPts(T,d2);           // two leaves that meet as they swing
+    for(var a2=1;a2<=4&&!hit;a2++)for(var r2=3;r2<=10&&!hit;r2+=2){ var t2=a2/4*Math.PI/2, f2=r2/10, ax2=[q.shut[0]-q.hinge[0],q.shut[1]-q.hinge[1]], bx2=[q.leaf[0]-q.hinge[0],q.leaf[1]-q.hinge[1]];
+      if(peInSweep(T,d,q.hinge[0]+f2*(Math.cos(t2)*ax2[0]+Math.sin(t2)*bx2[0]),q.hinge[1]+f2*(Math.cos(t2)*ax2[1]+Math.sin(t2)*bx2[1])))hit={n:'another door',di2:dj}; } });
+  var ax=[p.shut[0]-p.hinge[0],p.shut[1]-p.hinge[1]], bx=[p.leaf[0]-p.hinge[0],p.leaf[1]-p.hinge[1]];
+  for(var ri=2;ri<=10&&!hit;ri++)for(var ai=0;ai<=8&&!hit;ai++){ var f=ri/10, t=ai/8*Math.PI/2, x=p.hinge[0]+f*(Math.cos(t)*ax[0]+Math.sin(t)*bx[0]), y=p.hinge[1]+f*(Math.cos(t)*ax[1]+Math.sin(t)*bx[1]);
+    rects.forEach(function(q){ if(!hit&&q.L!==L&&inBox(x,y,q.b,.5))hit={n:'a wall'}; });          // the sweep of the leaf, not its bounding box
+    furn.forEach(function(g){ if(!hit&&inBox(x,y,g.b,2))hit={n:'the '+g.n.toLowerCase(),pc:g.pc,s:g.s}; }); }
+  return hit; }
 function peWarnings(T){ var W=[];
   var RI=peRoomInfo(T); T.rooms.forEach(function(r,ri){ var dm=RI[ri], m=PE_MIN.filter(function(q){ return q[0].test(r.n); })[0]; if(!m)return;
-    if(dm.a<m[1]-.005)W.push({x:(r.r[0]+r.r[2])/2,y:(r.r[1]+r.r[3])/2,t:r.n+': '+dm.a.toFixed(1)+' m², under the '+m[1]+' m² for '+m[3]});
-    else if(Math.min(dm.w,dm.d)*100<m[2]-.5)W.push({x:(r.r[0]+r.r[2])/2,y:(r.r[1]+r.r[3])/2,t:r.n+': '+Math.round(Math.min(dm.w,dm.d)*100)+' cm wide, under the '+m[2]+' cm for '+m[3]}); });
+    if(dm.a<m[1]-.005)W.push({x:(r.r[0]+r.r[2])/2,y:(r.r[1]+r.r[3])/2,t:r.n+': '+dm.a.toFixed(1)+' m², under the '+m[1]+' m² for '+m[3],k:'room',ri:ri,need:m});
+    else if(Math.min(dm.w,dm.d)*100<m[2]-.5)W.push({x:(r.r[0]+r.r[2])/2,y:(r.r[1]+r.r[3])/2,t:r.n+': '+Math.round(Math.min(dm.w,dm.d)*100)+' cm wide, under the '+m[2]+' cm for '+m[3],k:'room',ri:ri,need:m}); });
   var furn=peFurn(T), rects=T.lines.map(function(M){ return {L:M,b:peLineRect(M)}; });
   function inBox(x,y,b,m){ return x>b[0]+m&&x<(b.length>4?b[3]:b[2])-m&&y>b[1]+m&&y<(b.length>4?b[4]:b[3])-m; }
-  T.doors.forEach(function(d,di){ if(d.kind==='slide'){ if(!pePocketOk(T,d)){ var pk=peDoorPts(T,d); W.push({x:pk.hinge[0],y:pk.hinge[1],t:'No room in the wall for the sliding door\'s pocket ('+Math.round(d.w)+' cm of solid wall needed beside it)'}); } return; }
-    if(d.cls==='door hidden')return; var p=peDoorPts(T,d), L=peLine(T,d.line), hit=null;
-    T.doors.forEach(function(d2,dj){ if(dj<=di||hit)return; var q=peDoorPts(T,d2);           // two leaves that meet as they swing
-      for(var a2=1;a2<=4&&!hit;a2++)for(var r2=3;r2<=10&&!hit;r2+=2){ var t2=a2/4*Math.PI/2, f2=r2/10, ax2=[q.shut[0]-q.hinge[0],q.shut[1]-q.hinge[1]], bx2=[q.leaf[0]-q.hinge[0],q.leaf[1]-q.hinge[1]];
-        if(peInSweep(T,d,q.hinge[0]+f2*(Math.cos(t2)*ax2[0]+Math.sin(t2)*bx2[0]),q.hinge[1]+f2*(Math.cos(t2)*ax2[1]+Math.sin(t2)*bx2[1])))hit='another door'; } });
-    var ax=[p.shut[0]-p.hinge[0],p.shut[1]-p.hinge[1]], bx=[p.leaf[0]-p.hinge[0],p.leaf[1]-p.hinge[1]];
-    for(var ri=2;ri<=10&&!hit;ri++)for(var ai=0;ai<=8&&!hit;ai++){ var f=ri/10, t=ai/8*Math.PI/2, x=p.hinge[0]+f*(Math.cos(t)*ax[0]+Math.sin(t)*bx[0]), y=p.hinge[1]+f*(Math.cos(t)*ax[1]+Math.sin(t)*bx[1]);
-      rects.forEach(function(q){ if(!hit&&q.L!==L&&inBox(x,y,q.b,.5))hit='a wall'; });          // the sweep of the leaf, not its bounding box
-      furn.forEach(function(g){ if(!hit&&inBox(x,y,g.b,2))hit='the '+g.n.toLowerCase(); }); }
-    if(hit)W.push({x:(p.leaf[0]+p.shut[0])/2,y:(p.leaf[1]+p.shut[1])/2,t:'A door can\'t open fully: '+hit+' is in its way'}); });
+  T.doors.forEach(function(d,di){ if(d.kind==='slide'){ if(!pePocketOk(T,d)){ var pk=peDoorPts(T,d); W.push({x:pk.hinge[0],y:pk.hinge[1],t:'No room in the wall for the sliding door\'s pocket ('+Math.round(d.w)+' cm of solid wall needed beside it)',k:'pocket',di:di}); } return; }
+    var h=peDoorHit(T,di,furn,rects), p=peDoorPts(T,d); if(h)W.push({x:(p.leaf[0]+p.shut[0])/2,y:(p.leaf[1]+p.shut[1])/2,t:'A door can\'t open fully: '+h.n+' is in its way',k:'swing',di:di,pc:h.pc,s:h.s}); });
   T.lines.forEach(function(L){ var b=peLineRect(L);
-    furn.forEach(function(f){ if(f.b[0]<b[2]-1&&f.b[3]>b[0]+1&&f.b[1]<b[3]-1&&f.b[4]>b[1]+1)W.push({x:(Math.max(f.b[0],b[0])+Math.min(f.b[3],b[2]))/2,y:(Math.max(f.b[1],b[1])+Math.min(f.b[4],b[3]))/2,t:'A wall runs through the '+f.n.toLowerCase()}); });
+    furn.forEach(function(f){ if(f.b[0]<b[2]-1&&f.b[3]>b[0]+1&&f.b[1]<b[3]-1&&f.b[4]>b[1]+1)W.push({x:(Math.max(f.b[0],b[0])+Math.min(f.b[3],b[2]))/2,y:(Math.max(f.b[1],b[1])+Math.min(f.b[4],b[3]))/2,t:'A wall runs through the '+f.n.toLowerCase(),k:'thru',pc:f.pc,s:f.s,line:L.id}); });
     if(!L.moved)return;
     furn.forEach(function(f){ var h=L.o==='h', lo=h?f.b[0]:f.b[1], hi=h?f.b[3]:f.b[4]; if(hi<L.a[0]||lo>L.a[1])return;
       var g1=(h?f.b[1]:f.b[0])-L.c[1], g2=L.c[0]-(h?f.b[4]:f.b[3]), g=g1>=0?g1:g2>=0?g2:-1;
-      if(g>=30&&g<75)W.push({x:h?(Math.max(lo,L.a[0])+Math.min(hi,L.a[1]))/2:(g1>=0?L.c[1]+g/2:L.c[0]-g/2),y:h?(g1>=0?L.c[1]+g/2:L.c[0]-g/2):(Math.max(lo,L.a[0])+Math.min(hi,L.a[1]))/2,t:'Walkway '+Math.round(g)+' cm by the '+f.n.toLowerCase()+', under 75'}); }); });
+      if(g>=30&&g<75)W.push({x:h?(Math.max(lo,L.a[0])+Math.min(hi,L.a[1]))/2:(g1>=0?L.c[1]+g/2:L.c[0]-g/2),y:h?(g1>=0?L.c[1]+g/2:L.c[0]-g/2):(Math.max(lo,L.a[0])+Math.min(hi,L.a[1]))/2,t:'Walkway '+Math.round(g)+' cm by the '+f.n.toLowerCase()+', under 75',k:'walk',line:L.id,gap:g,side:g1>=0?1:-1,pc:f.pc,s:f.s}); }); });
   // the pieces placed from the catalogue: what they run into, and the floor in front of them
   if(!PE.inBase)fList().forEach(function(p){ if(p.t.charAt(0)==='@'||!fBlocks(p))return; var D=fDim(p), gp=pfGaps(T,p), nm=D.n.toLowerCase();
-    var ov=gp.over.filter(function(v){ return !v.wall; }); if(ov.length)W.push({x:p.x,y:p.y,t:'The '+nm+' overlaps '+ov[0].n});
+    var ov=gp.over.filter(function(v){ return !v.wall; }); if(ov.length)W.push({x:p.x,y:p.y,t:'The '+nm+' overlaps '+ov[0].n,k:'over',pc:p.id});
     var fp=fFoot(p); if(fp[5]>=120)T.lines.some(function(L){ return L.ops.some(function(op){ if(op[2]!=='win'&&op[2]!=='gl')return false;   // nothing tall in front of a window or a glazed door
       var h=L.o==='h', lo=h?fp[0]:fp[1], hi=h?fp[3]:fp[4]; if(Math.min(hi,op[1])-Math.max(lo,op[0])<10)return false;
       var gap=h?Math.min(Math.abs(fp[1]-L.c[1]),Math.abs(L.c[0]-fp[4])):Math.min(Math.abs(fp[0]-L.c[1]),Math.abs(L.c[0]-fp[3])); if(gap>30)return false;
-      W.push({x:p.x,y:p.y,t:'The '+nm+' stands in front of '+(op[2]==='gl'?'a glazed door':'a window')}); return true; }); });
-    var need=PF_CLR[D.m], v=need&&gp.g[pfFront(p)]; if(v&&v[0]<need-.5)W.push({x:p.x,y:p.y,t:'Only '+Math.round(v[0])+' cm in front of the '+nm+', to '+v[1]+': '+need+' is the usual minimum'}); });
+      W.push({x:p.x,y:p.y,t:'The '+nm+' stands in front of '+(op[2]==='gl'?'a glazed door':'a window'),k:'win',pc:p.id}); return true; }); });
+    var need=PF_CLR[D.m], v=need&&gp.g[pfFront(p)]; if(v&&v[0]<need-.5)W.push({x:p.x,y:p.y,t:'Only '+Math.round(v[0])+' cm in front of the '+nm+', to '+v[1]+': '+need+' is the usual minimum',k:'front',pc:p.id,need:need}); });
   // a room with no way in: no door, passage or garden door on its outline
   T.rooms.forEach(function(r,ri){ var b=r.r, way=false;
     T.lines.forEach(function(L){ if(way)return; var lb=peLineRect(L); if(lb[2]<b[0]-15||lb[0]>b[2]+15||lb[3]<b[1]-15||lb[1]>b[3]+15)return;
       L.ops.forEach(function(op){ if(way||op[2]==='win')return; var m=(op[0]+op[1])/2, mc=(L.c[0]+L.c[1])/2, x=L.o==='h'?m:mc, y=L.o==='h'?mc:m;
         if(x>=b[0]-15&&x<=b[2]+15&&y>=b[1]-15&&y<=b[3]+15&&(Math.abs(L.o==='h'?y-b[1]:x-b[0])<20||Math.abs(L.o==='h'?y-b[3]:x-b[2])<20))way=true; }); });
-    if(!way)W.push({x:(b[0]+b[2])/2,y:(b[1]+b[3])/2,t:r.n+' has no way in: add a door'}); });
+    if(!way)W.push({x:(b[0]+b[2])/2,y:(b[1]+b[3])/2,t:r.n+' has no way in: add a door',k:'noway',ri:ri}); });
   // walls of wet rooms that moved: the drains and supplies have to follow
   var wet=/bath|wc|shower|toilet|kitchen|laundry|utility/i, told={};
   T.lines.forEach(function(L){ if(!L.moved)return; T.rooms.forEach(function(r){ if(!wet.test(r.n)||told[r.n])return; var b=r.r, lb=peLineRect(L);
-    if(lb[2]>=b[0]-3&&lb[0]<=b[2]+3&&lb[3]>=b[1]-3&&lb[1]<=b[3]+3){ told[r.n]=1; W.push({x:(b[0]+b[2])/2,y:(b[1]+b[3])/2,t:r.n+': a wall moved, so check the drains and water supply on site'}); } }); });
+    if(lb[2]>=b[0]-3&&lb[0]<=b[2]+3&&lb[3]>=b[1]-3&&lb[1]<=b[3]+3){ told[r.n]=1; W.push({x:(b[0]+b[2])/2,y:(b[1]+b[3])/2,t:r.n+': a wall moved, so check the drains and water supply on site',k:'wet',line:L.id}); } }); });
   // what the design already has is told apart from what the trial brings
-  var base=PE.warnBase[LAYOUT]||(PE.warnBase[LAYOUT]=PE.inBase?[]:(PE.inBase=true,peWarnings(peFromPlan(LAYOUT)).map(function(w){ return w.t; })));
-  PE.inBase=false; W.forEach(function(w){ w.base=base.indexOf(w.t)>-1; });
+  var BT=null, base=PE.warnBase[LAYOUT]||(PE.warnBase[LAYOUT]=PE.inBase?[]:(PE.inBase=true,BT=peFromPlan(LAYOUT),peWarnings(BT).map(function(w){ return {t:w.t,key:w.k+'|'+(w.s!=null?w.s:'')+'|'+(w.ri!=null?BT.rooms[w.ri].n:'')+'|'+(w.k==='swing'||w.k==='pocket'?(BT.doors[w.di].src):''),a:w.ri!=null?peRoomInfo(BT)[w.ri].a:null}; })));
+  PE.inBase=false; var RIw=peRoomInfo(T);
+  W.forEach(function(w){ var key=w.k+'|'+(w.s!=null?w.s:'')+'|'+(w.ri!=null?(T.rooms[w.ri].o||T.rooms[w.ri].n):'')+'|'+(w.k==='swing'||w.k==='pocket'?T.doors[w.di].src:'');
+    w.base=base.some(function(b){ return b.t===w.t||(b.key===key&&!w.pc&&(b.a==null||RIw[w.ri].a>=b.a-.05)); }); });   // in the design already, and no worse
   return W; }
 // the faces of the walls that meet a door's wall on each side of it: a door is set out from these
 function peDoorGaps(T,d){ var L=peLine(T,d.line), o=peDoorOp(d), lo=L.a[0], hi=L.a[1];
@@ -1179,7 +1202,7 @@ function peDoorSnap(T,d,na){ var was=d.at; d.at=na; var g=peDoorGaps(T,d); d.at=
   cands.forEach(function(c){ var dd=c[1]-c[0]; if(Math.abs(dd)<6&&(!best||Math.abs(dd)<Math.abs(best)))best=dd; });
   return best!=null?na+best:na; }
 peLoad();
-window.APT_PLAN={trials:PE_T,fromPlan:peFromPlan,orig:PE_ORIG,has:function(k){ return peHas(k); }, pieces:function(){ return fList(); }, pack:function(){ return pePack(LAYOUT); }, dbg:function(){ return {sel:PE.sel,view:PE.view,svg:peSvg.getBoundingClientRect().toJSON(),fu:state.fu,L:LAYOUT,ps:fList().map(function(p){ return [p.id,p.gone?1:0,fVariantOn(p),!!fObjs[p.id]&&fObjs[p.id].visible,FDEF[p.t]&&FDEF[p.t].v]; })}; }, ctx:function(ri,mode){ var X=pfCtx(peT(),ri,mode||'replace'); return {R:X.R,keep:X.keep.map(function(k){ return k.map(function(v){ return typeof v==='number'?Math.round(v):v; }); }),ops:X.ops,win:X.win,glz:X.glz,door:X.door}; }, prof:function(){ var T=peT(), out=[]; T.rooms.forEach(function(r,i){ var t0=performance.now(); pfPropose(T,i,'replace',0); out.push([r.n,Math.round(performance.now()-t0)]); }); var t1=performance.now(); for(var k=0;k<20;k++)pfShownS(); var t2=performance.now(); for(k=0;k<20;k++)pfGoneS(); var t3=performance.now(); for(k=0;k<5;k++)peDraw(); out.push(['shown x20',Math.round(t2-t1)],['gone x20',Math.round(performance.now()-t2)],['peDraw x5',Math.round(performance.now()-t3)]); return out; }, layout:function(ri,mode,v){ var P=pfPropose(peT(),ri,mode||'replace',v||0); return P.pieces.map(function(q){ return [q.t,Math.round(q.x),Math.round(q.y),q.r]; }); }, propose:function(ri,mode,v){ var P=pfPropose(peT(),ri,mode||'replace',v||0); return {room:peT().rooms[ri].n,ty:P.ty,main:P.main,fitted:!!P.fitted,fixed:P.X.fixed,names:pfNames(P.pieces),n:P.pieces.length,clr:P.X.clr.n}; }, objs:function(){ return Object.keys(fObjs).map(function(k){ var o=fObjs[k]; return [k,o.visible,o.children.length]; }); },   // for the tests and the plan page
+window.APT_PLAN={ev:function(src){ return eval(src); },trials:PE_T,fromPlan:peFromPlan,orig:PE_ORIG,has:function(k){ return peHas(k); }, pieces:function(){ return fList(); }, pack:function(){ return pePack(LAYOUT); }, tryMove:function(id,d){ var T2=JSON.parse(JSON.stringify(peT())); return peMoveMany(T2,[id],d)||'ok'; }, warnRaw:function(){ return peWarnings(peT()).map(function(w){ return {t:w.t,k:w.k,line:w.line,gap:w.gap,side:w.side,s:w.s,pc:w.pc}; }); }, warn:function(){ return peWarnings(peT()).map(function(w){ return {t:w.t,k:w.k,base:!!w.base}; }); }, fixes:function(t){ var T=peT(), w=peWarnings(T).filter(function(q){ return q.t===t; })[0]; return w?peFixes(T,w).map(function(f){ return f.l; }):null; }, dbg:function(){ return {sel:PE.sel,view:PE.view,svg:peSvg.getBoundingClientRect().toJSON(),fu:state.fu,L:LAYOUT,ps:fList().map(function(p){ return [p.id,p.gone?1:0,fVariantOn(p),!!fObjs[p.id]&&fObjs[p.id].visible,FDEF[p.t]&&FDEF[p.t].v]; })}; }, ctx:function(ri,mode){ var X=pfCtx(peT(),ri,mode||'replace'); return {R:X.R,keep:X.keep.map(function(k){ return k.map(function(v){ return typeof v==='number'?Math.round(v):v; }); }),ops:X.ops,win:X.win,glz:X.glz,door:X.door}; }, prof:function(){ var T=peT(), out=[]; T.rooms.forEach(function(r,i){ var t0=performance.now(); pfPropose(T,i,'replace',0); out.push([r.n,Math.round(performance.now()-t0)]); }); var t1=performance.now(); for(var k=0;k<20;k++)pfShownS(); var t2=performance.now(); for(k=0;k<20;k++)pfGoneS(); var t3=performance.now(); for(k=0;k<5;k++)peDraw(); out.push(['shown x20',Math.round(t2-t1)],['gone x20',Math.round(performance.now()-t2)],['peDraw x5',Math.round(performance.now()-t3)]); return out; }, layout:function(ri,mode,v){ var P=pfPropose(peT(),ri,mode||'replace',v||0); return P.pieces.map(function(q){ return [q.t,Math.round(q.x),Math.round(q.y),q.r]; }); }, propose:function(ri,mode,v){ var P=pfPropose(peT(),ri,mode||'replace',v||0); return {room:peT().rooms[ri].n,ty:P.ty,main:P.main,fitted:!!P.fitted,fixed:P.X.fixed,names:pfNames(P.pieces),n:P.pieces.length,clr:P.X.clr.n}; }, objs:function(){ return Object.keys(fObjs).map(function(k){ var o=fObjs[k]; return [k,o.visible,o.children.length]; }); },   // for the tests and the plan page
   scene:function(k){ return ALL.layouts[k]; },
   leak:function(a,b){ var T=peT(); PE.riKey=null; peRoomInfo(T); var D=PE.riDbg, id=PE.riReg[a]; var cells=D.info[id]?D.info[id].cells:[];
     var R=T.rooms[b].r, out=[]; cells.forEach(function(c){ var i=c%D.nx, j=(c-i)/D.nx, x0=D.xs[i],x1=D.xs[i+1],y0=D.ys[j],y1=D.ys[j+1]; if(x1>R[0]&&x0<R[2]&&y1>R[1]&&y0<R[3])out.push([x0,y0,x1,y1]); }); return out.slice(0,10); },
@@ -4003,11 +4026,12 @@ function peDraw(){ if(!PE.on)return; var T=peT(), r=peSvg.getBoundingClientRect(
   if(PE.furn!==false)peGroups(LAYOUT).forEach(function(gr){ if(GS[gr.s]||!pfGroupOn(ONS,gr))return; var b=peGroupBox(T,gr), mv=T.shift[gr.s]&&(T.shift[gr.s][0]||T.shift[gr.s][1]);
     el('rect',{x:b[0],y:b[1],width:b[3]-b[0],height:b[4]-b[1],class:'pe-furn'+(mv?' mv':'')},g); });
   if(PE.furn!==false)fList().forEach(function(pc){ if(pc.t.charAt(0)==='@'||!FDEF[pc.t])return; var D=fDim(pc), sel=pfSelIds().indexOf(pc.id)>-1;   // the pieces placed from the catalogue
-    var pg=el('g',{transform:'translate('+pc.x+' '+pc.y+') rotate('+(pc.r||0)+')',class:'pe-pc'+(sel?' on':'')+(!sel&&PE.hovPc===pc.id?' hov':''),'data-pc':pc.id},g);
+    var bad=fBlocks(pc)&&pfGaps(T,pc).over.length>0;          // a piece on something else is red where it stands
+    var pg=el('g',{transform:'translate('+pc.x+' '+pc.y+') rotate('+(pc.r||0)+')',class:'pe-pc'+(sel?' on':'')+(bad?' bad':'')+(!sel&&PE.hovPc===pc.id?' hov':''),'data-pc':pc.id},g);
     pg.innerHTML=fSym(D,pc.t); el('rect',{x:-D.w/2,y:-D.d/2,width:D.w,height:D.d,class:'pe-hit','data-pc':pc.id},pg); });
-  if(PE.fr&&PE.fr.prop){ var FR=PE.fr, FRr=T.rooms[FR.list[FR.i]].r, FX=FR.prop.X;    // the proposal for this room, over what makes way for it
+  if(PE.fr&&PE.fr.prop){ var FR=PE.fr, FRr=pfRm(T,FR.list[FR.i]).r, FX=FR.prop.X;    // the proposal for this room, over what makes way for it
     el('rect',{x:FRr[0],y:FRr[1],width:FRr[2]-FRr[0],height:FRr[3]-FRr[1],class:'pe-frroom'},g);
-    if(FR.mode==='replace'){ peGroups(LAYOUT).forEach(function(gr){ if(!FX.clr.s[gr.s]||GS[gr.s])return; var b=peGroupBox(T,gr), cx=(b[0]+b[3])/2, cy=(b[1]+b[4])/2; if(cx>FRr[0]&&cx<FRr[2]&&cy>FRr[1]&&cy<FRr[3])el('rect',{x:b[0],y:b[1],width:b[3]-b[0],height:b[4]-b[1],class:'pe-out'},g); });
+    if((FR.prop.md||FR.mode)==='replace'){ peGroups(LAYOUT).forEach(function(gr){ if(!FX.clr.s[gr.s]||GS[gr.s])return; var b=peGroupBox(T,gr), cx=(b[0]+b[3])/2, cy=(b[1]+b[4])/2; if(cx>FRr[0]&&cx<FRr[2]&&cy>FRr[1]&&cy<FRr[3])el('rect',{x:b[0],y:b[1],width:b[3]-b[0],height:b[4]-b[1],class:'pe-out'},g); });
       fList().forEach(function(q){ if(q.t.charAt(0)!=='@'&&q.x>FRr[0]&&q.x<FRr[2]&&q.y>FRr[1]&&q.y<FRr[3]){ var f=fFoot(q); el('rect',{x:f[0],y:f[1],width:f[3]-f[0],height:f[4]-f[1],class:'pe-out'},g); } }); }
     FX.placed.forEach(function(e){ e.z.forEach(function(Z){ el('rect',{x:Z[0],y:Z[1],width:Z[2]-Z[0],height:Z[3]-Z[1],class:'pe-zone'},g); }); });
     FR.prop.pieces.forEach(function(q){ var pg2=el('g',{transform:'translate('+q.x+' '+q.y+') rotate('+q.r+')',class:'pe-pc ghost prop'},g); pg2.innerHTML=fSym(FDEF[q.t],q.t); }); }
@@ -4063,15 +4087,23 @@ function peDraw(){ if(!PE.on)return; var T=peT(), r=peSvg.getBoundingClientRect(
   if(PE.ghost){ var q=PE.ghost, gl=Math.max(q[2]-q[0],q[3]-q[1]); el('rect',{x:q[0],y:q[1],width:q[2]-q[0],height:q[3]-q[1],class:'pe-ghost'},g);
     var gt=el('text',{x:(q[0]+q[2])/2+(q[2]-q[0]>q[3]-q[1]?0:fs*.6),y:(q[1]+q[3])/2-(q[2]-q[0]>q[3]-q[1]?fs*.6:0),class:'pe-dimt','font-size':fs*.95,'text-anchor':q[2]-q[0]>q[3]-q[1]?'middle':'start'},g);
     gt.textContent=Math.round(gl)+' cm'; }
-  var W=peWarnings(T), Wn=W.filter(function(w){ return !w.base; }), Wb=W.filter(function(w){ return w.base; });
-  (PE.exporting?[]:PE.showBase?W:Wn).forEach(function(w){ el('circle',{cx:w.x,cy:w.y,r:Math.max(6,7.5*k),class:'pe-warnc'+(w.base?' base':'')},g); var t=el('text',{x:w.x,y:w.y+Math.max(3,3.2*k),class:'pe-warnt','font-size':Math.max(9,9.5*k)},g); t.textContent='!'; });
+  var W=peWarnings(T); PE.W=W; PE.ack=PE.ack||{}; W.forEach(function(w){ w.ack=!!PE.ack[w.t]; }); var Wn=W.filter(function(w){ return !w.base&&!w.ack; }), Wb=W.filter(function(w){ return w.base; });
+  var WS=PE.wsel&&W.filter(function(q){ return q.t===PE.wsel; })[0];
+  if(WS&&!PE.exporting){ var hl=function(b){ el('rect',{x:b[0]-4,y:b[1]-4,width:b[2]-b[0]+8,height:b[3]-b[1]+8,class:'pe-whl'},g); };   // what the problem is about, outlined
+    if(WS.pc){ var wq=pfGet(WS.pc); if(wq){ var wf=fFoot(wq); hl([wf[0],wf[1],wf[3],wf[4]]); } }
+    if(WS.di!=null&&T.doors[WS.di]){ var dp=peDoorPts(T,T.doors[WS.di]), xs=[dp.hinge[0],dp.leaf[0],dp.shut[0]], ys=[dp.hinge[1],dp.leaf[1],dp.shut[1]]; hl([Math.min.apply(0,xs),Math.min.apply(0,ys),Math.max.apply(0,xs),Math.max.apply(0,ys)]); }
+    if(WS.line!=null){ var wl=peLine(T,WS.line); if(wl)hl(peLineRect(wl)); } if(WS.ri!=null&&T.rooms[WS.ri])hl(T.rooms[WS.ri].r);
+    el('circle',{cx:WS.x,cy:WS.y,r:Math.max(11,14*k),class:'pe-wring'},g); }
+  (PE.exporting?[]:PE.showBase?W.filter(function(w){ return !w.ack; }):Wn).forEach(function(w){ var c=el('circle',{cx:w.x,cy:w.y,r:Math.max(7,(PE.coarse?11:8)*k),class:'pe-warnc'+(w.base?' base':''),'data-w':w.t},g); var tt=el('title',{},c); tt.textContent=w.t+' · click for solutions';
+    var t=el('text',{x:w.x,y:w.y+Math.max(3,3.2*k),class:'pe-warnt','font-size':Math.max(9,9.5*k)},g); t.textContent='!'; });
   peWarn.hidden=!W.length; peWarn.innerHTML=''; if(W.length){ var hd=document.createElement('b');
     hd.textContent=Wn.length?(Wn.length===1?'1 thing to check':Wn.length+' things to check'):'Nothing new to check'; peWarn.appendChild(hd);
-    Wn.slice(0,8).forEach(function(w){ var s=document.createElement('span'); s.textContent=w.t; peWarn.appendChild(s); });
+    Wn.slice(0,8).forEach(function(w){ var s=document.createElement('button'); s.type='button'; s.className='pewi'+(PE.wsel===w.t?' on':''); s.textContent=w.t; s.title='Show it, with its solutions'; s.addEventListener('click',function(ev){ ev.stopPropagation(); peWarnShow(w.t); }); peWarn.appendChild(s); });
     if(Wb.length){ var bb=document.createElement('button'); bb.type='button'; bb.className='pewb'; bb.setAttribute('aria-expanded',String(!!PE.showBase));
       bb.textContent=(PE.showBase?'Hide':'Show')+' '+Wb.length+' already in the design'; bb.addEventListener('click',function(){ PE.showBase=!PE.showBase; peDraw(); }); peWarn.appendChild(bb);
-      if(PE.showBase)Wb.forEach(function(w){ var s=document.createElement('span'); s.className='base'; s.textContent=w.t; peWarn.appendChild(s); }); } }
-  peHint.hidden=false; peHint.className='pehint'+(PE.drag&&(PE.drag.stop||PE.drag.stopw)?' stop':''); peHint.textContent=peHintText(T);
+      if(PE.showBase)Wb.forEach(function(w){ var s=document.createElement('button'); s.type='button'; s.className='pewi base'; s.textContent=w.t; s.addEventListener('click',function(ev){ ev.stopPropagation(); peWarnShow(w.t); }); peWarn.appendChild(s); }); } }
+  if(!PE.exporting)peWarnPop(T,W);
+  peHint.hidden=false; peHint.textContent=peHintText(T); peHint.className='pehint'+(PE.drag&&(PE.drag.stop||PE.drag.stopw||PE.drag.warn)?' stop':'');
   var AP=document.getElementById('peareasp'); AP.hidden=!PE.areas; if(PE.areas){ var RIa=peRoomInfo(T), was=PE.baseRooms[LAYOUT]||{}, tot=0, tot0=0, rows='';
     T.rooms.forEach(function(r,i){ var a=RIa[i].a, w=was[r.o||r.n]; tot+=a; var dl=w!=null&&Math.abs(a-w)>=.05?'<i class="'+(a>w?'up':'dn')+'">'+(a>w?'+':'−')+Math.abs(a-w).toFixed(1)+'</i>':w==null?'<i class="up">new</i>':'';
       rows+='<tr><td>'+r.n.replace(/[<>&]/g,'')+'</td><td>'+a.toFixed(1)+'</td><td>'+dl+'</td></tr>'; });
@@ -4084,6 +4116,8 @@ function peDraw(){ if(!PE.on)return; var T=peT(), r=peSvg.getBoundingClientRect(
 function peHintText(T){ var D=PE.drag;
   if(PE.tool==='meas')return PE.mA?'Click the second point · it snaps to wall faces · straight when nearly straight · Esc clears':'Measure: click two points · it snaps to wall faces and 5 cm · Esc clears';
   if(PE.place&&FDEF[PE.place.t]){ var PD=FDEF[PE.place.t]; return PD.n+' · '+PD.w+' × '+PD.d+' cm · click where it goes'+(PF_WALL.test(PD.m)?': it turns its back to the nearest wall':'')+' · R turns it · Alt places it freely · Shift+click places another · Esc stops'; }
+  if(D&&D.t==='pc'){ D.warn=0; if(D.moved){ var dids=D.ids||[D.id], here=(PE.W||[]).filter(function(w){ return !w.base&&!w.ack&&w.pc&&dids.indexOf(w.pc)>-1; });     // live, while it moves: what is wrong where it is now
+      if(here.length){ D.warn=1; return 'Here: '+here[0].t.charAt(0).toLowerCase()+here[0].t.slice(1)+(here.length>1?' (and '+(here.length-1)+' more)':'')+' · let go and its card offers a fix · Esc puts it back'; } } }
   if(D&&D.t==='pc'&&D.moved&&PE.guides&&PE.guides.length)return 'Lined up with '+PE.guides.map(function(q){ return q[4]; }).filter(function(v,i,a){ return a.indexOf(v)===i; }).join(' and ')+' · Alt places it freely · Esc puts it back';
   if(D&&D.t==='pc'&&D.moved)return 'Moving it · a face within 8 cm of a wall or piece closes up · Alt places it freely · Esc puts it back';
   if(PE.hovPc&&!D){ var hq=pfGet(PE.hovPc); if(hq){ var HD=fDim(hq); return HD.n+' · '+HD.w+' × '+HD.d+' cm · drag to move · click, then R turns it, Delete removes it, Ctrl+D copies it'; } }
@@ -4229,7 +4263,7 @@ window.addEventListener('pointerup',function(e){ var R=PE.tray; if(!R)return; PE
 // Each room gets a context: its four sides (the wall faces), what is on each (door openings, glazing, windows), the
 // floor kept clear (door swings, a strip in front of every opening, columns, the design's own pieces that stay), and
 // what has been put so far with the clear floor each piece needs in front of it.
-function pfType(n){ n=n.toLowerCase();
+function pfType(n){ n=n.toLowerCase(); if(/(corridor|passage|landing|hallway|gallery)/.test(n))return /stair/.test(n)?null:'corridor';
   if(/kitchen/.test(n))return 'kitchen'; if(/(reception|salon)/.test(n)&&/dining/.test(n))return 'recdin';
   if(/dining/.test(n))return 'dining'; if(/(reception|salon|sitting)/.test(n))return 'reception'; if(/(living|lounge|family room|\btv\b|den)/.test(n))return 'living';
   if(/(office|study|work)/.test(n))return 'office'; if(/(nursery|baby)/.test(n))return 'nursery'; if(/(kid|child|boy|girl)/.test(n))return 'kids';
@@ -4242,7 +4276,17 @@ function pfIn(a,R){ return a[0]>=R[0]-.5&&a[1]>=R[1]-.5&&a[2]<=R[2]+.5&&a[3]<=R[
 function pfLR(p,lx0,ly0,lx1,ly1){ var r=((Math.round((p.r||0)/90)%4)+4)%4, pts=[[lx0,ly0],[lx1,ly1]].map(function(q){ var x=q[0],y=q[1];   // a rectangle in the piece's own axes, on the plan
     return r===0?[x,y]:r===1?[-y,x]:r===2?[-x,-y]:[y,-x]; });
   return [p.x+Math.min(pts[0][0],pts[1][0]),p.y+Math.min(pts[0][1],pts[1][1]),p.x+Math.max(pts[0][0],pts[1][0]),p.y+Math.max(pts[0][1],pts[1][1])]; }
-function pfCtx(T,ri,mode,R,open){ var rm=T.rooms[ri], RR=rm.r; R=R||RR.slice(); open=open||{};
+var PF_GR={};
+function pfGardenRect(){ var g=(ALL.layouts[LAYOUT]||{}).garden||[]; if(g.length<3)return null; if(PF_GR[LAYOUT]!==undefined)return PF_GR[LAYOUT];
+  var xs=[], ys=[]; g.forEach(function(q){ if(xs.indexOf(q[0])<0)xs.push(q[0]); if(ys.indexOf(q[1])<0)ys.push(q[1]); }); xs.sort(function(a,b){ return a-b; }); ys.sort(function(a,b){ return a-b; });
+  var inn=[]; for(var i=0;i<xs.length-1;i++){ inn.push([]); for(var j=0;j<ys.length-1;j++)inn[i].push(inPoly((xs[i]+xs[i+1])/2,(ys[j]+ys[j+1])/2,g)); }
+  var best=null, ba=0;
+  for(var a=0;a<xs.length-1;a++)for(var b=a+1;b<xs.length;b++)for(var c=0;c<ys.length-1;c++)for(var d=c+1;d<ys.length;d++){ var A=(xs[b]-xs[a])*(ys[d]-ys[c]); if(A<=ba)continue; var ok=true;
+    for(var i2=a;i2<b&&ok;i2++)for(var j2=c;j2<d&&ok;j2++)if(!inn[i2][j2])ok=false; if(ok){ ba=A; best=[xs[a],ys[c],xs[b],ys[d]]; } }
+  return (PF_GR[LAYOUT]=best&&Math.min(best[2]-best[0],best[3]-best[1])>=200?best:null); }
+function pfRm(T,ri){ return ri==='g'?{n:'Garden',r:pfGardenRect(),g:1}:T.rooms[ri]; }     // a room of the plan, or 'g', the garden
+function pfRI(T,ri){ if(ri!=='g')return peRoomInfo(T)[ri]; var r=pfGardenRect(), g=(ALL.layouts[LAYOUT]||{}).garden||[]; return {a:Math.abs(polyArea(g))/1e4,w:(r[2]-r[0])/100,d:(r[3]-r[1])/100}; }
+function pfCtx(T,ri,mode,R,open){ var rm=pfRm(T,ri), RR=rm.r; R=R||RR.slice(); open=open||{};
   var S={top:{r:0,h:1,c:R[1],lo:R[0],hi:R[2]},bottom:{r:180,h:1,c:R[3],lo:R[0],hi:R[2]},left:{r:270,h:0,c:R[0],lo:R[1],hi:R[3]},right:{r:90,h:0,c:R[2],lo:R[1],hi:R[3]}};
   var X={T:T,ri:ri,rm:rm,R:R,S:S,keep:[],placed:[],ops:{top:[],bottom:[],left:[],right:[]},win:{top:[],bottom:[],left:[],right:[]},glz:{top:0,bottom:0,left:0,right:0},door:{top:0,bottom:0,left:0,right:0},open:open,mode:mode};
   function strip(s,a,b,dp,n){ var q=S[s]; return s==='top'?[a,q.c,b,q.c+dp,n]:s==='bottom'?[a,q.c-dp,b,q.c,n]:s==='left'?[q.c,a,q.c+dp,b,n]:[q.c-dp,a,q.c,b,n]; }
@@ -4271,22 +4315,22 @@ function pfVar(p){ if(!p.v)return true; var g=groups[p.v]; return !!(g&&g.length
 function pfShownS(){ var by={}; (SCENE.pieces||[]).forEach(function(p){ if(p.s==null)return; var o=by[p.s]||(by[p.s]={any:0,on:0}); o.any++; if(pfVar(p)&&!p._moved)o.on++; }); return by; }   // the design's records, and whether any of their pieces shows
 function pfGroupOn(by,g){ var o=by[g.s]; return !o||o.on>0; }
 function pfGoneS(){ var o={}; if(PCREG)pcRegister(); fList().forEach(function(q){ if(q.t.charAt(0)==='@'&&FDEF[q.t]){ var P=SCENE.pieces[FDEF[q.t].pc]; if(P&&P.s!=null&&q.gone)o[P.s]=1; } }); return o; }
-function pfClearable(T,ri){ var R=T.rooms[ri].r, out={pcs:[],s:{},n:0,names:[]}; if(PCREG)pcRegister();   // the design's movable pieces standing in the room
+function pfClearable(T,ri){ var R=pfRm(T,ri).r, out={pcs:[],s:{},n:0,names:[]}; if(PCREG)pcRegister();   // the design's movable pieces standing in the room
   (SCENE.pieces||[]).forEach(function(p,i){ var D=FDEF['@'+i]; if(!D)return; var cx=(p.b[0]+p.b[3])/2, cy=(p.b[1]+p.b[4])/2; if(cx<R[0]||cx>R[2]||cy<R[1]||cy>R[3])return;
     if(!pfVar(p))return; if(fList().some(function(q){ return q.t==='@'+i&&q.gone; }))return;
     out.pcs.push(i); if(p.s!=null)out.s[p.s]=1; out.n++; out.names.push(p.n); });
   return out; }
 // can the piece stand here? inside the (part of the) room, off the floor kept clear, clear of what is already put, and
 // its own clear floor inside the room and off every piece
-function pfOk(X,p,need){ var f=fFoot(p), b=[f[0],f[1],f[3],f[4]], hi=f[2]>=100, D=fDim(p);
+function pfOk(X,p,need){ var f=fFoot(p), b=[f[0],f[1],f[3],f[4]], hi=f[2]>=100, D=fDim(p), flat=D.o===0&&D.h<5;    // a rug lies under the furniture
   if(!pfIn(b,X.R))return false;
   for(var i=0;i<X.keep.length;i++){ var k=X.keep[i]; if(hi&&k[4]!=='the way in')continue; if(pfOv(b,k,.5))return false; }
-  for(var j=0;j<X.placed.length;j++){ var q=X.placed[j], g=q.f; if(X.ign&&(q.p===X.ign||q.p===X.ign2))continue; if(g[2]<f[5]&&g[5]>f[2]&&pfOv(b,[g[0],g[1],g[3],g[4]],.5))return false;
+  for(var j=0;j<X.placed.length;j++){ var q=X.placed[j], g=q.f; if(X.ign&&(q.p===X.ign||q.p===X.ign2))continue; if(flat||g[5]-g[2]<5&&fDim(q.p).o===0)continue; if(g[2]<f[5]&&g[5]>f[2]&&pfOv(b,[g[0],g[1],g[3],g[4]],.5))return false;
     if(D.o!==0&&!hi)for(var z=0;z<q.z.length;z++)if(pfOv(b,q.z[z],.5))return false; }
   var s=X.side; if(s&&f[5]>100&&!X.open[s])for(var w=0;w<X.win[s].length;w++){ var wi=X.win[s][w], lo=X.S[s].h?b[0]:b[1], hi2=X.S[s].h?b[2]:b[3]; if(lo<wi[1]-1&&hi2>wi[0]+1)return false; }   // nothing tall across a window
   if(s&&!X.open[s])for(var o=0;o<X.ops[s].length;o++){ if(X.allowOpen&&X.ops[s][o][2]==='open')continue; var op=X.ops[s][o], lo2=X.S[s].h?b[0]:b[1], hi3=X.S[s].h?b[2]:b[3]; if(lo2<op[1]-1&&hi3>op[0]+1)return false; }
   var zs=pfZones(p,need); for(var y=0;y<zs.length;y++){ var Z=zs[y]; if(!pfIn(Z,X.R))return false;
-    for(var a=0;a<X.placed.length;a++){ if(X.ign&&(X.placed[a].p===X.ign||X.placed[a].p===X.ign2))continue; var g2=X.placed[a].f; if(g2[2]<100&&pfOv(Z,[g2[0],g2[1],g2[3],g2[4]],.5))return false; }
+    for(var a=0;a<X.placed.length;a++){ if(X.ign&&(X.placed[a].p===X.ign||X.placed[a].p===X.ign2))continue; var g2=X.placed[a].f; if(g2[5]-g2[2]<5&&fDim(X.placed[a].p).o===0)continue; if(g2[2]<100&&pfOv(Z,[g2[0],g2[1],g2[3],g2[4]],.5))return false; }
     for(var c=0;c<X.keep.length;c++)if(X.keep[c][5]==='design'&&pfOv(Z,X.keep[c],.5))return false; }
   return true; }
 function pfZones(p,need){ if(!need)return []; var D=fDim(p), hw=D.w/2, hd=D.d/2, z=[];
@@ -4329,11 +4373,21 @@ function pfBedroom(X,v,kind){ var R=X.R, w=R[2]-R[0], d=R[3]-R[1], A=w*d/1e4, mn
     if(bed){ var bw=FDEF[bed.t].w; pfWith(X,bed,function(){ var one=null; [-1,1].forEach(function(sg){ if(kind==='nanny'&&one)return; one=pfPut(X,'night',bed.side,bed.u+sg*(bw/2+25),null,true)||one; }); }); } }
   var other=['top','right','bottom','left'].filter(function(s){ return !bed||s!==bed.side; }).sort(function(a,b){ return pfFree(X,b)-pfFree(X,a); }), wd=null;
   if(!pfHas(X,/(wardrobe|closet|joinery|cupboard)/i))(kind==='nanny'?['ward1']:['ward2','ward1']).forEach(function(t){ other.forEach(function(s){ if(!wd)wd=pfPut(X,t,s,'start',{front:75})||pfPut(X,t,s,'end',{front:75}); }); });
-  if(kind==='master'&&A>=15){ var dr=null, ar=null; if(!pfHas(X,/(dresser|drawers|chest)/i))other.forEach(function(s){ if(!dr)dr=pfPut(X,'dresser',s,'center',{front:75}); });
+  var ex=X.st||(kind==='master'?'dresser':'');
+  if(ex==='dresser'&&kind==='master'&&A>=15){ var dr=null, ar=null; if(!pfHas(X,/(dresser|drawers|chest)/i))other.forEach(function(s){ if(!dr)dr=pfPut(X,'dresser',s,'center',{front:75}); });
     if(!pfHas(X,/(armchair|lounge chair)/i))other.forEach(function(s){ if(!ar)ar=pfPut(X,'arm',s,'end',{front:40}); }); }
+  else if(ex==='desk'&&!pfHas(X,/desk/i)&&!pfDeskIn(X,bed&&bed.side,'desk120'))X.miss='No wall is free for a desk (120 × 60 cm, with 90 behind it for the chair)';
+  else if(ex==='read'&&!pfHas(X,/(armchair|lounge chair)/i)&&!pfReadCorner(X,bed&&bed.side))X.miss='No corner is free for an armchair and a lamp (40 cm in front of the chair)';
   return bed||(kept?PF_KEPT:null); }
+function pfDeskIn(X,avoid,t){ var dk=null; pfRank(X,{win:true,not:avoid?[avoid]:[]}).forEach(function(s){ ['center','start','end'].forEach(function(e){ if(!dk)dk=pfPut(X,t,s,e,{front:90}); }); }); if(dk)pfChair(X,dk,'ochair'); return dk; }
+function pfReadCorner(X,avoid){ var got=null;     // an armchair in a corner, a floor lamp beside it, and a bookcase on another wall
+  ['top','right','bottom','left'].filter(function(s){ return s!==avoid; }).sort(function(a,b){ return pfFree(X,b)-pfFree(X,a); }).forEach(function(s){ ['end','start'].forEach(function(e){ if(got)return; var m=X.placed.length, a=pfPut(X,'arm',s,e,{front:40}); if(!a)return;
+    var sg=e==='end'?-1:1, lp=null; [sg,-sg].forEach(function(g){ if(!lp)lp=pfPut(X,'flamp',s,a.u+g*(42.5+25),null,true)||pfPut(X,'side',s,a.u+g*(42.5+27.5),null,true); }); if(!lp){ X.placed.splice(m); return; } got=a; }); });
+  if(got){ var bk=null; ['top','right','bottom','left'].filter(function(s){ return s!==avoid&&s!==got.side; }).forEach(function(s){ if(!bk)bk=pfPut(X,'books',s,'center',{front:60}); }); }
+  return got; }
 function pfKids(X,v){ var R=X.R, w=R[2]-R[0], d=R[3]-R[1], A=w*d/1e4, two=Math.min(w,d)>=300&&A>=12.5, kept=pfHas(X,/\b(bed|cot)\b/i), b1=null, b2=null;
-  if(!kept){ var sides=pfRank(X,{noWin:true}), cfg=[];             // the ways two beds go: heads on one wall, or on facing walls
+  if(!kept&&X.st==='bunk'){ b1=pfMain(X,['bunk'],pfRank(X,{noWin:true}),['start','end','center'],{front:60},v); if(!b1)X.miss='No wall is free for a bunk bed (100 × 210 cm, with 60 beside it)'; }
+  else if(!kept){ var sides=pfRank(X,{noWin:true}), cfg=[];             // the ways two beds go: heads on one wall, or on facing walls
     if(two)sides.forEach(function(s){ cfg.push([s,'same']); cfg.push([s,'opp']); });
     var ok=[]; cfg.forEach(function(c){ var m=X.placed.length, a=pfPut(X,'bedS',c[0],'start',{front:60}), z=a&&(c[1]==='same'?pfPut(X,'bedS',c[0],'end',{front:60}):pfPut(X,'bedS',PF_OPP[c[0]],'start',{front:60}));
       if(a&&z&&(c[1]!=='same'||Math.abs(z.u-a.u)>=FDEF.bedS.w+20))ok.push(c); X.placed.splice(m); });
@@ -4345,6 +4399,7 @@ function pfKids(X,v){ var R=X.R, w=R[2]-R[0], d=R[3]-R[1], A=w*d/1e4, two=Math.m
   if(!pfHas(X,/(wardrobe|closet|joinery|cupboard)/i))['ward2','ward1'].forEach(function(t){ other.forEach(function(s){ if(!wd)wd=pfPut(X,t,s,'start',{front:75})||pfPut(X,t,s,'end',{front:75}); }); });
   if(!pfHas(X,/desk/i)){ pfRank(X,{win:true}).forEach(function(s){ if(!dk)dk=pfPut(X,'kdesk',s,'center',{front:70}); }); if(dk)pfChair(X,dk,'kchair'); }
   if(!pfHas(X,/toy/i))other.forEach(function(s){ if(!ty)ty=pfPut(X,'toys',s,'center',{front:60}); });
+  if(X.st==='bunk'&&b1){ var tn=null; other.forEach(function(s){ ['start','end'].forEach(function(e){ if(!tn)tn=pfPut(X,'tent',s,e,{front:30}); }); }); }
   if(!kept)pfAt(X,'playmat',(R[0]+R[2])/2,(R[1]+R[3])/2,0,null); return b1||(kept?PF_KEPT:null); }
 function pfChair(X,desk,t){ var D=FDEF[desk.t], C=FDEF[t], c=pfLocal(desk,0,D.d/2+C.d/2-12); return pfWith(X,desk,function(){ return pfAt(X,t,c[0],c[1],((desk.r||0)+180)%360,null); }); }
 function pfNursery(X,v){ var kept=pfHas(X,/\b(cot|crib)\b/i), cot=kept?null:pfMain(X,['cot'],pfRank(X,{noWin:true}),['start','end','center'],{front:60},v);
@@ -4352,30 +4407,44 @@ function pfNursery(X,v){ var kept=pfHas(X,/\b(cot|crib)\b/i), cot=kept?null:pfMa
   if(!pfHas(X,/changing/i))other.forEach(function(q){ if(!ch)ch=pfPut(X,'changing',q,'center',{front:70}); });
   if(!pfHas(X,/(wardrobe|closet|joinery)/i))other.forEach(function(q){ if(!wd)wd=pfPut(X,'ward1',q,'start',{front:75}); });
   if(!pfHas(X,/(nursing|armchair)/i))other.forEach(function(q){ if(!nc)nc=pfPut(X,'nursing',q,'end',{front:40}); }); return cot||(kept?PF_KEPT:null); }
-function pfOffice(X,v,guest){ var kept=pfHas(X,/desk/i), dk=kept?null:pfMain(X,['desk','desk120'],pfRank(X,{win:true}),['center','start','end'],{front:90},v); if(dk)pfChair(X,dk,'ochair');
+function pfOffice(X,v,guest){ var kept=pfHas(X,/desk/i), st=X.st||'desk', dk=null;
+  if(!kept&&st==='corner'){ var ok=[]; pfRank(X,{win:true}).forEach(function(s){ ['start','end'].forEach(function(e){ var m=X.placed.length, p=pfPut(X,'deskL',s,e,{front:60}); X.placed.splice(m); if(p)ok.push([s,e]); }); });
+    X.alts=Math.max(X.alts||1,ok.length); if(ok.length){ var c=ok[v%ok.length]; dk=pfPut(X,'deskL',c[0],c[1],{front:60}); }
+    if(dk){ var cp=pfLocal(dk,35,35); pfWith(X,dk,function(){ return pfAt(X,'ochair',cp[0],cp[1],((dk.r||0)+180)%360,null); }); } else X.miss='No corner is free for a corner desk (160 × 140 cm, with 60 beside it)'; }
+  else if(!kept&&st==='two'){ pfRank(X,{win:true}).forEach(function(s){ var q=X.S[s], mid=(q.lo+q.hi)/2; [mid-60,q.lo+60,q.hi-180].forEach(function(u0){ if(dk)return; var m=X.placed.length, a=pfPut(X,'desk120',s,u0,{front:90},true), b=a&&pfPut(X,'desk120',s,u0+120,{front:90},true);
+      if(a&&b){ dk=a; pfChair(X,a,'ochair'); pfChair(X,b,'ochair'); } else X.placed.splice(m); }); });
+    if(!dk)X.miss='No wall has 240 cm free for two desks side by side (with 90 behind them)'; }
+  else if(!kept){ dk=pfMain(X,['desk','desk120'],pfRank(X,{win:true}),['center','start','end'],{front:90},v); if(dk)pfChair(X,dk,'ochair'); }
   var other=['top','right','bottom','left'].sort(function(a,b){ return pfFree(X,b)-pfFree(X,a); }), sh=null, sb=null, A=(X.R[2]-X.R[0])*(X.R[3]-X.R[1])/1e4;
   if((guest||A>=12)&&!pfHas(X,/(sofa|bed)/i))other.forEach(function(q){ if(!sb)sb=pfPut(X,'sofabed',q,'center',{front:70}); });
   if(!pfHas(X,/(shel|book|joinery)/i))other.forEach(function(q){ if(!sh)sh=pfPut(X,'shelf',q,'end',{front:60})||pfPut(X,'shelf',q,'start',{front:60}); });
   if(/play/i.test(X.rm.n)&&!pfHas(X,/toy/i)){ var ty=null; other.forEach(function(q){ if(!ty)ty=pfPut(X,'toys',q,'center',{front:60}); }); }
   return dk||(kept?PF_KEPT:null); }
-function pfSeating(X,v,tv){ var R=X.R, sofa=null, media=null;
+function pfSeating(X,v,tv){ var R=X.R, sofa=null, media=null, st=X.st||'sofa', cor=st==='corner';     // a sofa and armchairs, a corner sofa, or two sofas facing
   if(pfHas(X,/sofa/i))return PF_KEPT;
   X.keep.forEach(function(k){ if(k[5]==='design'&&/(tv|media)/i.test(k[4])&&!media){ var cx=(k[0]+k[2])/2, cy=(k[1]+k[3])/2, d={top:cy-R[1],bottom:R[3]-cy,left:cx-R[0],right:R[2]-cx};   // a media wall in the design: the sofa faces it
       media=Object.keys(d).sort(function(a,b){ return d[a]-d[b]; })[0]; } });
   for(var pass=0;pass<2&&!sofa;pass++){ X.allowOpen=pass===1;       // first against a wall; in an open plan, floating with its back to the open side
     var sides=pfRank(X,{}); if(media){ sides=sides.filter(function(s){ return s!==media; }); var o=PF_OPP[media]; sides.sort(function(a,b){ return (b===o)-(a===o); }); }
     sides=sides.filter(function(s){ var q=X.S[s]; return (q.h?R[3]-R[1]:R[2]-R[0])>=300; });
-    sofa=pfMain(X,['sofa4','sofa3','sofa2'],sides,['center'],{front:45+60+45},v,true); }
+    sofa=cor?pfMain(X,['corner','chaise'],sides,['start','end'],{front:45},v,true):pfMain(X,['sofa4','sofa3','sofa2'],sides,['center'],{front:45+60+45},v,true); }
   X.allowOpen=false; if(media)tv=false;
-  if(!sofa)return null; X.ign=sofa; var SD=FDEF[sofa.t], cf=pfLocal(sofa,0,SD.d/2+45+30), coffee=pfAt(X,'coffee',cf[0],cf[1],sofa.r,null);
+  if(!sofa){ if(cor)X.miss='No wall is free for a corner sofa (280 × 200 cm, with 45 in front)'; return null; }
+  X.ign=sofa; var SD=FDEF[sofa.t], cx0=cor?47.5:0, cy0=cor?-SD.d/2+95+45+30:SD.d/2+45+30, cf=pfLocal(sofa,cx0,cy0), coffee=pfAt(X,'coffee',cf[0],cf[1],sofa.r,null);   // the coffee table 45 cm off the seat (in a corner sofa, inside its L)
   var opp=PF_OPP[sofa.side], deepS=X.S[sofa.side].h?R[3]-R[1]:R[2]-R[0];
-  if(tv&&!pfHas(X,/(tv|media)/i)){ var tvu=pfPut(X,'tvunit',opp,sofa.u,null,false); if(tvu&&Math.abs(tvu.u-sofa.u)>60){ X.placed.pop(); tvu=null; } }
-  else if(!tv&&deepS>=430){ var s2=pfPut(X,'sofa2',opp,sofa.u,{front:40},false); if(s2&&Math.abs(s2.u-sofa.u)>40){ X.placed.pop(); } }
-  var rg=pfLocal(sofa,0,SD.d/2+45+30); pfAt(X,(deepS>=420&&X.S[sofa.side].hi-X.S[sofa.side].lo>=360)?'rugL':'rugM',rg[0],rg[1],sofa.r,null);
-  [-1,1].forEach(function(sg){ var a=pfLocal(sofa,sg*(FDEF.coffee.w/2+40+42.5),SD.d/2+45+30); pfAt(X,'arm',a[0],a[1],((sofa.r||0)+(sg<0?270:90))%360,null); });
-  var lp=pfLocal(sofa,-(SD.w/2+25),-SD.d/2+25); pfAt(X,'flamp',lp[0],lp[1],0,null)||pfAt.apply(null,[X,'side'].concat(pfLocal(sofa,SD.w/2+25,-SD.d/2+25)).concat([0,null]));
+  if(st==='facing'){ var s2=null; tv=false;
+    ['sofa3','sofa2'].forEach(function(t){ if(s2)return; var B=FDEF[t], c=pfLocal(sofa,0,SD.d/2+45+60+45+B.d/2), p={t:t,x:c[0],y:c[1],r:((sofa.r||0)+180)%360}, back=pfLR(p,-B.w/2,-B.d/2-60,B.w/2,-B.d/2);   // floating, with 60 cm to walk behind it
+      if(pfIn(back,R)&&!X.keep.some(function(k){ return pfOv(back,k,.5); }))s2=pfAt(X,t,p.x,p.y,p.r,null); });
+    if(!s2&&deepS-SD.d-95<=320){ ['sofa3','sofa2'].forEach(function(t){ if(s2)return; var w2=pfPut(X,t,opp,sofa.u,null,false); if(w2&&Math.abs(w2.u-sofa.u)>40){ X.placed.pop(); w2=null; } s2=w2; }); }   // or against the far wall, when it is near enough to talk across
+    if(!s2)X.miss='No room for a second sofa facing the first: it needs about '+Math.round(SD.d+45+60+45+95+60)+' cm clear in front of the wall'; }
+  else if(tv&&!pfHas(X,/(tv|media)/i)){ var tvu=pfPut(X,'tvunit',opp,sofa.u,null,false); if(tvu&&Math.abs(tvu.u-sofa.u)>60){ X.placed.pop(); tvu=null; } }
+  else if(!tv&&deepS>=430){ var s3=pfPut(X,'sofa2',opp,sofa.u,{front:40},false); if(s3&&Math.abs(s3.u-sofa.u)>40){ X.placed.pop(); } }
+  var rg=pfLocal(sofa,cx0,cy0); pfAt(X,(deepS>=420&&X.S[sofa.side].hi-X.S[sofa.side].lo>=360)?'rugL':'rugM',rg[0],rg[1],sofa.r,null);
+  if(cor){ var a1=pfLocal(sofa,cx0+60+40+42.5,cy0); pfAt(X,'arm',a1[0],a1[1],((sofa.r||0)+90)%360,null); }       // the corner sofa's open end: one armchair
+  else if(st!=='facing')[-1,1].forEach(function(sg){ var a=pfLocal(sofa,sg*(FDEF.coffee.w/2+40+42.5),SD.d/2+45+30); pfAt(X,'arm',a[0],a[1],((sofa.r||0)+(sg<0?270:90))%360,null); });
+  var lp=pfLocal(sofa,cor?SD.w/2+25:-(SD.w/2+25),-SD.d/2+25); pfAt(X,'flamp',lp[0],lp[1],0,null)||pfAt.apply(null,[X,'side'].concat(pfLocal(sofa,cor?-(SD.w/2+25):SD.w/2+25,-SD.d/2+25)).concat([0,null]));
   X.ign=null; return sofa; }
-function pfDining(X,v,big){ if(pfHas(X,/(dining table|\btable\b)/i))return PF_KEPT; var R=X.R, w=R[2]-R[0], d=R[3]-R[1], lng=Math.max(w,d), sht=Math.min(w,d), alongX=w>=d, tb=null;
+function pfDining(X,v,big){ if(pfHas(X,/(dining table|\btable\b)/i))return PF_KEPT; if(X.st==='round')return pfRound(X); var R=X.R, w=R[2]-R[0], d=R[3]-R[1], lng=Math.max(w,d), sht=Math.min(w,d), alongX=w>=d, tb=null;
   var opts=[['dt10',280,110,5],['dt8',240,100,4],['dt6',180,90,3],['dt4',140,80,2]].filter(function(o){ return o[1]+150<=lng&&o[2]+150<=sht; });
   var cx=(R[0]+R[2])/2, cy=(R[1]+R[3])/2;
   for(var i=0;i<opts.length&&!tb;i++){ var o=opts[i], r=alongX?0:90;
@@ -4386,9 +4455,16 @@ function pfDining(X,v,big){ if(pfHas(X,/(dining table|\btable\b)/i))return PF_KE
   if(!tb){ var rt=pfAt(X,'dtR4',cx,cy,0,null); if(rt){ X.ign=rt; [0,90,180,270].forEach(function(a){ var c=pfLocal({x:rt.x,y:rt.y,r:a},0,-(50+16)); pfAt(X,'dchair',c[0],c[1],a,null); }); X.ign=null; } return rt; }
   var T0=FDEF[tb.t], n=tb.n; X.ign=tb;
   for(var k=0;k<n;k++){ var off=-T0.w/2+T0.w/n*(k+.5); [-1,1].forEach(function(sg){ var c=pfLocal(tb,off,sg*(T0.d/2+26-10)); pfAt(X,'dchair',c[0],c[1],((tb.r||0)+(sg<0?0:180))%360,null); }); }
-  if(T0.w>=240)[-1,1].forEach(function(sg){ var c=pfLocal(tb,sg*(T0.w/2+26-10),0); pfAt(X,'dchair',c[0],c[1],((tb.r||0)+(sg<0?270:90))%360,null); });
   X.ign=null; var sb=null; pfRank(X,{}).forEach(function(s){ if(!sb)sb=pfPut(X,'sideboard',s,'center',{front:30}); });
   return tb; }
+function pfRound(X){ var R=X.R, cx=(R[0]+R[2])/2, cy=(R[1]+R[3])/2, tb=null;     // a round table, its chairs all round it and 60 cm to pull each out
+  [['dtR',6,60],['dtR4',4,50]].forEach(function(o){ if(tb)return; var m=o[2]+26+60;
+    for(var dd=0;dd<=200&&!tb;dd+=10)for(var k=0;k<4&&!tb;k++){ if(!dd&&k)continue; var x=cx+(k===1?dd:k===3?-dd:0), y=cy+(k===0?dd:k===2?-dd:0), need=[x-m,y-m,x+m,y+m];
+      if(!pfIn(need,R)||X.keep.some(function(q){ return pfOv(need,q,.5); })||X.placed.some(function(e){ return e.f[2]<100&&pfOv(need,[e.f[0],e.f[1],e.f[3],e.f[4]],.5); }))continue;
+      tb=pfAdd(X,{t:o[0],x:x,y:y,r:0},null); tb.n=o[1]; } });
+  if(!tb){ X.miss='No room for a round table and its chairs: it needs '+(2*(50+26+60))+' cm square, clear'; return null; }
+  X.ign=tb; var rd=FDEF[tb.t].w/2+16; for(var i=0;i<tb.n;i++){ var a=i*360/tb.n, th=a*Math.PI/180; pfAt(X,'dchair',Math.round((tb.x+rd*Math.sin(th))*10)/10,Math.round((tb.y-rd*Math.cos(th))*10)/10,a,null); } X.ign=null;
+  var sb=null; pfRank(X,{}).forEach(function(s){ if(!sb)sb=pfPut(X,'sideboard',s,'center',{front:30}); }); return tb; }
 function pfKitchen(X,v){ var sides0=pfRank(X,{len:200}), fits=[];
   sides0.forEach(function(s){ var m=X.placed.length; if(pfRun(X,s))fits.push(s); X.placed.splice(m); }); X.alts=Math.max(X.alts||1,fits.length);   // every wall a run fits
   var sides=fits.length?[fits[v%fits.length]]:[], run=null;
@@ -4403,93 +4479,187 @@ function pfKitchen(X,v){ var sides0=pfRank(X,{len:200}), fits=[];
     run={s:s,items:X.placed.slice(mark)}; }
   if(!run)return null;
   run.items.forEach(function(e){ var t=e.p.t, W=FDEF[t].w, wt=t==='hob60'?'hood60':t==='fridge60'?null:W>=80?'wall80':W>=60?'wall60':W>=40?'wall40':null; if(wt)pfPut(X,wt,run.s,e.p.u,null,true); });
-  var R=X.R, deep=X.S[run.s].h?R[3]-R[1]:R[2]-R[0];          // an island when there is room for it and a 120 cm aisle on its working side
+  var R=X.R, deep=X.S[run.s].h?R[3]-R[1]:R[2]-R[0], kst=X.st||'run';
+  if(kst==='L'){ if(!pfLeg(X,run))X.miss='The run does not end in a free corner here, so it cannot turn into an L'; return run.items[0].p; }
+  if(kst==='table'){ if(!pfGroup(X,[['btable',0,0,0],['dchair',0,-56,0],['dchair',0,56,180]],[(R[0]+R[2])/2,(R[1]+R[3])/2],[0,90]))X.miss='No room for a breakfast table clear of the 100 cm in front of the units'; return run.items[0].p; }
+  // an island when there is room for it and a 120 cm aisle on its working side
   if(deep>=60+120+90+90){ var first=run.items[0].p, last=run.items[run.items.length-1].p, mu=(first.u+last.u)/2, it=null;
     ['island','island180'].forEach(function(t){ if(it)return; var off=60+120+FDEF[t].d/2, c=pfLocal({x:first.x,y:first.y,r:first.r},0,0), q=X.S[run.s];
       var x=q.h?mu:(run.s==='left'?q.c+off:q.c-off), y=q.h?(run.s==='top'?q.c+off:q.c-off):mu; it=pfAt(X,t,x,y,first.r,{front:60}); });
     if(it){ var IW=FDEF[it.t]; X.ign=it; for(var k=0;k<3;k++){ var sx=-IW.w/2+IW.w/3*(k+.5), sp=pfLocal(it,sx,IW.d/2+5); pfAt(X,'stool',sp[0],sp[1],0,null); } X.ign=null; } }
   return run.items[0].p; }
+function pfLeg(X,run){ var s=run.s, q=X.S[s], it=run.items, f0=it[0].p, fl=it[it.length-1].p, ends=[];     // the run turns the corner: base units, and wall units over them, along the next wall
+  if(Math.abs(f0.u-FDEF[f0.t].w/2-q.lo)<3)ends.push(['lo',it[0]]); if(Math.abs(fl.u+FDEF[fl.t].w/2-q.hi)<3)ends.push(['hi',it[it.length-1]]);
+  for(var i=0;i<ends.length;i++){ var e=ends[i][0], cu=ends[i][1], s2=q.h?(e==='lo'?'left':'right'):(e==='lo'?'top':'bottom'); if(X.open[s2])continue;
+    var sg=(s==='top'||s==='left')?1:-1, u0=q.c+sg*60, z=cu.z, mark=X.placed.length, n=0; cu.z=[];
+    for(var j=0;j<4;j++){ if(!pfPut(X,'base60',s2,u0+sg*(n*60+30),{front:100},true))break; n++; }
+    cu.z=z; if(n<2){ X.placed.splice(mark); continue; }
+    X.placed.slice(mark).forEach(function(e2){ pfPut(X,'wall60',s2,e2.p.u,null,true); }); return true; }
+  return false; }
 function pfRun(X,s){ var q=X.S[s], L=pfFree(X,s), seq=L>=300?['fridge60','base60','sink80','dw60','hob60']:L>=240?['base60','sink80','dw60','hob60']:['sink80','dw60','hob60'], need=seq.reduce(function(a,t){ return a+FDEF[t].w; },0), mark=X.placed.length;
   for(var lo=q.lo;lo<=q.hi-need;lo+=5){ X.placed.splice(mark); var u=lo, ok=true; for(var j=0;j<seq.length;j++){ if(!pfPut(X,seq[j],s,u+FDEF[seq[j]].w/2,{front:seq[j]==='fridge60'?0:100},true)){ ok=false; break; } u+=FDEF[seq[j]].w; } if(ok)return true; }
   X.placed.splice(mark); return false; }
-function pfBath(X,v,guest){ var R=X.R, w=R[2]-R[0], d=R[3]-R[1], A=w*d/1e4, wantBath=/bath/i.test(X.rm.n)&&!guest&&A>=4.2&&Math.max(w,d)>=172&&v%2===0, wet=null, sides=pfRank(X,{});
-  var ends=['start','end'], wantBath2=/bath/i.test(X.rm.n)&&!guest&&A>=4.2&&Math.max(w,d)>=172;
-  if(!pfHas(X,/(shower|bath\b|\btub)/i))wet=pfMain(X,wantBath2?['bath170','sh90','sh80']:['sh90','sh80'],sides,ends,{front:60},v,wantBath2);
-  var wc=null; if(!pfHas(X,/\bwc\b|toilet/i))pfRank(X,{}).forEach(function(s){ ends.forEach(function(e){ if(!wc){ var q=X.S[s], u=e==='start'?q.lo+40:q.hi-40; wc=pfPut(X,'wc',s,u,{front:60,sides:15},true)||pfPut(X,'wc',s,e,{front:60,sides:15}); } }); });
-  var vn=null; if(!pfHas(X,/(basin|vanity|sink)/i))['van120','van80','van60','basinW'].forEach(function(t){ if(t==='van120'&&A<7)return; pfRank(X,{}).forEach(function(s){ if(!vn)vn=pfPut(X,t,s,'center',{front:70}); }); });
+function pfBath(X,v,guest,force){ var R=X.R, w=R[2]-R[0], d=R[3]-R[1], A=w*d/1e4, wet=null, sides=pfRank(X,{}), ends=['start','end'], st=force||X.st, mark=X.placed.length;
+  var fitsBath=A>=4.2&&Math.max(w,d)>=172, wantBath=st==='bath'&&(force||!X.def||(/bath/i.test(X.rm.n)&&!guest));     // the usual set: a bath in a bathroom big enough, else a shower
+  var hasWet=pfHas(X,/(shower|bath\b|\btub)/i), hasWc=pfHas(X,/\bwc\b|toilet/i), hasVn=pfHas(X,/(basin|vanity|sink)/i);
+  if(!hasWet){
+    if(wantBath&&fitsBath)wet=pfMain(X,['bath170'],sides,ends,{front:60},v);
+    if(!wet&&wantBath&&!X.def){ X.miss='No room for a bath here: it needs 170 × 75 cm along a wall, with 60 in front'; return null; }
+    if(!wet)wet=pfMain(X,A>=6?['sh120','sh90','sh80']:['sh90','sh80'],sides,ends,{front:60},v,false); }
+  var wc=null; if(!hasWc)pfRank(X,{}).forEach(function(s){ ends.forEach(function(e){ if(!wc){ var q=X.S[s], u=e==='start'?q.lo+40:q.hi-40; wc=pfPut(X,'wc',s,u,{front:60,sides:15},true)||pfPut(X,'wc',s,e,{front:60,sides:15}); } }); });
+  var vn=null; if(!hasVn)['van120','van80','van60','basinW'].forEach(function(t){ if(t==='van120'&&A<7)return; pfRank(X,{}).forEach(function(s){ if(!vn)vn=pfPut(X,t,s,'center',{front:70}); }); });
+  if(!hasVn&&!vn)pfRank(X,{}).forEach(function(s){ if(!vn)vn=pfPut(X,'basinW',s,'center',{front:55}); });     // a small room: a wall basin, 55 cm in front
+  var isBath=wet&&/^bath/.test(wet.t), lacks=(!hasWc&&!wc?['the WC']:[]).concat(!hasVn&&!vn?['a basin']:[]);
+  if(isBath&&lacks.length&&!force){ if(X.def){ var bs=X.placed.splice(mark), sw=pfBath(X,v,guest,'shower'), lack2=(!hasWc&&!X.placed.some(function(e){ return e.p.t==='wc'; })?1:0)+(!hasVn&&!X.placed.some(function(e){ return /^(van|basinW)/.test(e.p.t); })?1:0);   // a bath that leaves out the WC or the basin: a shower, if that keeps them
+      if(lack2<lacks.length)return sw; X.placed.splice(mark); bs.forEach(function(e){ X.placed.push(e); }); }
+    else X.miss='With a bath there is no room left for '+lacks.join(' or '); }
   if(vn)pfWith(X,vn,function(){ return pfPut(X,'bmirror',vn.side,vn.u,null,true); });
+  if(wet&&!/^bath/.test(wet.t)&&X.def)X.st='shower';
   var tr=null; pfRank(X,{}).forEach(function(s){ if(!tr)tr=pfPut(X,'towel',s,'center',{front:30}); });
   return wc||wet||vn; }
 function pfLaundry(X,v){ var all=pfRank(X,{}), fits=all.filter(function(s){ var m=X.placed.length, p=pfPut(X,'washer',s,'start',{front:90}); X.placed.splice(m); return !!p; }); X.alts=Math.max(X.alts||1,fits.length);
   var sides=fits.length?[fits[v%fits.length]]:[], first=null;
-  for(var i=0;i<sides.length&&!first;i++){ var s=sides[i], mark=X.placed.length; first=pfPut(X,'washer',s,'start',{front:90});
+  for(var i=0;i<sides.length&&!first;i++){ var s=sides[i], mark=X.placed.length;
+    if(X.st==='stack'){ first=pfPut(X,'stack',s,'start',{front:90}); if(first)pfPut(X,'lsink',s,'center',{front:70}); continue; }
+    first=pfPut(X,'washer',s,'start',{front:90});
     if(first){ if(!pfPut(X,'dryer',s,first.u+60,{front:90},true)){ X.placed.splice(mark); first=pfPut(X,'stack',s,'start',{front:90}); }
       if(first)pfPut(X,'lsink',s,'center',{front:70}); } }
+  if(X.st==='stack'&&!first)X.miss='No wall is free for a stacked washer and dryer (60 × 65 cm, with 90 in front)';
   var ut=null; ['top','right','bottom','left'].sort(function(a,b){ return pfFree(X,b)-pfFree(X,a); }).forEach(function(s){ if(!ut)ut=pfPut(X,'utall',s,'end',{front:75}); });
   var hh=null; ['top','right','bottom','left'].forEach(function(s){ if(!hh)hh=pfPut(X,'heater',s,'end',null); });
   return first; }
-function pfDressing(X){ var R=X.R, sides=['top','right','bottom','left'].sort(function(a,b){ return pfFree(X,b)-pfFree(X,a); }), got=null;
-  sides.slice(0,3).forEach(function(s){ ['bw200','bw150','bw100'].forEach(function(t){ var p; for(var n=0;n<3;n++){ p=pfPut(X,t,s,'start',{front:75})||pfPut(X,t,s,'end',{front:75}); if(!p)break; got=got||p; } }); });
-  var w=R[2]-R[0], d=R[3]-R[1]; if(Math.min(w,d)>=60+90+60+90+60)pfAt(X,'dressI',(R[0]+R[2])/2,(R[1]+R[3])/2,w>=d?0:90,{front:0});
+function pfDressing(X){ var R=X.R, sides=['top','right','bottom','left'].sort(function(a,b){ return pfFree(X,b)-pfFree(X,a); }), got=null, op=X.st==='open';
+  sides.slice(0,3).forEach(function(s){ (op?['dressU']:['bw200','bw150','bw100']).forEach(function(t){ var p; for(var n=0;n<(op?4:3);n++){ p=pfPut(X,t,s,'start',{front:75})||pfPut(X,t,s,'end',{front:75}); if(!p)break; got=got||p; } }); });
+  var w=R[2]-R[0], d=R[3]-R[1], dp=op?45:60; if(Math.min(w,d)>=dp+90+60+90+dp)pfAt(X,'dressI',(R[0]+R[2])/2,(R[1]+R[3])/2,w>=d?0:90,{front:0});
+  if(op){ var mr=null; sides.forEach(function(s){ if(!mr)mr=pfPut(X,'mirrorF',s,'center',{front:60}); }); if(!got)X.miss='No wall is free for open dressing units (100 × 45 cm, with 75 in front)'; }
   return got; }
-function pfEntry(X,v){ var c=pfMain(X,['shoe','console'],pfRank(X,{}),['center','start','end'],{front:60},v);
-  if(c){ var m=null; pfRank(X,{not:[c.side]}).forEach(function(s){ if(!m)m=pfPut(X,'emirror',s,'center',{front:40}); }); } return c; }
+function pfEntry(X,v){
+  if(X.st==='bench'){ var b=pfMain(X,['ebench'],pfRank(X,{}),['center','start','end'],{front:60},v); if(!b){ X.miss='No wall is free for a bench (100 × 40 cm, with 60 in front)'; return null; }
+    var ct=pfPut(X,'coat',b.side,b.u+77.5,{front:30},true)||pfPut(X,'coat',b.side,b.u-77.5,{front:30},true);
+    if(!ct)['top','right','bottom','left'].forEach(function(s){ if(!ct&&s!==b.side)ct=pfPut(X,'coat',s,'end',{front:30})||pfPut(X,'coat',s,'start',{front:30}); });
+    var m0=null; pfRank(X,{not:[b.side]}).forEach(function(s){ if(!m0)m0=pfPut(X,'emirror',s,'center',{front:40}); }); return b; }
+  var c=pfMain(X,['shoe','console'],pfRank(X,{}),['center','start','end'],{front:60},v);
+  if(c){ var m=null; pfRank(X,{not:[c.side]}).forEach(function(s){ if(!m)m=pfPut(X,'emirror',s,'center',{front:40}); }); }
+  else pfRank(X,{}).forEach(function(s){ if(!c)c=pfPut(X,'emirror',s,'center',{front:40}); });
+  return c; }
 function pfStore(X){ var got=null; ['top','right','bottom','left'].forEach(function(s){ for(var n=0;n<3;n++){ var p=pfPut(X,'shelf',s,'start',{front:60})||pfPut(X,'shelf',s,'end',{front:60}); if(!p)break; got=got||p; } }); return got; }
-function pfOutdoor(X,v){ var t=pfDining(X,v); return t; }
+// a set of pieces that stand together (a table and its chairs, a lounge set) anywhere in the room, at the spot nearest pref;
+// parts are [type, x, y, turn] around the first, which the others may overlap (chairs tucked under the table)
+function pfGroup(X,parts,pref,rots){ var R=X.R, st=Math.max(10,Math.round(Math.sqrt((R[2]-R[0])*(R[3]-R[1]))/40/5)*5), cs=[], best=null;
+  for(var x=R[0];x<=R[2];x+=st)for(var y=R[1];y<=R[3];y+=st)cs.push([x,y]);
+  cs.sort(function(a,b){ return Math.hypot(a[0]-pref[0],a[1]-pref[1])-Math.hypot(b[0]-pref[0],b[1]-pref[1]); }); rots=rots||[0,90,180,270];
+  function at(o){ var m=X.placed.length, par=null;
+    for(var j=0;j<parts.length;j++){ var P=parts[j], c=pfLocal(o,P[1],P[2]), r=(o.r+(P[3]||0))%360, q=par?pfWith(X,par,function(){ return pfAt(X,P[0],c[0],c[1],r,null); }):pfAt(X,P[0],c[0],c[1],r,null); if(!q){ X.placed.splice(m); return null; } if(!par)par=q; }
+    return par; }
+  rots.forEach(function(r,k){ var pen=150*k; for(var i=0;i<cs.length;i++){ var dd=Math.hypot(cs[i][0]-pref[0],cs[i][1]-pref[1]); if(best&&dd+pen>=best.s)return;    // the turn listed first, unless another stands much nearer
+      var m=X.placed.length, o={x:cs[i][0],y:cs[i][1],r:r}; if(at(o)){ X.placed.splice(m); best={o:o,s:dd+pen}; return; } } });
+  return best?at(best.o):null; }
+function pfCorridor(X){ var R=X.R, w=R[2]-R[0], d=R[3]-R[1], wid=Math.min(w,d), sides=w>=d?['top','bottom']:['left','right'], got=null;    // pictures along it; a console where 90 cm stays clear past it
+  sides.sort(function(a,b){ return pfFree(X,b)-pfFree(X,a); });
+  if(X.st==='console'){ if(wid>=35+90){ sides.forEach(function(s){ if(!got)got=pfPut(X,'console',s,'center',{front:90}); }); if(got)pfPut(X,'mirrorR',got.side,got.u,null,true); }
+    if(!got)X.miss=wid<125?'A console needs the corridor 125 cm wide, to leave 90 clear past it: this one is '+Math.round(wid)+' cm':'No stretch of wall is free for a console'; }
+  sides.forEach(function(s){ var q=X.S[s], L=q.hi-q.lo, n=Math.max(1,Math.min(4,Math.floor(L/220))); for(var k=0;k<n;k++){ var u=q.lo+L*(k+.5)/n, a=null; [0,-20,20,-40,40,-60,60].forEach(function(du){ if(!a)a=pfPut(X,'art',s,u+du,null,true); }); got=got||a; } });
+  return got; }
+function pfGarden(X){ var R=X.R, st=X.st||'dine', got=null, gl=null, ga=0;     // outdoor dining by the widest glazed door, a lounge set, and two loungers further off
+  X.keep.forEach(function(k){ if(k[4]==='glazing'){ var a=(k[2]-k[0])*(k[3]-k[1]); if(a>ga){ ga=a; gl=k; } } });
+  var pref=gl?[(gl[0]+gl[2])/2,(gl[1]+gl[3])/2]:[(R[0]+R[2])/2,(R[1]+R[3])/2], far=[Math.abs(pref[0]-R[0])>Math.abs(R[2]-pref[0])?R[0]+150:R[2]-150,(R[1]+R[3])/2];
+  var DINE=[['otable',0,0,0],['ochairO',-40,-67,0],['ochairO',40,-67,0],['ochairO',-40,67,180],['ochairO',40,67,180],['ochairO',-102,0,270],['ochairO',102,0,90]],
+      LOUNGE=[['osofa',0,0,0],['ocoffee',0,112,0],['oarm',-135,112,270],['oarm',135,112,90]], SUN=[['lounger',-60,0,90],['lounger',60,0,90],['side',0,-60,0]];
+  var gs=st==='lounge'?[[LOUNGE,pref,[180,0,90,270],'a lounge set (sofa, two armchairs, a low table: about 360 × 210 cm)'],[SUN,far,[0,180]]]:
+    st==='both'?[[DINE,pref,[0,90],'the outdoor table and six chairs (about 260 × 225 cm)'],[LOUNGE,pref,[180,0,90,270],'a lounge set beside it (about 360 × 210 cm)'],[SUN,far,[0,180]]]:
+    [[DINE,pref,[0,90],'the outdoor table and six chairs (about 260 × 225 cm)'],[SUN,far,[0,180]]];
+  gs.forEach(function(g){ var p=pfGroup(X,g[0],g[1],g[2]); if(!p&&g[3]&&!X.def)X.miss=X.miss||'No clear spot in the garden for '+g[3]; got=got||p; });
+  return got; }
 // a proposal for room ri: the pieces, in the room's own terms
-function pfPropose(T,ri,mode,v){ var rm=T.rooms[ri], ty=pfType(rm.n), X=pfCtx(T,ri,mode), R=X.R, main=null;
-  if(!ty||/corridor|passage|landing|stair/i.test(rm.n))return {X:X,ty:null,pieces:[],main:false};
-  if(/^(bath|wc|kitchen|laundry|dressing|store)$/.test(ty)&&X.fixed.length)return {X:X,ty:ty,pieces:[],main:false,fitted:true};   // fitted already: the design's fittings stay
+// the sets each kind of room can have; the first is the usual one
+var PF_STY={living:[['sofa','Sofa and armchairs'],['corner','Corner sofa'],['facing','Two sofas facing']],
+  master:[['dresser','Dresser and armchair'],['desk','Desk'],['read','Reading corner']], bed:[['ward','Bed and wardrobe'],['desk','Desk'],['read','Reading corner']],
+  kids:[['beds','Separate beds'],['bunk','Bunk bed and play corner']], office:[['desk','Desk'],['corner','Corner desk'],['two','Two desks']],
+  dining:[['rect','Long table'],['round','Round table']], kitchen:[['run','One wall'],['L','L-shape'],['table','Breakfast table']],
+  bath:[['bath','Bath'],['shower','Shower']], laundry:[['side','Side by side'],['stack','Stacked']], dressing:[['built','Built-in wardrobes'],['open','Open units and island']],
+  entry:[['shoe','Shoe cabinet and mirror'],['bench','Bench and coat stand']], corridor:[['art','Pictures'],['console','Console and pictures']],
+  garden:[['dine','Dining and loungers'],['lounge','Lounge set'],['both','Dining and lounge']]};
+PF_STY.reception=PF_STY.recdin=PF_STY.living;
+function pfTy(T,ri){ if(ri==='g')return pfGardenRect()?'garden':null; var t=pfType(T.rooms[ri].n); return t==='outdoor'?'garden':t; }
+// a proposal for room ri (or 'g', the garden) in set st: the pieces, in the room's own terms. A set that does not fit says why
+// (miss); before saying so, the other arrangements are tried
+function pfPropose(T,ri,mode,v,st){ v=v||0; var P=pfPropose1(T,ri,mode,v,st); if(P.miss&&P.alts>1)for(var k=1;k<P.alts;k++){ var Q=pfPropose1(T,ri,mode,v+k,st); if(!Q.miss){ Q.v=(v+k)%Q.alts; return Q; } } return P; }
+function pfPropose1(T,ri,mode,v,st){ var rm=pfRm(T,ri), ty=pfTy(T,ri), X=pfCtx(T,ri,mode), R=X.R, main=null, sty=PF_STY[ty]||[];
+  X.st=st&&sty.some(function(o){ return o[0]===st; })?st:(sty[0]&&sty[0][0]); X.def=!st||!sty.length;     // the usual set does its best; a set asked for is that set, or says why not
+  if(!ty)return {X:X,ty:null,pieces:[],main:false,styles:[]};
+  if(/^(bath|wc|kitchen|laundry|dressing|store)$/.test(ty)&&X.fixed.length||ty==='entry'&&/(shoe|coat|key|cloak|cabinet|console|storage|joinery)/i.test(X.fixed.join(' ')))return {X:X,ty:ty,pieces:[],main:false,fitted:true,styles:[]};   // fitted already: the design's fittings stay
   if(ty==='reception'&&Math.max(R[2]-R[0],R[3]-R[1])>=600&&(R[2]-R[0])*(R[3]-R[1])>=24e4)ty='recdin';     // a long reception has room to dine in it too
   if(ty==='recdin'){ var w=R[2]-R[0], d=R[3]-R[1], sw=(v>>1)%2===1;     // split on its long side: sitting in one half, dining in the other
     var cut=w>=d?(R[0]+R[2])/2:(R[1]+R[3])/2, A=w>=d?[R[0],R[1],cut,R[3]]:[R[0],R[1],R[2],cut], B=w>=d?[cut,R[1],R[2],R[3]]:[R[0],cut,R[2],R[3]];
     sw=v%2===1; if(sw){ var tmp=A; A=B; B=tmp; } var oa={}, ob={}; if(w>=d){ oa[A[0]===R[0]?'right':'left']=1; ob[B[0]===R[0]?'right':'left']=1; } else { oa[A[1]===R[1]?'bottom':'top']=1; ob[B[1]===R[1]?'bottom':'top']=1; }
-    var XA=pfCtx(T,ri,mode,A,oa), XB=pfCtx(T,ri,mode,B,ob); XB.placed=XA.placed; main=pfSeating(XA,v>>1,false); var dn=pfDining(XB,0); main=main&&dn?main:(main||dn); XA.alts=2*(XA.alts||1); X=XA; }
+    var XA=pfCtx(T,ri,mode,A,oa), XB=pfCtx(T,ri,mode,B,ob); XA.st=X.st; XA.def=X.def; XB.placed=XA.placed; main=pfSeating(XA,v>>1,false); var dn=pfDining(XB,0); main=main&&dn?main:(main||dn); XA.alts=2*(XA.alts||1); X=XA; }
   else if(ty==='living')main=pfSeating(X,v,true); else if(ty==='reception')main=pfSeating(X,v,false);
-  else if(ty==='dining'||ty==='outdoor')main=pfDining(X,v); else if(ty==='kitchen')main=pfKitchen(X,v);
+  else if(ty==='dining')main=pfDining(X,v); else if(ty==='kitchen')main=pfKitchen(X,v); else if(ty==='garden')main=pfGarden(X);
   else if(ty==='master'||ty==='bed'||ty==='nanny')main=pfBedroom(X,v,ty); else if(ty==='kids')main=pfKids(X,v); else if(ty==='nursery')main=pfNursery(X,v);
   else if(ty==='office')main=pfOffice(X,v,/guest/i.test(rm.n)); else if(ty==='bath')main=pfBath(X,v,/guest/i.test(rm.n)); else if(ty==='wc')main=pfBath(X,v,true);
-  else if(ty==='laundry')main=pfLaundry(X,v); else if(ty==='dressing')main=pfDressing(X); else if(ty==='entry')main=pfEntry(X,v); else if(ty==='store')main=pfStore(X);
+  else if(ty==='laundry')main=pfLaundry(X,v); else if(ty==='dressing')main=pfDressing(X); else if(ty==='entry')main=pfEntry(X,v); else if(ty==='store')main=pfStore(X); else if(ty==='corridor')main=pfCorridor(X);
   if(!main&&/^(master|bed|nanny|kids|nursery|living|reception|dining|recdin)$/.test(ty))X.placed=[];    // without its bed, sofa or table, a room's set means nothing
   var ps=X.placed.map(function(e){ return {t:e.p.t,x:e.p.x,y:e.p.y,r:e.p.r||0}; });
-  return {X:X,ty:ty,pieces:ps,main:!!main,kept:main===PF_KEPT,alts:X.alts||1}; }
+  return {X:X,ty:ty,pieces:ps,main:!!main,kept:main===PF_KEPT,alts:X.alts||1,st:X.st,styles:sty,miss:X.miss||null}; }
+function pfClearText(ps){ var M=[[/^bed|^bunk/,'70 cm at the foot of a bed and 55 at its sides'],[/^cot$/,'60 beside the cot'],[/^(ward|bw|dressU)/,'75 in front of wardrobes'],[/^(sink|hob|dw|base|fridge)/,'100 in front of kitchen units'],
+    [/^wc$/,'60 in front of the WC'],[/^(van|basinW)/,'70 in front of the basin'],[/^(sh|bath)\d/,'60 in front of the shower or bath'],[/^(washer|stack)$/,'90 in front of the machines'],[/^(sofa\d|corner|chaise)$/,'45 between the sofa and the coffee table'],
+    [/^(dt\d|dtR)/,'60 to pull each dining chair out'],[/^(desk|kdesk|deskL)/,'90 behind a desk for the chair'],[/^(shoe|console|ebench)$/,'60 in front, to pass'],[/^(shelf|books)$/,'60 in front of shelving']], out=[];
+  M.forEach(function(m){ if(ps.some(function(p){ return m[0].test(p.t); }))out.push(m[1]); }); return out.join(', '); }
 function pfNames(ps){ var c={}, o=[]; ps.forEach(function(p){ var n=FDEF[p.t].n; if(!c[n]){ c[n]=0; o.push(n); } c[n]++; });
   return o.map(function(n){ return (c[n]>1?c[n]+' × ':'')+n.toLowerCase(); }).join(', '); }
 // ----- the walk through the rooms: one proposal at a time, used or skipped
-function pfFrStart(list){ var T=peT(), one=list.length===1, left={fit:[],none:[]};
-  list=list.filter(function(ri){ var n=T.rooms[ri].n; return pfType(n)&&!/corridor|passage|landing|stair/i.test(n); });
-  if(!one)list=list.filter(function(ri){ var P=pfPropose(T,ri,'replace',0); if(P.pieces.length)return true; if(P.fitted)left.fit.push(T.rooms[ri].n); else left.none.push(T.rooms[ri].n); return false; });   // fitted rooms, and rooms where no set fits, are named once and left as they are
-  if(!list.length){ toast('',one?'There is no standard set for this room':'Every room is fitted already, or has no room for a standard set'); return; }
-  pfPick(null); PE.sel=null; if(window.innerWidth<=760&&PE.cat)pfCat(false); PE.fr={list:list,i:0,mode:'replace',v:0,done:0,skip:0,left:left}; PE.furn=true; document.getElementById('pefurn').setAttribute('aria-pressed','true'); pfFrShow(); }
+function pfFrStart(list){ var T=peT(), one=list.length===1, left={fit:[],none:[],kept:[]}, modes={};
+  if(!one&&pfGardenRect()&&list.indexOf('g')<0)list=list.concat(['g']);       // the garden too, last
+  list=list.filter(function(ri){ return !!pfTy(T,ri); });
+  list=list.filter(function(ri){ var nm=pfRm(T,ri).n, P=pfPropose(T,ri,'replace',0); if(P.pieces.length)return true;
+    if(!P.fitted&&(P.styles||[]).slice(1).some(function(o){ return pfPropose(T,ri,'replace',0,o[0]).pieces.length; }))return true;      // the usual set does not fit, another does
+    if(!P.fitted&&P.X.clr.n){ var Q=pfPropose(T,ri,'add',0); if(Q.pieces.length){ modes[ri]='add'; return true; } if(Q.kept){ left.kept.push(nm); return false; } }   // the design's own pieces stay, and the set fits round them
+    if(one)return true; (P.fitted?left.fit:left.none).push(nm); return false; });
+  if(!list.length){ toast('',left.kept.length&&!left.fit.length&&!left.none.length?'The design furnishes '+(one?'this room':'every room')+' already, and no standard set fits better':'Every room is fitted already, or has no room for a standard set'); return; }
+  pfPick(null); PE.sel=null; if(window.innerWidth<=760&&PE.cat)pfCat(false); PE.fr={list:list,i:0,mode:'replace',modes:modes,v:0,st:{},done:0,skip:0,left:left}; PE.furn=true; document.getElementById('pefurn').setAttribute('aria-pressed','true'); pfFrShow(); }
 function pfFocus(r){ var sv=peSvg.getBoundingClientRect(), bar=document.querySelector('#pe .pebar').getBoundingClientRect(), box=document.getElementById('pefr'), bb=box.hidden?null:box.getBoundingClientRect(), pad=sv.width>760?90:20;   // the room, in the space the toolbar, the catalogue and the panel leave
   var x0=sv.left+(PE.cat&&sv.width>760?308:0), y0=Math.max(sv.top,bar.bottom+8), x1=sv.right, y1=Math.min(sv.bottom,bb?bb.top-8:sv.bottom-110); if(y1-y0<80)y1=y0+80;
   var w=r[2]-r[0]+pad*2, h=r[3]-r[1]+pad*2, k=Math.max(w/Math.max(1,x1-x0),h/Math.max(1,y1-y0)); k=Math.max(k,.9);
   PE.view={x:(r[0]+r[2])/2-((x0+x1)/2-sv.left)*k,y:(r[1]+r[3])/2-((y0+y1)/2-sv.top)*k,k:k}; }
-function pfFrShow(){ var F=PE.fr; if(!F)return; if(F.i>=F.list.length){ pfFrEnd(); return; } var T=peT(), ri=F.list[F.i];
-  F.prop=pfPropose(T,ri,F.mode,F.v); peDraw(); pfFocus(T.rooms[ri].r); peDraw(); }   // the room in the space the panel leaves
-function pfFrUse(){ var F=PE.fr; if(!F||!F.prop||!F.prop.pieces.length)return; var T=peT(), ri=F.list[F.i], R=T.rooms[ri].r, P=F.prop, stamp=Date.now().toString(36);
-  pfDo(function(){ if(F.mode==='replace'){
-      furn[LAYOUT]=fList().filter(function(q){ return q.t.charAt(0)==='@'||!(q.x>R[0]&&q.x<R[2]&&q.y>R[1]&&q.y<R[3]); });     // what was placed here before makes way
-      P.X.clr.pcs.forEach(function(i){ var ex=fList().filter(function(q){ return q.t==='@'+i; })[0], p=SCENE.pieces[i];   // and the design's own pieces are cleared (Put the design back brings them)
-        if(ex)ex.gone=1; else fList().push({id:'@'+i+'-'+stamp,t:'@'+i,k:FDEF['@'+i].k,x:Math.round((p.b[0]+p.b[3])/2*10)/10,y:Math.round((p.b[1]+p.b[4])/2*10)/10,r:0,gone:1}); }); }
-    P.pieces.forEach(function(q,j){ fList().push({id:q.t+'-'+stamp+j,t:q.t,x:q.x,y:q.y,r:q.r}); }); });
-  F.done++; F.i++; F.v=0; pfFrShow(); }
+function pfFrShow(){ var F=PE.fr; if(!F)return; if(F.i>=F.list.length){ pfFrEnd(); return; } var T=peT(), ri=F.list[F.i], ty=pfTy(T,ri), md=F.modes[ri]||F.mode, want=F.st[ty];
+  var P=pfPropose(T,ri,md,F.v,want); if(P.miss&&want){ var why=P.miss; P=pfPropose(T,ri,md,0); P.fell={n:(PF_STY[ty]||[]).filter(function(o){ return o[0]===want; }).map(function(o){ return o[1]; })[0]||want,why:why}; F.v=0; }   // the set chosen for this kind of room does not fit this one: the usual set, saying why
+  if(P.v!=null)F.v=P.v; P.md=md; F.prop=P;
+  F.sty=(P.styles||[]).map(function(o){ if(o[0]===P.st)return {k:o[0],n:o[1],ok:true,on:true}; var Q=pfPropose(T,ri,md,0,o[0]); return {k:o[0],n:o[1],ok:!!Q.pieces.length&&!Q.miss,why:Q.miss||'Nothing of this set fits the clear floor here'}; });
+  peDraw(); pfFocus(pfRm(T,ri).r); peDraw(); }   // the room in the space the panel leaves
+function pfFrStyle(k){ var F=PE.fr; if(!F||!F.prop)return; var o=(F.sty||[]).filter(function(q){ return q.k===k; })[0]; if(!o)return;
+  if(!o.ok){ toast('',o.n+' does not fit here: '+o.why); return; } F.st[pfTy(peT(),F.list[F.i])]=k; F.v=0; pfFrShow(); }
+function pfApply(P,ri,stamp){ var T=peT(), R=pfRm(T,ri).r;     // a proposal in: what was placed here before makes way, and the design's own pieces are cleared (Put the design back brings them)
+  if(P.md==='replace'){ furn[LAYOUT]=fList().filter(function(q){ return q.t.charAt(0)==='@'||!(q.x>R[0]&&q.x<R[2]&&q.y>R[1]&&q.y<R[3]); });
+    P.X.clr.pcs.forEach(function(i){ var ex=fList().filter(function(q){ return q.t==='@'+i; })[0], p=SCENE.pieces[i];
+      if(ex)ex.gone=1; else fList().push({id:'@'+i+'-'+stamp,t:'@'+i,k:FDEF['@'+i].k,x:Math.round((p.b[0]+p.b[3])/2*10)/10,y:Math.round((p.b[1]+p.b[4])/2*10)/10,r:0,gone:1}); }); }
+  P.pieces.forEach(function(q,j){ fList().push({id:q.t+'-'+stamp+'-'+j,t:q.t,x:q.x,y:q.y,r:q.r}); }); }
+function pfFrUse(){ var F=PE.fr; if(!F||!F.prop||!F.prop.pieces.length)return; var ri=F.list[F.i], P=F.prop, stamp=Date.now().toString(36);
+  pfDo(function(){ pfApply(P,ri,stamp); }); F.done++; F.i++; F.v=0; pfFrShow(); }
+function pfFrAll(){ var F=PE.fr; if(!F||!F.prop)return; var T=peT(), stamp=Date.now().toString(36), n=0, at=F.i;    // this room's set, and each room left its usual set (or the one chosen for its kind): one undo takes them all back
+  pfDo(function(){ for(var i=at;i<F.list.length;i++){ var ri=F.list[i], ty=pfTy(T,ri), md=F.modes[ri]||F.mode, P=i===at?F.prop:pfPropose(T,ri,md,0,F.st[ty]);
+      if(i!==at&&P.miss){ P=pfPropose(T,ri,md,0); } P.md=P.md||md; if(!P.pieces.length)continue; pfApply(P,ri,stamp+i); n++; } });
+  F.done+=n; F.skip+=F.list.length-at-n; F.all=true; F.i=F.list.length; pfFrShow(); }
 function pfFrAlt(){ var F=PE.fr; if(!F||!F.prop||F.prop.alts<2)return; F.v=(F.v+1)%F.prop.alts; pfFrShow(); }
-function pfFrSkip(){ var F=PE.fr; if(!F)return; F.skip++; F.i++; F.v=0; pfFrShow(); }
-function pfFrEnd(){ var F=PE.fr; PE.fr=null; if(F&&(F.done||F.skip))toast('','Furnished '+F.done+(F.done===1?' room':' rooms')+(F.skip?', skipped '+F.skip:'')+' · it is in the 3D too · undo takes a room back');
+function pfFrSkip(){ var F=PE.fr; if(!F)return; if(F.prop&&F.prop.pieces.length)F.skip++; F.i++; F.v=0; pfFrShow(); }
+function pfFrEnd(){ var F=PE.fr; PE.fr=null; if(F&&(F.done||F.skip))toast('','Furnished '+F.done+(F.done===1?' room':' rooms')+(F.skip?', skipped '+F.skip:'')+' · it is in the 3D too · '+(F.all?'one undo takes them all back':'undo takes a room back'));
   peFit(); peDraw(); }
-function pfFrUI(){ var box=document.getElementById('pefr'), F=PE.fr; box.hidden=!F; if(!F||!F.prop)return; var T=peT(), ri=F.list[F.i], rm=T.rooms[ri], RI=peRoomInfo(T)[ri], P=F.prop, c=P.X.clr;
+function pfFrUI(){ var box=document.getElementById('pefr'), F=PE.fr; box.hidden=!F; if(!F||!F.prop)return; var T=peT(), ri=F.list[F.i], rm=pfRm(T,ri), RI=pfRI(T,ri), P=F.prop, c=P.X.clr, md=P.md||F.mode;
   box.innerHTML=''; function e(tag,txt,cls){ var x=document.createElement(tag); if(txt!=null)x.textContent=txt; if(cls)x.className=cls; box.appendChild(x); return x; }
-  var hd=e('div',null,'frh'); var b=document.createElement('b'); b.textContent=rm.n; hd.appendChild(b); var sp=document.createElement('span'); sp.textContent=RI.a.toFixed(1)+' m² · '+Math.round(RI.w*100)+' × '+Math.round(RI.d*100)+(F.list.length>1?' · room '+(F.i+1)+' of '+F.list.length:'')+(P.pieces.length&&P.alts>1?' · arrangement '+(F.v%P.alts+1)+' of '+P.alts:''); hd.appendChild(sp);
-  if(F.i===0&&F.left&&(F.left.fit.length||F.left.none.length))e('p',(F.left.fit.length?'Fitted already, so left as they are: '+F.left.fit.join(', ')+'. ':'')+(F.left.none.length?'No standard set fits: '+F.left.none.join(', ')+'.':''),'frn');
+  var hd=e('div',null,'frh'); var b=document.createElement('b'); b.textContent=rm.n; hd.appendChild(b); var sp=document.createElement('span'); sp.textContent=(ri==='g'?'about '+Math.round(RI.a)+' m² · laid out on its open stretch, ':RI.a.toFixed(1)+' m² · ')+Math.round(RI.w*100)+' × '+Math.round(RI.d*100)+(F.list.length>1?' · room '+(F.i+1)+' of '+F.list.length:'')+(P.pieces.length&&P.alts>1?' · arrangement '+(F.v%P.alts+1)+' of '+P.alts:''); hd.appendChild(sp);
+  if(F.sty&&F.sty.length>1){ var cr=e('div',null,'frs'); cr.setAttribute('role','group'); cr.setAttribute('aria-label','Set for this room');
+    F.sty.forEach(function(o,j){ var x=document.createElement('button'); x.type='button'; x.textContent=o.n; x.setAttribute('aria-pressed',o.on?'true':'false'); if(!o.ok&&!o.on){ x.className='off'; x.setAttribute('aria-disabled','true'); }
+      x.title=o.on?'This set ('+(j+1)+')':o.ok?'Show this set ('+(j+1)+')':'Does not fit here: '+o.why; x.addEventListener('click',function(){ pfFrStyle(o.k); }); cr.appendChild(x); }); }
+  if(P.fell)e('p',P.fell.n+' does not fit here ('+P.fell.why.charAt(0).toLowerCase()+P.fell.why.slice(1)+'), so this is the usual set.','frw');
+  if(F.i===0&&F.left&&(F.left.fit.length||F.left.none.length||F.left.kept.length))e('p',(F.left.fit.length?'Fitted already, so left as they are: '+F.left.fit.join(', ')+'. ':'')+(F.left.kept.length?'Furnished in the design, with no standard set fitting better: '+F.left.kept.join(', ')+'. ':'')+(F.left.none.length?'No standard set fits: '+F.left.none.join(', ')+'.':''),'frn');
   e('p',P.fitted?'Fitted already, with the design\'s '+P.X.fixed.slice(0,4).join(', ').toLowerCase()+(P.X.fixed.length>4?'…':'')+': they stay, so there is nothing to add here.':P.pieces.length?(P.kept?'Adds what the room lacks: ':P.main?'':'Only part of a standard set fits: ')+pfNames(P.pieces)+'.':P.kept?'The design\'s pieces already give this room what a standard set would.':'No standard set fits the clear floor here'+(P.X.fixed.length?', with the design\'s built-in '+P.X.fixed.slice(0,3).join(', ').toLowerCase()+' staying':'')+'.','frl');
   if(!P.fitted&&P.X.fixed.length)e('p','Staying from the design, as they are fixed in the 3D: '+P.X.fixed.slice(0,4).join(', ').toLowerCase()+(P.X.fixed.length>4?'…':'')+'.','frn');
-  if(c.n)e('p',F.mode==='replace'?'The design has '+c.n+(c.n===1?' piece':' pieces')+' here ('+c.names.slice(0,3).join(', ').toLowerCase()+(c.n>3?'…':'')+'): this set takes their place. Put the design back, in Furnish, brings them.':'The design\'s '+c.n+(c.n===1?' piece stays':' pieces stay')+'; the set fits around them.','frn');
-  if(P.pieces.length)e('p','Laid out to the usual clear floor, shaded: 70 cm at the foot of a bed and 55 at its sides, 75 in front of wardrobes, 100 in front of kitchen units, 60 in front of a WC, 70 in front of a basin.','frn');
+  if(c.n)e('p',md==='replace'?'The design has '+c.n+(c.n===1?' piece':' pieces')+' here ('+c.names.slice(0,3).join(', ').toLowerCase()+(c.n>3?'…':'')+'): this set takes their place. Put the design back, in Furnish, brings them.':'The design\'s '+c.n+(c.n===1?' piece stays':' pieces stay')+'; the set fits around them.','frn');
+  var cl=pfClearText(P.pieces); if(cl)e('p','Laid out to the usual clear floor, shaded: '+cl+'.','frn');
   var row=e('div',null,'frb'); function bt(txt,f,cls,title){ var x=document.createElement('button'); x.type='button'; x.textContent=txt; if(cls)x.className=cls; if(title)x.title=title; x.addEventListener('click',f); row.appendChild(x); return x; }
   if(P.pieces.length)bt('Use this set',pfFrUse,'pri','Put these pieces in (Enter)'); else if(F.i<F.list.length-1)bt('Next room',pfFrSkip,'pri','(Enter)');
+  if(P.pieces.length&&F.list.length-F.i>1)bt('Use for all '+(F.list.length-F.i)+' left',pfFrAll,null,'This set here, and in each room left its usual set, or the set you chose for that kind of room. One undo takes them all back');
   if(P.pieces.length&&P.alts>1)bt('Another arrangement',pfFrAlt,null,'Another wall or spot for the main piece (A)');
-  if(c.n)bt(F.mode==='replace'?'Keep the design\'s pieces':'Clear the design\'s pieces',function(){ F.mode=F.mode==='replace'?'add':'replace'; F.v=0; pfFrShow(); });
+  if(c.n)bt(md==='replace'?'Keep the design\'s pieces':'Clear the design\'s pieces',function(){ F.mode=md==='replace'?'add':'replace'; delete F.modes[ri]; F.v=0; pfFrShow(); });
   if(F.list.length>1)bt('Skip',pfFrSkip,null,'Leave this room as it is (S)'); bt(F.list.length>1?'Stop':'Close',pfFrEnd,null,'Esc'); }
 // ----- send the trial to Claude: what changed, in an architect's terms, with the exact data, so that Claude can make
 // it a revision of the plan through the plan lock once you agree. Inside Claude it goes into this page's store
@@ -4564,6 +4734,126 @@ function peSendOpen(){ var k=LAYOUT, pk=pePack(k), dl=document.getElementById('s
   if(none){ document.getElementById('sendtxt').textContent='There is no trial on '+pk.plan.name.split(' · ')[0]+' yet.'; document.getElementById('sendmsg').textContent='Move a wall or a door, or place furniture, then send it.'; }
   try{ dl.showModal(); }catch(e){ dl.setAttribute('open',''); } }
 function peSendText(){ var pk=SEND.pk; return 'Here is my trial of '+pk.plan.name+' from the 2D plan. Please look at it and tell me whether it should become a revision of the plan.\n\n'+pk.text+'\n\nThe data:\n```json\n'+JSON.stringify(Object.assign({},pk,{text:undefined}))+'\n```\n'; }
+// ----- every problem in its place, with its solutions: the warning's card on the plan says what is wrong, why it
+// matters, and offers the changes that clear it, each one tried first so that only those that work are offered.
+var PF_BACK={bottom:'top',top:'bottom',left:'right',right:'left'};
+function pfWinBlock(T,q){ var fp=fFoot(q); if(fp[5]<120||fp[2]>=100)return false;          // tall, in front of a window or a glazed door
+  return T.lines.some(function(L){ return L.ops.some(function(op){ if(op[2]!=='win'&&op[2]!=='gl')return false; var h=L.o==='h', lo=h?fp[0]:fp[1], hi=h?fp[3]:fp[4];
+    if(Math.min(hi,op[1])-Math.max(lo,op[0])<10)return false; var gap=h?Math.min(Math.abs(fp[1]-L.c[1]),Math.abs(L.c[0]-fp[4])):Math.min(Math.abs(fp[0]-L.c[1]),Math.abs(L.c[0]-fp[3])); return gap<=30; }); }); }
+function pfSweepHit(T,q){ var f=fFoot(q); if(f[2]>=100)return false; var pts=[]; for(var i=0;i<=2;i++)for(var j=0;j<=2;j++)pts.push([f[0]+2+(f[3]-f[0]-4)*i/2,f[1]+2+(f[4]-f[1]-4)*j/2]);
+  return T.doors.some(function(d){ return pts.some(function(p){ return peInSweep(T,d,p[0],p[1]); }); }); }
+function pfFine(T,q,room){ if(fBlocks(q)){ var gp=pfGaps(T,q); if(gp.over.length)return false; var need=PF_CLR[fDim(q).m], v=need&&gp.g[pfFront(q)]; if(v&&v[0]<need-.5)return false; }
+  if(pfWinBlock(T,q)||pfSweepHit(T,q))return false;
+  var fq=fFoot(q), bq=[fq[0],fq[1],fq[3],fq[4]];      // nor in the clear floor another piece needs in front of it
+  if(fBlocks(q)&&fq[2]<100&&fList().some(function(o){ if(o.id===q.id||o.gone||o.t.charAt(0)==='@'||!fBlocks(o))return false; var D=fDim(o), nd=PF_CLR[D.m]; return !!nd&&pfOv(bq,pfLR(o,-D.w/2,D.d/2,D.w/2,D.d/2+nd),.5); }))return false;
+  if(room){ var f=fFoot(q); if(f[0]<room[0]-.5||f[1]<room[1]-.5||f[3]>room[2]+.5||f[4]>room[3]+.5)return false; }
+  return true; }
+function pfRoomOf(T,x,y){ var r=T.rooms.filter(function(q){ return x>q.r[0]&&x<q.r[2]&&y>q.r[1]&&y<q.r[3]; })[0]; return r?r.r:null; }
+// the nearest place where a piece meets every rule: off walls and pieces, its clear floor in front, out of door swings,
+// not tall across a window; its back to a wall when it is that kind of piece; turned only if it has to be
+function pfRelocate(T,p){ var D=fDim(p), wall=PF_WALL.test(D.m), f=fFoot(p), cs=[];     // the nearest spot where the piece fits, in the room it stands in or, astride a wall, the room on either side
+  var rooms=T.rooms.filter(function(q){ return f[0]<q.r[2]&&f[3]>q.r[0]&&f[1]<q.r[3]&&f[4]>q.r[1]; }).map(function(q){ return q.r; }), own=pfRoomOf(T,p.x,p.y);
+  if(own)rooms.sort(function(a,b){ return (b===own)-(a===own); }); if(!rooms.length)rooms=[null];
+  var rots=[p.r||0].concat(wall||D.w!==D.d?[90,180,270].map(function(a){ return ((p.r||0)+a)%360; }):[]);
+  rooms.forEach(function(room,k){ var pen=k&&own?60:0, lo=room?[room[0],room[1]]:[p.x-300,p.y-300], hi=room?[room[2],room[3]]:[p.x+300,p.y+300], cand=[];     // its own room first: another room costs 60
+    for(var x=lo[0];x<=hi[0];x+=5)for(var y=lo[1];y<=hi[1];y+=5){ var dd=Math.hypot(x-p.x,y-p.y); if(dd<=320)cand.push([x,y,dd]); }
+    cand.sort(function(a,b){ return a[2]-b[2]; });
+    rots.forEach(function(r,ri){ var found=0, seen={};
+      for(var i=0;i<cand.length&&found<4;i++){ var c=cand[i], q={id:p.id,t:p.t,x:c[0],y:c[1],r:r}; if(p.w)q.w=p.w; if(p.d)q.d=p.d; pfSnap(T,q);
+        var key=Math.round(q.x)+','+Math.round(q.y); if(seen[key])continue; seen[key]=1;
+        if(!pfFine(T,q,room))continue; var back=pfGaps(T,q).g[PF_BACK[pfFront(q)]], s=Math.hypot(q.x-p.x,q.y-p.y)+ri*40+pen+(wall&&!(back&&back[0]<1.5)?150:0);
+        found++; cs.push({q:q,x:q.x,y:q.y,r:r,s:s}); } }); });
+  cs.sort(function(a,b){ return a.s-b.s; });
+  var keys=null; for(var i=0;i<cs.length&&i<12;i++){ if(!keys){ keys={}; peWarnings(T).forEach(function(w){ keys[peWKey(T,w)]=1; }); } if(pfAddsNone(T,cs[i].q,keys))return cs[i]; }   // and only a spot that brings no new problem
+  return null; }
+function pfAddsNone(T,q,keys){ var L=fList(), i=-1; for(var j=0;j<L.length;j++)if(L[j].id===q.id){ i=j; break; }
+  var old=i>-1?L[i]:null, bad=true; if(i>-1)L[i]=q; else L.push(q);
+  try{ bad=peWarnings(T).some(function(w){ return !keys[peWKey(T,w)]; }); } finally{ if(i>-1)L[i]=old; else L.pop(); }
+  return !bad; }
+var PE_WHY={room:'Rooms have a usual minimum floor area and width for their use, so a bed, a desk or a sofa still fits with room to move.',
+  pocket:'A sliding door runs into the wall beside it: that part of the wall must be solid and at least as long as the door is wide.',
+  swing:'A door has to open to 90° so that people, and furniture, can pass.',
+  thru:'A wall and a piece of furniture cannot share the same floor.',
+  walk:'People pass furniture comfortably with 75 cm; 60 is the very least.',
+  over:'Two pieces cannot stand on the same floor.',
+  front:'A piece is used from the front: it needs clear floor there to open its doors, sit or stand at it.',
+  win:'Something tall in front of a window takes the light and the view; in front of a glazed door it blocks the way out.',
+  noway:'Every room needs a door or an opening.',
+  wet:'Bathrooms, kitchens and laundries have drains and pipes in the floor and walls: moving their walls means moving those too. Check with the plumber before building.'};
+function peWKey(T,w){ return w.k+'|'+(w.pc||'')+'|'+(w.s!=null?w.s:'')+'|'+(w.di!=null?w.di:'')+'|'+(w.ri!=null&&T.rooms[w.ri]?T.rooms[w.ri].o||T.rooms[w.ri].n:''); }   // what a problem is about
+function peClears(T2,T,w){ var key=peWKey(T,w); return !peWarnings(T2).some(function(q){ return peWKey(T2,q)===key; }); }
+function peWallBack(T,id){ var L=peLine(T,id); if(!L||L.lock)return null; if(L.nw)return {l:'Remove this new wall',f:function(T){ var q=peLine(T,id); return q?peDelWall(T,q):''; }};
+  var B=peFromPlan(LAYOUT), mid=function(M){ return (M.c[0]+M.c[1])/2; }, near=B.lines.filter(function(M){ return M.o===L.o&&Math.min(M.a[1],L.a[1])-Math.max(M.a[0],L.a[0])>1; }).sort(function(a,b){ return Math.abs(mid(a)-mid(L))-Math.abs(mid(b)-mid(L)); })[0];
+  if(!near)return null; var dl=Math.round((mid(near)-mid(L))*10)/10; if(Math.abs(dl)<.5)return null;
+  var grp=T.lines.filter(function(M){ return M.o===L.o&&M.c[0]===L.c[0]&&M.c[1]===L.c[1]&&!M.lock&&M.moved; }).map(function(M){ return M.id; }); if(grp.indexOf(id)<0)grp.push(id);   // the whole wall that moved, not one piece of it
+  return {l:'Put this wall back where the design has it ('+Math.abs(dl)+' cm)',f:function(T){ var e=peMoveMany(T,grp,dl); if(!e)grp.forEach(function(i){ var q=peLine(T,i); if(q)delete q.moved; }); return e; }}; }
+function peWallBackNear(T,id){ var L=peLine(T,id); if(!L)return null; var b=peLineRect(L), best=null;     // a wall that only stretched: put back the one that moved it
+  T.lines.forEach(function(M){ if(!M.moved||M.lock||M.id===id||best)return; var r=peLineRect(M); if(r[0]>b[2]+20||r[2]<b[0]-20||r[1]>b[3]+20||r[3]<b[1]-20)return; best=peWallBack(T,M.id); });
+  return best; }
+function peGrow(T,ri,need){ var rm=T.rooms[ri], RI=peRoomInfo(T)[ri], R=rm.r, out=[], wNeed=need[2], aNeed=need[1];   // the walls that would bring a room up to its minimum
+  [['top',1,-1],['bottom',1,1],['left',0,-1],['right',0,1]].forEach(function(sd){ var h=sd[1]===1, edge=sd[0]==='top'?R[1]:sd[0]==='bottom'?R[3]:sd[0]==='left'?R[0]:R[2], lo=h?R[0]:R[1], hi=h?R[2]:R[3];
+    var on=T.lines.filter(function(M){ return (M.o==='h')===h&&(Math.abs(M.c[0]-edge)<=3||Math.abs(M.c[1]-edge)<=3)&&Math.min(M.a[1],hi)-Math.max(M.a[0],lo)>10; });
+    if(!on.length||on.some(function(M){ return M.lock; }))return; var ids=on.map(function(M){ return M.id; }), span=h?(R[2]-R[0]):(R[3]-R[1]);
+    var dA=Math.max(0,(aNeed-RI.a)*1e4/span), dW=0, minD=Math.min(RI.w,RI.d)*100; if(minD<wNeed&&(h?RI.d*100:RI.w*100)<=minD+.5)dW=wNeed-minD;
+    var dl=Math.ceil(Math.max(dA,dW)/5)*5; if(!dl)return;
+    var T2=peTry(function(T2){ return peMoveMany(T2,ids,sd[2]*dl); }); if(!T2)return; var a2=peRoomInfo(T2)[ri]; if(!a2||a2.a<aNeed-.005)return;
+    var nb=T2.rooms.filter(function(q,i){ if(i===ri)return false; var e2=sd[0]==='top'?q.r[3]:sd[0]==='bottom'?q.r[1]:sd[0]==='left'?q.r[2]:q.r[0]; return Math.abs(e2-(edge+sd[2]*dl))<=14&&Math.min(h?q.r[2]:q.r[3],hi)-Math.max(h?q.r[0]:q.r[1],lo)>10; })[0], nbi=nb?T2.rooms.indexOf(nb):-1;
+    out.push({d:dl,l:'Move the wall'+(nb?' toward '+nb.n:'')+' '+dl+' cm: '+rm.n+' '+a2.a.toFixed(1)+' m²'+(nb?', '+nb.n+' '+peRoomInfo(T2)[nbi].a.toFixed(1)+' m²':''),f:function(T){ return peMoveMany(T,ids,sd[2]*dl); }}); });
+  return out.sort(function(a,b){ return a.d-b.d; }).slice(0,2); }
+function peTry(f){ var T=JSON.parse(JSON.stringify(peT())); var e=f(T); return e?null:T; }       // a change tried on a copy of the trial first
+function peFixes(T,w){ var out=[], d=w.di!=null&&T.doors[w.di];
+  function pieceFix(id){ var q=pfGet(id); if(!q)return; var r=pfRelocate(T,q);
+    if(r)out.push({l:'Move the '+fDim(q).n.toLowerCase()+' '+(Math.round(Math.hypot(r.x-q.x,r.y-q.y))>0?Math.round(Math.hypot(r.x-q.x,r.y-q.y))+' cm':'')+(r.r!==(q.r||0)?' and turn it':'')+' to where it fits',f:function(){ pfDo(function(){ var z=pfGet(id); z.x=r.x; z.y=r.y; z.r=r.r; }); PE.sel={t:'pc',id:id}; }});
+    else if(q.t.charAt(0)!=='@'){ var D=fDim(q), sm=Object.keys(FDEF).filter(function(t){ var E=FDEF[t]; return t.charAt(0)!=='@'&&E.m===D.m&&E.w*E.d<D.w*D.d; }).sort(function(a,b){ return FDEF[b].w*FDEF[b].d-FDEF[a].w*FDEF[a].d; }), got=null;   // nowhere for it: the next smaller of its kind, where that fits
+      for(var k=0;k<sm.length&&!got;k++){ var r2=pfRelocate(T,{id:q.id,t:sm[k],x:q.x,y:q.y,r:q.r}); if(r2)got=[sm[k],r2]; }
+      if(got){ var E=FDEF[got[0]], r3=got[1]; out.push({l:'Use a '+E.n.toLowerCase()+' ('+E.w+' × '+E.d+' cm) instead, where it fits',f:function(){ pfDo(function(){ var z=pfGet(id); z.t=got[0]; delete z.w; delete z.d; z.x=r3.x; z.y=r3.y; z.r=r3.r; }); PE.sel={t:'pc',id:id}; }}); }
+      else out.push({note:'The '+D.n.toLowerCase()+' fits nowhere within 3 m of here, nor anything smaller of its kind.'}); }
+    out.push({l:'Remove the '+fDim(q).n.toLowerCase(),f:function(){ pfDo(function(){ furn[LAYOUT]=fList().filter(function(z){ return z.id!==id; }); }); PE.sel=null; },danger:1}); }
+  if(w.k==='swing'&&d){ var tries=[['Open it the other way',function(q){ q.ss=-q.ss; }],['Hinge it on the other side',function(q){ q.at+=q.sa*q.w; q.sa=-q.sa; }],
+      ['Hinge on the other side and open the other way',function(q){ q.at+=q.sa*q.w; q.sa=-q.sa; q.ss=-q.ss; }],['Make it a sliding door',function(q){ q.kind='slide'; }]];
+    [80,70].forEach(function(nw){ if(d.w>nw)tries.push(['Make it '+nw+' cm wide',function(q){ q.w=nw; }]); });
+    tries.forEach(function(tr){ var T2=peTry(function(T2){ return peDoorEdit(T2,T2.doors[w.di],tr[1]); }); if(!T2)return; var q=T2.doors[w.di];
+      if(q.kind==='slide'?pePocketOk(T2,q):!peDoorHit(T2,w.di))out.push({l:tr[0],f:function(){ peDo(function(T){ return peDoorEdit(T,T.doors[w.di],tr[1]); }); PE.sel={t:'door',i:w.di}; }}); });
+    if(w.pc)pieceFix(w.pc); }
+  if(w.k==='pocket'&&d){ [['Make it a hinged door',function(q){ delete q.kind; }],['Slide it the other way',function(q){ q.at+=q.sa*q.w; q.sa=-q.sa; }],['Make it 70 cm wide',function(q){ q.w=70; }]].forEach(function(tr){
+      var T2=peTry(function(T2){ return peDoorEdit(T2,T2.doors[w.di],tr[1]); }); if(!T2)return; var q=T2.doors[w.di]; if(q.kind==='slide'&&!pePocketOk(T2,q))return; if(q.kind!=='slide'&&peDoorHit(T2,w.di))return;
+      out.push({l:tr[0],f:function(){ peDo(function(T){ return peDoorEdit(T,T.doors[w.di],tr[1]); }); PE.sel={t:'door',i:w.di}; }}); }); }
+  if(w.k==='walk'){ var L=peLine(T,w.line), dl=-(w.side)*Math.ceil(75-w.gap);
+    if(L&&!L.lock&&peTry(function(T2){ return peMoveMany(T2,[w.line],dl); }))out.push({l:'Move the wall '+Math.abs(dl)+' cm to leave 75',f:function(){ peDo(function(T){ return peMoveMany(T,[w.line],dl); }); PE.sel={t:'wall',id:w.line,ids:[w.line]}; }});
+    if(w.pc)pieceFix(w.pc); }
+  if(w.k==='thru'||w.k==='over'||w.k==='front'||w.k==='win'){ if(w.pc)pieceFix(w.pc);
+    else if(w.s!=null){ var pcs=[]; (SCENE.pieces||[]).forEach(function(q,i){ if(q.s===w.s&&FDEF['@'+i])pcs.push(i); });
+      if(pcs.length)out.push({l:'Clear it from the design here (Put the design back brings it)',f:function(){ pfDo(function(){ pcs.forEach(function(i){ var q=SCENE.pieces[i]; fList().push({id:'@'+i+'-'+Date.now().toString(36),t:'@'+i,k:FDEF['@'+i].k,x:(q.b[0]+q.b[3])/2,y:(q.b[1]+q.b[4])/2,r:0,gone:1}); }); }); }}); } }
+  if(w.k==='room'){ peGrow(T,w.ri,w.need).forEach(function(g){ out.push({l:g.l,f:function(){ peDo(g.f); }}); }); out.push({l:'Pick the room: its side buttons resize it',f:function(){ PE.sel={t:'room',i:w.ri}; },quiet:!!out.length}); }
+  if(w.line!=null&&w.k!=='room'){ var wb=peWallBack(T,w.line)||peWallBackNear(T,w.line); if(wb){ var T3=peTry(function(T3){ return wb.f(T3); }); if(T3&&(w.k==='wet'||peClears(T3,T,w)))out.push({l:wb.l,f:function(){ peDo(wb.f); }}); } }
+  if(w.s!=null&&!w.pc&&w.k!=='thru'&&w.k!=='over'&&w.k!=='front'&&w.k!=='win'){ var pcs2=[]; (SCENE.pieces||[]).forEach(function(q,i){ if(q.s===w.s&&FDEF['@'+i])pcs2.push(i); });
+    var nmx=(w.t.match(/(the [^:,]+?) is in its way/)||w.t.match(/by (the [^,]+?), under/)||[])[1]||'piece';
+    if(pcs2.length)out.push({l:'Clear '+nmx+' from the design here',f:function(){ pfDo(function(){ pcs2.forEach(function(i){ var q=SCENE.pieces[i]; fList().push({id:'@'+i+'-'+Date.now().toString(36),t:'@'+i,k:FDEF['@'+i].k,x:(q.b[0]+q.b[3])/2,y:(q.b[1]+q.b[4])/2,r:0,gone:1}); }); }); }}); }
+  if(w.k==='noway'){ out.push({l:'Put a door in one of its walls',f:function(){ peTool('door'); toast('','Click the wall where the door goes, on the side it opens into'); }}); }
+  if(w.k==='wet'){ out.push({l:'Noted: I will check on site',f:function(){ PE.ack[w.t]=1; }}); }
+  if(PE.undo.length&&w.k!=='wet'&&w.k!=='room')out.push({l:'Undo the last change',f:function(){ peUndo(); },quiet:1});
+  return out; }
+function peWarnShow(t){ PE.wsel=t; peDraw(); }
+function peWarnPop(T,W){ var wl0=document.getElementById('pewarn'); if(wl0)wl0.style.visibility=''; var box=document.getElementById('pewpop'), w=PE.wsel&&W.filter(function(q){ return q.t===PE.wsel; })[0];
+  if(!w){ if(PE.wsel&&!box.hidden){ box.hidden=true; toast('','Solved: '+PE.wsel.replace(/:.*$/,'')); } PE.wsel=null; box.hidden=true; return; }
+  var r=peSvg.getBoundingClientRect(), sx=(w.x-PE.view.x)/PE.view.k, sy=(w.y-PE.view.y)/PE.view.k;
+  if(sx<20||sy<20||sx>r.width-20||sy>r.height-20){ PE.view.x=w.x-r.width*PE.view.k/2; PE.view.y=w.y-r.height*PE.view.k/2; sx=r.width/2; sy=r.height/2; requestAnimationFrame(peDraw); }   // bring it into view
+  if(box._t!==w.t||box.hidden){ box._t=w.t; box.innerHTML=''; var h=document.createElement('b'); h.textContent=w.t; box.appendChild(h);
+    var why=document.createElement('p'); why.textContent=PE_WHY[w.k]||''; box.appendChild(why);
+    var fx=peFixes(T,w), row=document.createElement('div'); row.className='pwf';
+    fx.forEach(function(f){ if(f.note){ var nt=document.createElement('p'); nt.className='pwn'; nt.textContent=f.note; box.appendChild(nt); } }); fx=fx.filter(function(f){ return !f.note; });
+    if(!fx.filter(function(f){ return !f.quiet; }).length){ var none=document.createElement('p'); none.className='pwn'; none.textContent='No single change clears it: move what is involved by hand, or take a step back.'; box.appendChild(none); }
+    fx.forEach(function(f,i){ var b=document.createElement('button'); b.type='button'; b.textContent=f.l; if(i===0&&!f.quiet)b.className='pri'; if(f.danger)b.className='danger';
+      b.addEventListener('click',function(){ f.f(); peDraw(); }); row.appendChild(b); });
+    var x=document.createElement('button'); x.type='button'; x.className='pwx'; x.setAttribute('aria-label','Close'); x.textContent='×'; x.addEventListener('click',function(){ PE.wsel=null; box.hidden=true; peDraw(); }); box.appendChild(x);
+    box.appendChild(row); box.hidden=false; }
+  var ph=r.width<=760; box.classList.toggle('dock',ph);
+  if(ph){ var wl=document.getElementById('pewarn'); if(wl){ wl.classList.remove('open'); wl.style.visibility='hidden'; }     // a phone: the card docks at the foot of the plan, the problem shown above it, near enough to read
+    var top0=r.height-box.offsetHeight-8, want=Math.max(80,(64+top0)/2), sx2=(w.x-PE.view.x)/PE.view.k, sy2=(w.y-PE.view.y)/PE.view.k;
+    if(box._pan!==w.t||sy2<64||sy2>top0-16||sx2<16||sx2>r.width-16){ if(box._pan!==w.t&&PE.view.k>2.2)PE.view.k=2.2; PE.view.x=w.x-r.width/2*PE.view.k; PE.view.y=w.y-want*PE.view.k; box._pan=w.t; requestAnimationFrame(peDraw); }
+    box.style.left='8px'; box.style.top=top0+'px'; return; }
+  var bw=box.offsetWidth, bh=box.offsetHeight, left=Math.min(Math.max(8,sx+18),r.width-bw-8), top=sy+18+bh>r.height-8?Math.max(8,sy-bh-18):sy+18;
+  box.style.left=left+'px'; box.style.top=top+'px'; }
 function peSelUI(){ var T=peT(), s=PE.sel; peSel.innerHTML=''; peSel.hidden=!s||!!PE.fr; pfFrUI(); if(!s||PE.fr)return;
   function btn(txt,f,on,title){ var b=document.createElement('button'); b.type='button'; b.textContent=txt; if(on)b.setAttribute('aria-pressed','true'); if(title)b.title=title; b.addEventListener('click',f); peSel.appendChild(b); return b; }
   function lab(txt){ var e=document.createElement('b'); e.textContent=txt; peSel.appendChild(e); }
@@ -4622,7 +4912,7 @@ function peSelUI(){ var T=peT(), s=PE.sel; peSel.innerHTML=''; peSel.hidden=!s||
     var inside=fList().filter(function(q){ return !q.gone&&q.t.charAt(0)!=='@'&&FDEF[q.t]&&q.x>rm.r[0]&&q.x<rm.r[2]&&q.y>rm.r[1]&&q.y<rm.r[3]; }).map(function(q){ return q.id; });
     if(inside.length){ btn('Pick its '+inside.length+(inside.length===1?' piece':' pieces'),function(){ PE.sel=inside.length>1?{t:'pc',id:inside[0],ids:inside}:{t:'pc',id:inside[0]}; peDraw(); },false,'Then move, turn, copy or delete them together');
       btn('Clear its pieces',function(){ pfDo(function(){ furn[LAYOUT]=fList().filter(function(q){ return inside.indexOf(q.id)<0; }); }); peDraw(); },false,'The pieces you placed here (undo brings them back)').className='danger'; }
-    if(pfType(rm.n)&&!/corridor|passage|landing|stair/i.test(rm.n))btn('Furnish this room',function(){ pfFrStart([s.i]); },false,'A standard set for this room, shown before it is used'); } }
+    if(pfType(rm.n))btn('Furnish this room',function(){ pfFrStart([s.i]); },false,'A standard set for this room, shown before it is used'); } }
 
 // ----- pointer: one finger or the mouse drags what it lands on (a wall, a door) or pans; two fingers pinch to zoom
 peSvg.addEventListener('pointerdown',function(e){ if(e.button>0)return; peSvg.setPointerCapture(e.pointerId); e.preventDefault();
@@ -4631,12 +4921,13 @@ peSvg.addEventListener('pointerdown',function(e){ if(e.button>0)return; peSvg.se
   var T=peT(), p=peToPlan(e.clientX,e.clientY), tg=e.target, wid=tg.getAttribute('data-wall'), di=tg.closest&&tg.closest('[data-door]'), ri=tg.getAttribute('data-room');
   if(PE.place&&PE.tool==='sel'){ var pl=pfPlace(p[0],p[1],e.altKey); if(!e.shiftKey)pfPick(null); else PE.sel={t:'pc',id:pl.id}; return; }   // Shift keeps placing the same piece
   if(PE.tool==='wall'){ var sp=peSnap(T,p[0],p[1]); PE.drag={t:'draw',p0:sp,p1:sp}; return; }
+  var wt=tg.getAttribute&&tg.getAttribute('data-w'), ww=wt&&(PE.W||[]).filter(function(q){ return q.t===wt; })[0]; if(wt&&!(ww&&ww.pc&&pfGet(ww.pc)&&PE.tool==='sel')){ PE.drag=null; peWarnShow(wt); return; }      // a warning's mark: its card (on a piece, a click opens it and a drag moves the piece)
   if(PE.tool==='meas'){ var mp=peMeasPt(T,p,PE.mA); if(!PE.mA){ PE.mA=mp; PE.mLive=mp; } else { PE.measures=(PE.measures||[]).concat([[PE.mA,mp]]).slice(-4); PE.mA=null; } peDraw(); return; }
-  var pcEl=PE.tool==='sel'&&tg.closest&&tg.closest('[data-pc]'), und=PE.tool==='sel'&&!pcEl&&tg.getAttribute('data-dh')==null?pfUnder(T,p[0],p[1],wid):null;
+  var pcEl=PE.tool==='sel'&&tg.closest&&tg.closest('[data-pc]'), und=PE.tool==='sel'&&!pcEl&&tg.getAttribute('data-dh')==null&&!/pe-r[nd]/.test(tg.getAttribute('class')||'')?(wt?pfGet(ww.pc):pfUnder(T,p[0],p[1],wid)):null;
   if(pcEl||und){ var pid=pcEl?pcEl.getAttribute('data-pc'):und.id, pq=pfGet(pid); if(pq){
     if(e.shiftKey||PE.multi){ var cur=pfSelIds().slice(), ix=cur.indexOf(pid); if(ix>-1)cur.splice(ix,1); else cur.push(pid); PE.sel=cur.length?{t:'pc',id:cur[cur.length-1],ids:cur}:null; PE.drag=null; peDraw(); return; }   // Shift+click adds or takes away
     var cur2=pfSelIds(), grp=cur2.length>1&&cur2.indexOf(pid)>-1?cur2.slice():[pid], st0={}; grp.forEach(function(i){ var q=pfGet(i); if(q)st0[i]=[q.x,q.y]; });
-    PE.sel=grp.length>1?{t:'pc',id:pid,ids:grp}:{t:'pc',id:pid}; PE.drag={t:'pc',id:pid,ids:grp,st:st0,p0:p,x0:pq.x,y0:pq.y,base:JSON.stringify(fList()),moved:false}; peDraw(); return; } }
+    PE.sel=grp.length>1?{t:'pc',id:pid,ids:grp}:{t:'pc',id:pid}; var w0={}; (PE.W||[]).forEach(function(w){ if(w.pc&&grp.indexOf(w.pc)>-1)w0[peWKey(T,w)]=1; }); PE.drag={t:'pc',id:pid,ids:grp,st:st0,p0:p,x0:pq.x,y0:pq.y,base:JSON.stringify(fList()),moved:false,w0:w0,wclick:wt||null}; peDraw(); return; } }
   var dh=tg.getAttribute('data-dh'); if(dh!=null&&PE.sel&&PE.sel.t==='door'){ var dd=T.doors[PE.sel.i]; PE.drag={t:'dw',e:+dh,i:PE.sel.i,base:JSON.stringify(T),o0:peDoorOp(dd),at0:dd.at,sa0:dd.sa,w0:dd.w}; return; }
   if(PE.tool==='door'){ if(wid==null){ toast('','Click on a wall'); return; } var L=peLine(T,+wid), h=L.o==='h', side=(h?p[1]:p[0])<(L.c[0]+L.c[1])/2?-1:1;
     if(peDo(function(T){ return peAddDoor(T,peLine(T,+wid),Math.round(h?p[0]:p[1]),side); })){ PE.sel={t:'door',i:T.doors.length-1}; peTool('sel'); peDraw(); } return; }
@@ -4698,9 +4989,11 @@ function peUp(e){ delete PE.pts[e.pointerId]; var D=PE.drag; if(!D)return; var T
   if(D.t==='pinch'){ PE.drag=null; return; }
   if(D.t==='pan'){ PE.drag=null; if(!D.moved){ PE.sel=D.room!=null?{t:'room',i:D.room}:null; } peDraw(); return; }
   if(D.t==='dw'){ PE.drag=null; if(JSON.stringify(T)!==D.base){ PE.undo.push(D.base); PE.redo=[]; peSave(LAYOUT); } peDraw(); return; }
-  if(D.t==='pc'){ PE.drag=null; PE.guides=[]; if(D.moved&&JSON.stringify(fList())!==D.base){ PE.undo.push('F'+D.base); PE.redo=[]; pfCommit(); }
+  if(D.t==='pc'){ PE.drag=null; PE.guides=[]; var mv=D.moved&&JSON.stringify(fList())!==D.base; if(mv){ PE.undo.push('F'+D.base); PE.redo=[]; pfCommit(); }
     else if(!D.moved&&D.ids.length>1)PE.sel={t:'pc',id:D.id};      // a plain click on one of a set picks just that one
-    peDraw(); return; }
+    if(!D.moved&&D.wclick)PE.wsel=D.wclick;
+    peDraw(); if(mv){ var T3=peT(), nw=(PE.W||[]).filter(function(w){ return !w.base&&!w.ack&&w.pc&&D.ids.indexOf(w.pc)>-1&&!(D.w0||{})[peWKey(T3,w)]; });   // let go where something is wrong: its card, with the fixes
+      if(nw.length){ PE.wsel=nw[0].t; peDraw(); } } return; }
   if(D.t==='draw'){ PE.ghost=null; PE.drag=null; var a=D.h?[D.p0[0],D.p1[0]]:[D.p0[1],D.p1[1]];
     var nr=T.rooms.length;
     if(peDo(function(T){ return peAddWall(T,D.h?'h':'v',D.h?D.p0[1]:D.p0[0],Math.min(a[0],a[1]),Math.max(a[0],a[1]),10); })){
@@ -4780,7 +5073,9 @@ window.addEventListener('keydown',function(e){ if(PE.on||e.ctrlKey||e.metaKey||e
 window.addEventListener('keydown',function(e){ if(!PE.on||/input|textarea|select/i.test(e.target.tagName))return; var k=(e.key||'').toLowerCase(), mod=e.ctrlKey||e.metaKey;
   if(!kguide.hidden){ if(k==='escape'||e.key==='?'){ showGuide(false); e.preventDefault(); e.stopPropagation(); } return; }   // the key guide over the plan: Esc or ? closes it
   if(mod&&k==='z'){ e.shiftKey?peRedo():peUndo(); } else if(mod&&k==='y')peRedo();
+  else if(PE.fr&&/^[1-9]$/.test(k)&&!mod&&PE.fr.sty&&PE.fr.sty[+k-1])pfFrStyle(PE.fr.sty[+k-1].k);
   else if(PE.fr&&(k==='escape'||k==='enter'||k==='a'||k==='s')&&!mod){ if(k==='escape')pfFrEnd(); else if(k==='enter'){ if(PE.fr.prop&&PE.fr.prop.pieces.length)pfFrUse(); else if(PE.fr.list.length>1)pfFrSkip(); else pfFrEnd(); } else if(k==='a')pfFrAlt(); else if(PE.fr.list.length>1)pfFrSkip(); }
+  else if(k==='escape'&&PE.wsel){ PE.wsel=null; peDraw(); }
   else if(k==='escape'){ var DD=PE.drag; if(DD&&(DD.t==='wall'||DD.t==='door'||DD.t==='dw')&&DD.base){ PE_T[LAYOUT]=JSON.parse(DD.base); PE.drag=null; peDraw(); toast('','Move cancelled'); }   // Esc while dragging puts it back
     else if(DD&&DD.t==='pc'){ furn[LAYOUT]=JSON.parse(DD.base); PE.drag=null; peDraw(); toast('','Move cancelled'); }
     else if(PE.tool==='meas'&&(PE.mA||(PE.measures||[]).length)){ PE.mA=null; PE.measures=[]; peDraw(); }
