@@ -84,7 +84,8 @@ def report(d, page=None):
         except (ValueError, KeyError) as e:
             L.append(f'\n(The plan could not be checked against {page}: {e}.)')
     w = d['walls']
-    if any(w[k] for k in ('moved', 'added', 'removed', 'thickness')):
+    w.setdefault('length', [])
+    if any(w[k] for k in ('moved', 'added', 'removed', 'thickness', 'length')):
         L += ['', '## Walls', '', '| Change | Rooms | Where (cm) |', '|---|---|---|']
         for m in w['moved']:
             way = ('down the plan' if m['by'] > 0 else 'up the plan') if m['o'] == 'h' else ('to the right' if m['by'] > 0 else 'to the left')
@@ -95,6 +96,9 @@ def report(d, page=None):
             L.append(f"| Taken out, {n(m['len'])} cm | | {where(m['o'], m['c'], m['a'])} |")
         for m in w['thickness']:
             L.append(f"| Thickness {n(m['was'])} → {n(m['now'])} cm | {rooms(m['rooms'])} | {where(m['o'], m['c'], m['a'])} |")
+        for m in w['length']:
+            dl = (m['now'][1] - m['now'][0]) - (m['was'][1] - m['was'][0])
+            L.append(f"| {'Longer' if dl > 0 else 'Shorter'} by {n(abs(dl))} cm, now {n(m['now'][1] - m['now'][0])} cm | {rooms(m['rooms'])} | {where(m['o'], m['c'], m['now'])}, was {n(m['was'][0])} to {n(m['was'][1])} |")
     dr = d['doors']
     if any(dr[k] for k in ('added', 'removed', 'changed')):
         L += ['', '## Doors', '', '| Change | Rooms | Opening (cm) |', '|---|---|---|']

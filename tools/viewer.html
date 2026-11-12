@@ -389,6 +389,7 @@ h3{font-weight:600}
 .pe-col{stroke:var(--ink2);stroke-width:1;vector-effect:non-scaling-stroke}
 .pe-win{fill:var(--sheet);stroke:var(--ink2);stroke-width:1;vector-effect:non-scaling-stroke}.pe-glass{stroke:#5B8FB0;stroke-width:2;vector-effect:non-scaling-stroke}
 .pe-hit{fill:transparent;cursor:grab}
+.pe-rhl{stroke:var(--accent);stroke-width:1.5;vector-effect:non-scaling-stroke;pointer-events:none}
 .pe-rh{fill:var(--sheet);stroke:var(--accent);stroke-width:2;vector-effect:non-scaling-stroke}.pe-rh:hover{fill:var(--accent)}
 .pe-dzh{fill:color-mix(in srgb,var(--accent) 10%,transparent);stroke:var(--accent);stroke-width:1.5;stroke-dasharray:5 3;vector-effect:non-scaling-stroke;pointer-events:none}
 .pe-pc.dz .pf{fill:color-mix(in srgb,var(--ink2) 9%,var(--sheet))}
@@ -4010,6 +4011,7 @@ function peApply(){ if(peSync(LAYOUT))setLayout(LAYOUT); peBadge(); var sm=peSum
 // what the trial changes, in a line: shown as the 3D comes back
 function peSummary(k){ if(!peHas(k))return ''; var T=PE_T[k], B=peFromPlan(k), parts=[];
   var moved=0; B.lines.forEach(function(L0){ var cov=0; T.lines.forEach(function(q){ if(q.o===L0.o&&q.c[0]===L0.c[0]&&q.c[1]===L0.c[1])cov+=Math.max(0,Math.min(q.a[1],L0.a[1])-Math.max(q.a[0],L0.a[0])); }); if(cov<L0.a[1]-L0.a[0]-1)moved++; });
+  T.lines.forEach(function(q){ if(q.nw)return; var b0=B.lines.filter(function(L0){ return L0.o===q.o&&L0.c[0]===q.c[0]&&L0.c[1]===q.c[1]&&Math.min(q.a[1],L0.a[1])-Math.max(q.a[0],L0.a[0])>1; }); if(b0.length===1&&(q.a[0]<b0[0].a[0]-1||q.a[1]>b0[0].a[1]+1))moved++; });   // a wall made longer
   var added=T.lines.filter(function(L){ return L.nw; }).length; moved-=0;
   if(moved)parts.push(moved+(moved===1?' wall':' walls')+' changed'); if(added)parts.push(added+(added===1?' new wall':' new walls'));
   var dd=T.doors.length-B.doors.length; if(dd)parts.push((dd>0?'+':'')+dd+(Math.abs(dd)===1?' door':' doors'));
@@ -4046,8 +4048,16 @@ function peDraw(){ if(!PE.on)return; var T=peT(), r=peSvg.getBoundingClientRect(
     var bad=fBlocks(pc)&&pfGaps(T,pc).over.length>0;          // a piece on something else is red where it stands
     var pg=el('g',{transform:'translate('+pc.x+' '+pc.y+') rotate('+(pc.r||0)+')',class:'pe-pc'+(dz?' dz':'')+(sel?' on':'')+(bad?' bad':'')+(!sel&&PE.hovPc===pc.id?' hov':''),'data-pc':pc.id},g);
     pg.innerHTML=fSym(D,pc.t); el('rect',{x:-D.w/2,y:-D.d/2,width:D.w,height:D.d,class:'pe-hit','data-pc':pc.id},pg); });
-  PE._hg=null; var rsel=PE.sel&&PE.sel.t==='pc'&&pfSelIds().length===1&&pfGet(PE.sel.id);      // the picked piece's handles: drag a dot to change its width or depth, the other side stays
-  if(rsel&&!rsel.gone&&FDEF[rsel.t]&&PE.furn!==false&&(!PE.drag||PE.drag.t==='rs')){ var RD=fDim(rsel), hw=RD.w/2, hd=RD.d/2, rr=(window.matchMedia&&matchMedia('(pointer:coarse)').matches?9:5.5)*k, rq=((Math.round((rsel.r||0)/90)%2)+2)%2;
+  PE._hg=null; var coarse=!!(window.matchMedia&&matchMedia('(pointer:coarse)').matches);
+  var wsel=PE.sel&&PE.sel.t==='wall'&&(!PE.sel.ids||PE.sel.ids.length<=1)&&peLine(T,PE.sel.id);      // the picked wall's dots: drag an end to make it longer or shorter, a side to make it thicker
+  if(wsel&&!wsel.lock&&(!PE.drag||PE.drag.t==='wl'||PE.drag.t==='wt')){ var WL=wsel, wz=WL.o==='h', wm=(WL.c[0]+WL.c[1])/2, wam=(WL.a[0]+WL.a[1])/2, wr=(coarse?9:5.5)*k, woff=wr*2.2, wg=el('g',{},g); PE._hg=wg;
+    var wdot=function(x,y,a,cur,tip){ if(a.charAt(0)==='c')el('line',{x1:wz?x:(a==='c0'?WL.c[0]:WL.c[1]),y1:wz?(a==='c0'?WL.c[0]:WL.c[1]):y,x2:x,y2:y,class:'pe-rhl'},wg);
+      var c=el('circle',{cx:x,cy:y,r:wr,class:'pe-rh','data-wh':a},wg); c.style.cursor=cur+'-resize'; var tt=document.createElementNS('http://www.w3.org/2000/svg','title'); tt.textContent=tip; c.appendChild(tt); };
+    var tipA='Drag to make the wall longer or shorter: the other end stays', tipC='Drag to make the wall thicker or thinner: the other face stays';
+    wdot(wz?WL.a[0]:wm,wz?wm:WL.a[0],'a0',wz?'ew':'ns',tipA); wdot(wz?WL.a[1]:wm,wz?wm:WL.a[1],'a1',wz?'ew':'ns',tipA);
+    wdot(wz?wam:WL.c[0]-woff,wz?WL.c[0]-woff:wam,'c0',wz?'ns':'ew',tipC); wdot(wz?wam:WL.c[1]+woff,wz?WL.c[1]+woff:wam,'c1',wz?'ns':'ew',tipC); }
+  var rsel=PE.sel&&PE.sel.t==='pc'&&pfSelIds().length===1&&pfGet(PE.sel.id);      // the picked piece's handles: drag a dot to change its width or depth, the other side stays
+  if(rsel&&!rsel.gone&&FDEF[rsel.t]&&PE.furn!==false&&(!PE.drag||PE.drag.t==='rs')){ var RD=fDim(rsel), hw=RD.w/2, hd=RD.d/2, rr=(coarse?9:5.5)*k, rq=((Math.round((rsel.r||0)/90)%2)+2)%2;
     var hg=el('g',{transform:'translate('+rsel.x+' '+rsel.y+') rotate('+(rsel.r||0)+')'},g); PE._hg=hg;
     [['e',hw,0],['w',-hw,0],['s',0,hd],['n',0,-hd],['se',hw,hd],['sw',-hw,hd],['ne',hw,-hd],['nw',-hw,-hd]].forEach(function(h){ var cur=h[0].length===2?((h[0]==='se'||h[0]==='nw')!==!!rq?'nwse':'nesw'):((h[0]==='e'||h[0]==='w')!==!!rq?'ew':'ns');
       var c=el('circle',{cx:h[1],cy:h[2],r:h[0].length===2?rr*.85:rr,class:'pe-rh','data-rh':h[0]},hg); c.style.cursor=cur+'-resize'; var tt=document.createElementNS('http://www.w3.org/2000/svg','title'); tt.textContent=h[0].length===2?'Drag to change the width and depth':(h[0]==='e'||h[0]==='w'?'Drag to change the width':'Drag to change the depth'); c.appendChild(tt); }); }
@@ -4139,6 +4149,8 @@ function peDraw(){ if(!PE.on)return; var T=peT(), r=peSvg.getBoundingClientRect(
 function peHintText(T){ var D=PE.drag;
   if(PE.tool==='meas')return PE.mA?'Click the second point · it snaps to wall faces · straight when nearly straight · Esc clears':'Measure: click two points · it snaps to wall faces and 5 cm · Esc clears';
   if(PE.place&&FDEF[PE.place.t]){ var PD=FDEF[PE.place.t]; return PD.n+' · '+PD.w+' × '+PD.d+' cm · click where it goes'+(PF_WALL.test(PD.m)?': it turns its back to the nearest wall':'')+' · R turns it · Alt places it freely · Shift+click places another · Esc stops'; }
+  if(D&&D.t==='wl'){ var LLn=peLine(T,D.id); if(LLn)return 'Wall length '+(Math.round((LLn.a[1]-LLn.a[0])*10)/10)+' cm'+(D.stopw?' · stopped: '+D.stopw:'')+' · the other end stays · it closes up to the walls it meets · Alt for 1 cm · Esc cancels'; }
+  if(D&&D.t==='wt'){ var LTn=peLine(T,D.id); if(LTn)return 'Wall thickness '+Math.round(LTn.c[1]-LTn.c[0])+' cm · the other face stays · 5 to 60 cm, in 5 cm steps (Alt: 1 cm) · Esc cancels'; }
   if(D&&D.t==='rs'){ var rp=pfGet(D.id), RDn=rp&&fDim(rp); D.warn=0; if(!RDn)return ''; var hr=(PE.W||[]).filter(function(w){ return !w.base&&!w.ack&&w.pc===D.id; });
     if(D.moved&&hr.length){ D.warn=1; return RDn.w+' × '+RDn.d+' cm · here: '+hr[0].t.charAt(0).toLowerCase()+hr[0].t.slice(1)+' · let go and its card offers a fix · Esc puts it back'; }
     return 'Width '+RDn.w+' cm · depth '+RDn.d+' cm · the other side stays · 5 cm steps, Alt for 1 cm · Esc puts it back'; }
@@ -4162,7 +4174,7 @@ function peHintText(T){ var D=PE.drag;
   if(PE.hovDoor!=null){ var dd=T.doors[PE.hovDoor], lk=dd&&peLine(T,dd.line).lock; return lk?'Façade door · it stays as drawn':'Door · drag along the wall to move it · pick it, then drag an end to change its width · H flips the hinge, S the swing'; }
   if(PE.hovRoom!=null&&T.rooms[PE.hovRoom]){ var RI=peRoomInfo(T)[PE.hovRoom]; return T.rooms[PE.hovRoom].n+' · '+RI.a.toFixed(1)+' m² · click to pick it · drag the floor to move around'; }
   if(PE.sel&&PE.sel.t==='door')return 'Door · drag an end to change its width · type the distance from the walls below · H flips the hinge, S the swing · Delete removes it';
-  if(PE.sel&&PE.sel.t==='wall')return 'Drag the wall, or type the clear distance below · arrow keys nudge it 1 cm (Shift: 10) · Esc lets go';
+  if(PE.sel&&PE.sel.t==='wall')return 'Drag the wall to move it · drag a dot at an end to make it longer or shorter, at a side to make it thicker · or type the clear distance below · arrow keys nudge it 1 cm (Shift: 10) · Esc lets go';
   return 'Point at a wall, a door or a room to see what it does · drag the floor to move around · scroll or pinch to zoom'; }
 function peKind(n){ return /bath|wc|shower|toilet|laundry|utility/i.test(n)?'wet':/bed|master|kids|nanny|maid|guest|nursery/i.test(n)?'bed':/kitchen/i.test(n)?'kit':
   /corridor|hall|lobby|foyer|passage|entr|landing/i.test(n)?'circ':/dressing|storage|store|closet|walk|pantry/i.test(n)?'store':'live'; }
@@ -4692,7 +4704,7 @@ function pfFrUI(){ var box=document.getElementById('pefr'), F=PE.fr; box.hidden=
 // ----- send the trial to Claude: what changed, in an architect's terms, with the exact data, so that Claude can make
 // it a revision of the plan through the plan lock once you agree. Inside Claude it goes into this page's store
 // (trials/<plan>); anywhere, it can be copied to paste in a chat, or downloaded as a file.
-function peDiff(k){ var B=peFromPlan(k), T=peHas(k)?PE_T[k]:B, out={moved:[],added:[],removed:[],thick:[],doors:{added:[],removed:[],changed:[]}};
+function peDiff(k){ var B=peFromPlan(k), T=peHas(k)?PE_T[k]:B, out={moved:[],added:[],removed:[],thick:[],len:[],doors:{added:[],removed:[],changed:[]}};
   function ov(L,M){ return Math.min(L.a[1],M.a[1])-Math.max(L.a[0],M.a[0]); }
   function mid(L){ return (L.c[0]+L.c[1])/2; }
   function beside(L){ var n=[]; T.rooms.forEach(function(r){ var R=r.r, a=L.o==='h'?[R[0],R[2]]:[R[1],R[3]], lo=L.o==='h'?R[1]:R[0], hi=L.o==='h'?R[3]:R[2];
@@ -4700,9 +4712,10 @@ function peDiff(k){ var B=peFromPlan(k), T=peHas(k)?PE_T[k]:B, out={moved:[],add
   function r1(v){ return Math.round(v*10)/10; }
   T.lines.forEach(function(L){ if(L.lock)return; var at=B.lines.filter(function(M){ return M.o===L.o&&ov(L,M)>1; });
     if(L.nw||!at.length){ out.added.push({o:L.o,c:L.c,a:L.a,t:r1(L.c[1]-L.c[0]),len:r1(L.a[1]-L.a[0]),rooms:beside(L)}); return; }
-    if(at.some(function(M){ return Math.abs(M.c[0]-L.c[0])<.5&&Math.abs(M.c[1]-L.c[1])<.5; }))return;
-    var near=at.slice().sort(function(p,q){ return Math.abs(mid(p)-mid(L))-Math.abs(mid(q)-mid(L)); })[0], d=r1(mid(L)-mid(near));
-    if(Math.abs(d)<.5)out.thick.push({o:L.o,c:L.c,a:L.a,was:r1(near.c[1]-near.c[0]),now:r1(L.c[1]-L.c[0]),rooms:beside(L)});
+    var same=at.filter(function(M){ return Math.abs(M.c[0]-L.c[0])<.5&&Math.abs(M.c[1]-L.c[1])<.5; });
+    if(same.length){ if(same.length===1&&(Math.abs(same[0].a[0]-L.a[0])>.5||Math.abs(same[0].a[1]-L.a[1])>.5))out.len.push({o:L.o,c:L.c,was:same[0].a,now:L.a,rooms:beside(L)}); return; }
+    var near=at.slice().sort(function(p,q){ return Math.abs(mid(p)-mid(L))-Math.abs(mid(q)-mid(L)); })[0], d=r1(mid(L)-mid(near)), oneFace=(Math.abs(near.c[0]-L.c[0])<.5||Math.abs(near.c[1]-L.c[1])<.5)&&Math.abs((near.c[1]-near.c[0])-(L.c[1]-L.c[0]))>.5;
+    if(Math.abs(d)<.5||oneFace)out.thick.push({o:L.o,c:L.c,a:L.a,was:r1(near.c[1]-near.c[0]),now:r1(L.c[1]-L.c[0]),rooms:beside(L)});
     else out.moved.push({o:L.o,a:[Math.max(L.a[0],near.a[0]),Math.min(L.a[1],near.a[1])],was:near.c,now:L.c,by:d,rooms:beside(L)}); });
   out.moved.sort(function(p,q){ var a=p.o+p.was+'|'+p.now, b=q.o+q.was+'|'+q.now; return a<b?-1:a>b?1:p.a[0]-q.a[0]; });   // a wall moved in pieces reads as one
   out.moved=out.moved.reduce(function(acc,m){ var g=acc[acc.length-1];
@@ -4727,17 +4740,18 @@ function pePack(k){ var D=peDiff(k), T=peHas(k)?PE_T[k]:null, F=(furn[k]||[]), O
   var W=T?peWarnings(T).filter(function(w){ return !w.base; }).map(function(w){ return w.t; }):[];
   var fj={}; fj[k]={pieces:F.filter(function(q){ return !q.gone&&q.t.charAt(0)!=='@'&&FDEF[q.t]; }).map(function(q){ var o={t:q.t,x:q.x,y:q.y,r:q.r||0}; if(q.w)o.w=q.w; if(q.d)o.d=q.d; return o; })};
   var pk={kind:'apartment-trial',v:1,plan:{id:k,name:O.name},made:new Date().toISOString(),fingerprint:peKey(k),summary:peHas(k)?peSummary(k):'Your trial of '+O.name.split(' · ')[0]+': walls and doors as designed',
-    walls:{moved:D.moved,added:D.added,removed:D.removed,thickness:D.thick},doors:D.doors,rooms:D.rooms,furniture:{placed:placed,cleared:cleared,moved:moved,furnish_json:fj},warnings:W,trial:T,furn:F};
+    walls:{moved:D.moved,added:D.added,removed:D.removed,thickness:D.thick,length:D.len},doors:D.doors,rooms:D.rooms,furniture:{placed:placed,cleared:cleared,moved:moved,furnish_json:fj},warnings:W,trial:T,furn:F};
   pk.text=peText(pk); return pk; }
 function peText(p){ var L=[], n=function(v){ return Math.round(v*10)/10; };
   function where(o,c,a){ return (o==='h'?'the wall along y '+n(c[0])+'–'+n(c[1])+', from x '+n(a[0])+' to '+n(a[1]):'the wall along x '+n(c[0])+'–'+n(c[1])+', from y '+n(a[0])+' to '+n(a[1])); }
   function rooms(r){ return r&&r.length?(r.length>1?'between '+r.slice(0,-1).join(', ')+' and '+r[r.length-1]:'in '+r[0]):''; }
   L.push(p.summary.replace(/[.…]+$/,'')+'.'); L.push('Plan: '+p.plan.name+' ('+p.plan.id+'). Made in the 2D plan on '+p.made.slice(0,10)+'. Plan centimetres: x to the right, y down the plan.');
-  var w=p.walls; if(w.moved.length||w.added.length||w.removed.length||w.thickness.length){ L.push(''); L.push('Walls:');
+  var w=p.walls; w.length=w.length||[]; if(w.moved.length||w.added.length||w.removed.length||w.thickness.length||w.length.length){ L.push(''); L.push('Walls:');
     w.moved.forEach(function(m){ L.push('- Moved '+Math.abs(m.by)+' cm '+(m.o==='h'?(m.by>0?'down the plan':'up the plan'):(m.by>0?'to the right':'to the left'))+': '+rooms(m.rooms)+' ('+where(m.o,m.was,m.a)+', now at '+(m.o==='h'?'y ':'x ')+n(m.now[0])+'–'+n(m.now[1])+').'); });
     w.added.forEach(function(m){ L.push('- New wall, '+m.t+' cm thick, '+m.len+' cm long: '+rooms(m.rooms)+' ('+where(m.o,m.c,m.a)+').'); });
     w.removed.forEach(function(m){ L.push('- Taken out: '+m.len+' cm of '+where(m.o,m.c,m.a)+'.'); });
-    w.thickness.forEach(function(m){ L.push('- Thickness '+m.was+' → '+m.now+' cm: '+rooms(m.rooms)+' ('+where(m.o,m.c,m.a)+').'); }); }
+    w.thickness.forEach(function(m){ L.push('- Thickness '+m.was+' → '+m.now+' cm: '+rooms(m.rooms)+' ('+where(m.o,m.c,m.a)+').'); });
+    w.length.forEach(function(m){ var dl=n((m.now[1]-m.now[0])-(m.was[1]-m.was[0])); L.push('- '+(dl>0?'Longer':'Shorter')+' by '+Math.abs(dl)+' cm, now '+n(m.now[1]-m.now[0])+' cm: '+rooms(m.rooms)+' ('+where(m.o,m.c,m.now)+', was from '+n(m.was[0])+' to '+n(m.was[1])+').'); }); }
   var d=p.doors; if(d.added.length||d.removed.length||d.changed.length){ L.push(''); L.push('Doors:');
     d.added.forEach(function(x){ L.push('- New '+x.kind+' door, '+x.w+' cm: '+rooms(x.rooms)+' (opening '+x.op.join('–')+' along '+where(x.o,x.c,x.op).replace(/, from .*/,'')+').'); });
     d.removed.forEach(function(x){ L.push('- Taken out: the '+x.w+' cm door '+rooms(x.rooms)+'.'); });
@@ -4952,6 +4966,8 @@ peSvg.addEventListener('pointerdown',function(e){ if(e.button>0)return; peSvg.se
   var T=peT(), p=peToPlan(e.clientX,e.clientY), tg=e.target, wid=tg.getAttribute('data-wall'), di=tg.closest&&tg.closest('[data-door]'), ri=tg.getAttribute('data-room');
   if(PE.place&&PE.tool==='sel'){ var pl=pfPlace(p[0],p[1],e.altKey); if(!e.shiftKey)pfPick(null); else PE.sel={t:'pc',id:pl.id}; return; }   // Shift keeps placing the same piece
   if(PE.tool==='wall'){ var sp=peSnap(T,p[0],p[1]); PE.drag={t:'draw',p0:sp,p1:sp}; return; }
+  var whh=tg.getAttribute&&tg.getAttribute('data-wh'); if(whh&&PE.sel&&PE.sel.t==='wall'){ var WL0=peLine(T,PE.sel.id); if(WL0&&!WL0.lock){
+      PE.drag={t:whh.charAt(0)==='a'?'wl':'wt',id:WL0.id,h:whh,base:JSON.stringify(T),a0:WL0.a.slice(),c0:WL0.c.slice(),off:((window.matchMedia&&matchMedia('(pointer:coarse)').matches)?9:5.5)*PE.view.k*2.2,moved:false}; return; } }
   var rh=tg.getAttribute&&tg.getAttribute('data-rh'); if(rh&&PE.sel&&PE.sel.t==='pc'){ var rq=pfGet(PE.sel.id); if(rq){ var RD0=fDim(rq), wk={}; (PE.W||[]).forEach(function(w){ if(w.pc===rq.id)wk[peWKey(T,w)]=1; });   // a handle: the piece's width or depth
       PE.drag={t:'rs',id:rq.id,ids:[rq.id],h:rh,x0:rq.x,y0:rq.y,w0:RD0.w,d0:RD0.d,r:rq.r||0,base:JSON.stringify(fList()),moved:false,wk:wk}; return; } }
   var wt=tg.getAttribute&&tg.getAttribute('data-w'), ww=wt&&(PE.W||[]).filter(function(q){ return q.t===wt; })[0]; if(wt&&!(ww&&ww.pc&&pfGet(ww.pc)&&PE.tool==='sel')){ PE.drag=null; peWarnShow(wt); return; }      // a warning's mark: its card (on a piece, a click opens it and a drag moves the piece)
@@ -5001,6 +5017,19 @@ peSvg.addEventListener('pointermove',function(e){ if(!PE.pts[e.pointerId]){ if(e
     var err3=peDoorEdit(T,dq,function(q){ var lo=D.e?fixed:fixed-nw, hi=D.e?fixed+nw:fixed; if(D.sa0>0){ q.at=lo; q.sa=1; } else { q.at=hi; q.sa=-1; } q.w=nw; });   // the hinge stays on its side
     D.moved=!err3||D.moved; D.stopw=err3?'no room for it there: an end would reach the wall\'s end or another opening':''; peDraw(); return; }
   var p=peToPlan(e.clientX,e.clientY);
+  if(D.t==='wl'||D.t==='wt'){ T=PE_T[LAYOUT]=JSON.parse(D.base); var WLm=peLine(T,D.id); if(!WLm)return; var wz2=WLm.o==='h', wu=wz2?p[0]:p[1], wv=wz2?p[1]:p[0], wst=e.altKey?1:5;
+    if(D.t==='wl'){ var en=D.h==='a1'?1:0, na=Math.round(wu/wst)*wst;
+      if(!e.altKey){ var bf=null, bd=8; T.lines.forEach(function(M){ if(M.o===WLm.o||M.a[0]>WLm.c[1]+1||M.a[1]<WLm.c[0]-1)return; [M.c[0],M.c[1]].forEach(function(f){ var dd=Math.abs(f-wu); if(dd<bd){ bd=dd; bf=f; } }); }); if(bf!=null)na=bf; }   // closes up to the face of a wall it meets
+      if(en)na=Math.max(na,WLm.a[0]+20); else na=Math.min(na,WLm.a[1]-20); D.stopw=null;
+      T.lines.forEach(function(M){ if(M.id===WLm.id||M.o!==WLm.o||M.c[0]>=WLm.c[1]-.5||M.c[1]<=WLm.c[0]+.5)return;      // not into a wall that runs the same way
+        if(en&&M.a[0]>=D.a0[1]-.5&&na>M.a[0]){ na=M.a[0]; D.stopw='it meets the next wall'; } if(!en&&M.a[1]<=D.a0[0]+.5&&na<M.a[1]){ na=M.a[1]; D.stopw='it meets the next wall'; } });
+      T.lines.forEach(function(M){ if(M.o===WLm.o||M.id===WLm.id||M.a[0]>WLm.c[1]-.5||M.a[1]<WLm.c[0]+.5)return;      // nor through a wall across its way: it stops at that wall's face
+        if(en&&M.c[0]>=D.a0[1]-.5&&na>M.c[0]){ na=M.c[0]; D.stopw='it meets a wall across it'; } if(!en&&M.c[1]<=D.a0[0]+.5&&na<M.c[1]){ na=M.c[1]; D.stopw='it meets a wall across it'; } });
+      WLm.ops.forEach(function(op){ if(en&&na<op[1]+3){ na=op[1]+3; D.stopw='a door or window is there'; } if(!en&&na>op[0]-3){ na=op[0]-3; D.stopw='a door or window is there'; } });
+      WLm.a[en]=Math.round(na*10)/10; if(Math.abs(WLm.a[en]-D.a0[en])>.4)D.moved=true; }
+    else { var s1=D.h==='c1', fixed=s1?D.c0[0]:D.c0[1], face=wv-(s1?1:-1)*D.off, t0=D.c0[1]-D.c0[0], nt=Math.max(5,Math.min(60,Math.round(Math.abs(face-fixed)/wst)*wst));
+      if(Math.abs(nt-t0)>=.4){ var er=peSetThick(T,WLm,nt); if(!er){ var snap=JSON.stringify(T); if(peMoveAt(T,WLm.id,(WLm.a[0]+WLm.a[1])/2,s1?(nt-t0)/2:-(nt-t0)/2)){ T=PE_T[LAYOUT]=JSON.parse(snap); } D.moved=true; } } }   // the other face stays where it was, when the walls around allow it
+    peDraw(); return; }
   if(D.t==='rs'){ var rq2=pfGet(D.id); if(!rq2)return; var ra=D.r*Math.PI/180, ux=[Math.cos(ra),Math.sin(ra)], uy=[-Math.sin(ra),Math.cos(ra)], rdx=p[0]-D.x0, rdy=p[1]-D.y0, lx=rdx*ux[0]+rdy*ux[1], ly=rdx*uy[0]+rdy*uy[1], rst=e.altKey?1:5, nw=D.w0, nd=D.d0, ccx=0, ccy=0;
     if(/e/.test(D.h)){ nw=Math.max(10,Math.round((lx+D.w0/2)/rst)*rst); ccx=(nw-D.w0)/2; } if(/w/.test(D.h)){ nw=Math.max(10,Math.round((D.w0/2-lx)/rst)*rst); ccx=-(nw-D.w0)/2; }     // the opposite side stays where it is
     if(/s/.test(D.h)){ nd=Math.max(3,Math.round((ly+D.d0/2)/rst)*rst); ccy=(nd-D.d0)/2; } if(/n/.test(D.h)){ nd=Math.max(3,Math.round((D.d0/2-ly)/rst)*rst); ccy=-(nd-D.d0)/2; }
@@ -5032,6 +5061,7 @@ function peUp(e){ delete PE.pts[e.pointerId]; var D=PE.drag; if(!D)return; var T
   if(D.t==='pinch'){ PE.drag=null; return; }
   if(D.t==='pan'){ PE.drag=null; if(!D.moved){ PE.sel=D.room!=null?{t:'room',i:D.room}:null; } peDraw(); return; }
   if(D.t==='dw'){ PE.drag=null; if(JSON.stringify(T)!==D.base){ PE.undo.push(D.base); PE.redo=[]; peSave(LAYOUT); } peDraw(); return; }
+  if(D.t==='wl'||D.t==='wt'){ PE.drag=null; if(D.moved&&JSON.stringify(peT())!==D.base){ PE.undo.push(D.base); if(PE.undo.length>200)PE.undo.shift(); PE.redo=[]; peSave(LAYOUT); } else PE_T[LAYOUT]=JSON.parse(D.base); peDraw(); return; }
   if(D.t==='rs'){ PE.drag=null; var rch=D.moved&&JSON.stringify(fList())!==D.base; if(rch){ PE.undo.push('F'+D.base); PE.redo=[]; pfCommit(); } peDraw();
     if(rch){ var T4=peT(), nw4=(PE.W||[]).filter(function(w){ return !w.base&&!w.ack&&w.pc===D.id&&!D.wk[peWKey(T4,w)]; }); if(nw4.length){ PE.wsel=nw4[0].t; peDraw(); } } return; }   // a new size where something is wrong: its card
   if(D.t==='pc'){ PE.drag=null; PE.guides=[]; var mv=D.moved&&JSON.stringify(fList())!==D.base; if(mv){ PE.undo.push('F'+D.base); PE.redo=[]; pfCommit(); }
@@ -5121,7 +5151,7 @@ window.addEventListener('keydown',function(e){ if(!PE.on||/input|textarea|select
   else if(PE.fr&&/^[1-9]$/.test(k)&&!mod&&PE.fr.sty&&PE.fr.sty[+k-1])pfFrStyle(PE.fr.sty[+k-1].k);
   else if(PE.fr&&(k==='escape'||k==='enter'||k==='a'||k==='s')&&!mod){ if(k==='escape')pfFrEnd(); else if(k==='enter'){ if(PE.fr.prop&&PE.fr.prop.pieces.length)pfFrUse(); else if(PE.fr.list.length>1)pfFrSkip(); else pfFrEnd(); } else if(k==='a')pfFrAlt(); else if(PE.fr.list.length>1)pfFrSkip(); }
   else if(k==='escape'&&PE.wsel){ PE.wsel=null; peDraw(); }
-  else if(k==='escape'){ var DD=PE.drag; if(DD&&(DD.t==='wall'||DD.t==='door'||DD.t==='dw')&&DD.base){ PE_T[LAYOUT]=JSON.parse(DD.base); PE.drag=null; peDraw(); toast('','Move cancelled'); }   // Esc while dragging puts it back
+  else if(k==='escape'){ var DD=PE.drag; if(DD&&(DD.t==='wall'||DD.t==='door'||DD.t==='dw'||DD.t==='wl'||DD.t==='wt')&&DD.base){ PE_T[LAYOUT]=JSON.parse(DD.base); PE.drag=null; peDraw(); toast('','Move cancelled'); }   // Esc while dragging puts it back
     else if(DD&&(DD.t==='pc'||DD.t==='rs')){ furn[LAYOUT]=JSON.parse(DD.base); PE.drag=null; peDraw(); toast('','Move cancelled'); }
     else if(PE.tool==='meas'&&(PE.mA||(PE.measures||[]).length)){ PE.mA=null; PE.measures=[]; peDraw(); }
     else if(PE.place){ pfPick(null); } else if(PE.sel){ PE.sel=null; PE.multi=false; peDraw(); } else if(PE.tool!=='sel')peTool('sel'); else if(PE.cat)pfCat(false); }   // Esc steps back and never leaves the plan: P or the button does
