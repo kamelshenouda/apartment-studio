@@ -86,6 +86,11 @@ When the owner asks for this (or anything like it), go through these steps in or
     `<prefix>-copies` in the browser (`cpReg` builds it from its plan, with `copyOf`). `peOpen` and `setFurnish` on a plan
     start a new copy (`cpNew`); `cpDrop` deletes one, `cpBar` is its Rename · Delete bar in the panel. The plan page's part is in `plan_trial.js` (tabs, Edit, Rename, New copy, Delete). Never
     let an edit reach a plan itself.
+  - **Doors and windows.** A door's `kind` is empty (hinged), `slide` (pocket), `slide2` (two parting leaves), `wall`
+    (on the face), `screen` (oak slats on the face) or `open`. `peSlides`, `peNoSwing` and `peDoorOk` say how one behaves;
+    `peBuildPocket` builds the wall a pocket needs. A window is an opening `[a0,a1,'win',src,{s,h}]` in its wall:
+    `peWinEdit`, `peAddWin` and `peDelWin` change it, and `pe3dScene` builds it once it carries `{s,h}`. A warning the
+    owner keeps goes into the trial's `keep` list (`peKeepKey`).
   - **Test handle.** `APT_PLAN.ev(src)` evaluates inside the page, so tests can reach these functions.
 - **A trial sent to you** ("Send to Claude" in the 2D plan) arrives three ways:
   - in the 3D artifact's store, under the `trials` collection with the plan as the document (read it with the artifact data tool: `get`, collection `trials`, document `c`);

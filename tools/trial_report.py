@@ -120,6 +120,28 @@ def report(d, page=None):
             if x.get('swing'):
                 ch.append('opens the other way')
             L.append(f"| {', '.join(ch).capitalize()} | {rooms(x['now']['rooms'])} | {n(x['was']['op'][0])}–{n(x['was']['op'][1])} → {n(x['now']['op'][0])}–{n(x['now']['op'][1])} |")
+    if d.get('kept'):
+        L += ['', '## Kept as the owner chose', '', 'The owner looked at these and chose to keep them:', ''] + [f'- {t}' for t in d['kept']]
+    wr = d.get('windows') or {}
+    if any(wr.get(k) for k in ('added', 'removed', 'changed')):
+        L += ['', '## Windows', '', '| Change | Rooms | Opening (cm) |', '|---|---|---|']
+        fac = lambda x: ' (façade: needs the building\'s approval)' if x.get('facade') else ''
+        for x in wr.get('added', []):
+            L.append(f"| New window, {n(x['w'])} × {n(x['h'])} cm, sill {n(x['sill'])}{fac(x)} | {rooms(x['rooms'])} | {n(x['op'][0])}–{n(x['op'][1])} in the wall at {'y' if x['o'] == 'h' else 'x'} {n(x['c'][0])}–{n(x['c'][1])} |")
+        for x in wr.get('removed', []):
+            L.append(f"| Taken out and walled up, {n(x['w'])} cm{fac(x)} | {rooms(x['rooms'])} | {n(x['op'][0])}–{n(x['op'][1])} |")
+        for x in wr.get('changed', []):
+            a, b = x['was'], x['now']
+            ch = []
+            if a['w'] != b['w']:
+                ch.append(f"width {n(a['w'])} → {n(b['w'])} cm")
+            if a['sill'] != b['sill']:
+                ch.append(f"sill {n(a['sill'])} → {n(b['sill'])} cm")
+            if a['h'] != b['h']:
+                ch.append(f"height {n(a['h'])} → {n(b['h'])} cm")
+            if abs(a['op'][0] - b['op'][0]) > .5 and a['w'] == b['w']:
+                ch.append('moved along its wall')
+            L.append(f"| {', '.join(ch).capitalize()}{fac(b)} | {rooms(b['rooms'])} | {n(a['op'][0])}–{n(a['op'][1])} → {n(b['op'][0])}–{n(b['op'][1])} |")
     rc = [r for r in d['rooms'] if r['was'] is None or abs(r['now'] - r['was']) >= .05]
     if rc:
         L += ['', '## Rooms (clear floor)', '', '| Room | Design, m² | Trial, m² | Change | Size, cm |', '|---|---|---|---|---|']
@@ -142,7 +164,7 @@ def report(d, page=None):
         L += ['', '## To check', ''] + [f'- {t}' for t in d['warnings']]
     L += ['', '## Making it official', '',
           '1. The client approves the trial, or the parts of it to keep.',
-          '2. Walls and doors: change the plan source to the coordinates above (AZAD: the plan\'s function in '
+          '2. Walls, doors and windows: change the plan source to the coordinates above (AZAD: the plan\'s function in '
           '`02-layout/tools/build_plans.py`; the template: `apartment.json`), rebuild, and compare with the trial.',
           '3. `python3 tools/plan_lock.py --accept "what changed and why"`: the plan lock refuses any change to the '
           'plan without it, and logs the reason.',
