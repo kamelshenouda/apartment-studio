@@ -789,7 +789,7 @@ T.BufferGeometry.prototype.computeBoundsTree=computeBoundsTree; T.BufferGeometry
 T.Mesh.prototype.raycast=acceleratedRaycast;
 
 var ALL=/*SCENE*/null;
-(function(){ var E=ALL.layouts.existing; if(E&&E.items)E.items=E.items.filter(function(it){ return it.f!=='loose'; }); })();   // As built: the empty apartment, with its built-in fittings
+(function(){ var E=ALL.layouts.existing; if(!E)return; if(E.items)E.items=E.items.filter(function(it){ return !it.f; }); if(E.pieces)E.pieces=E.pieces.filter(function(p){ return !p.f; }); })();   // As built: the empty shell (walls, doors, windows, columns): no furniture and no fitted joinery or fittings
 var CP_KEY='<@v105>apt3d</@v105>-copies', CPS=[];
 try{ CPS=(JSON.parse(localStorage.getItem(CP_KEY)||'[]')||[]).filter(function(c){ return c&&c.id&&c.from&&ALL.layouts[c.from]&&!ALL.layouts[c.id]; }); }catch(e){ CPS=[]; }
 function cpReg(c){ var src=(typeof PE_ORIG!=='undefined'&&PE_ORIG&&PE_ORIG[c.from])||ALL.layouts[c.from], L=JSON.parse(JSON.stringify(src)); L.name=c.name; L.copyOf=c.from; ALL.layouts[c.id]=L; if(typeof PE_ORIG!=='undefined'&&PE_ORIG&&L.plan2d)PE_ORIG[c.id]=L; return L; }
