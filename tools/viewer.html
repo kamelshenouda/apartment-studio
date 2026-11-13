@@ -375,10 +375,11 @@ h3{font-weight:600}
 .pesel b{font:600 12.5px var(--display);color:var(--ink);margin-right:4px}
 .pesel input{font:600 13px var(--display);padding:6px 8px;border-radius:7px;border:1px solid var(--line);background:var(--sheet);color:var(--ink);width:14em;max-width:50vw}
 .pesel button.danger{color:#B03A2E}
-.pewarn{position:absolute;right:14px;top:calc(var(--pbh,52px) + 44px);display:grid;gap:4px;max-width:min(340px,calc(100% - 28px));padding:9px 11px;border-radius:10px;background:var(--sheet);border:1px solid rgba(196,128,40,.45);font:12px/1.4 var(--mono);color:var(--ink2);box-shadow:0 4px 18px rgba(0,0,0,.08)}
+.pewarn{position:absolute;right:14px;bottom:14px;display:grid;gap:0;width:min(330px,calc(100% - 28px));max-height:min(52%,420px);border-radius:12px;background:var(--sheet);border:1px solid var(--btn-line);font:12.5px/1.4 var(--display);color:var(--ink);box-shadow:0 8px 28px rgba(0,0,0,.14);overflow:hidden;grid-template-rows:auto minmax(0,1fr) auto}
+.pewarn:not(.open){width:auto;justify-self:end}
 .pewarn b{color:var(--warn);font:600 12.5px var(--display)}
 .pehint{position:absolute;left:50%;transform:translateX(-50%);top:calc(var(--pbh,52px) + 6px);margin:0;pointer-events:none;z-index:2;background:rgba(29,33,37,.88);color:#fff!important;padding:5px 12px;border-radius:7px;font:500 12px/1.4 var(--display)!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100% - 40px)!important;max-width:min(380px,40%);font:12px/1.4 var(--mono);color:var(--muted)}
-@media (max-width:700px){ .pehint{display:none} .pewarn{top:auto;bottom:74px;right:12px} }
+@media (max-width:700px){ .pehint{display:none} .pewarn{bottom:74px;right:12px} }
 .pe-floor{fill:var(--sheet)}.pe-garden{fill:rgba(125,145,97,.16)}
 .pe-furn{fill:color-mix(in srgb,var(--sheet) 70%,transparent);stroke:var(--muted);stroke-width:.8;opacity:.6;vector-effect:non-scaling-stroke;pointer-events:none}
 .pe-rn{fill:var(--ink);font-family:var(--display);font-weight:600;text-anchor:middle;cursor:pointer}.pe-rn.on{fill:var(--accent)}
@@ -441,11 +442,22 @@ h3{font-weight:600}
 .pesel{z-index:5}.pewarn{z-index:3}
 @media (max-width:760px){.pebar{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:8px 8px 6px;gap:6px}.pebar::-webkit-scrollbar{display:none}.pebar>*{flex:none}.pebar .pet{display:none}
   .pesel{left:8px;right:8px;transform:none;bottom:8px;max-width:none;max-height:42%;overflow:auto;gap:5px;padding:7px 8px}.pesel .penum input{width:4.2em}.pesel b{flex:1 1 100%}}
-@media (max-width:760px){.pewarn{cursor:pointer;max-width:calc(100% - 24px);right:12px}.pewarn:not(.open)>span,.pewarn:not(.open)>.pewb{display:none}.pewarn>b::after{content:' ▾';font-weight:400}.pewarn.open>b::after{content:' ▴'}}
+@media (max-width:760px){.pewarn{right:12px;max-width:calc(100% - 24px)}}
 .pe-warnc{pointer-events:auto!important;cursor:pointer}.pe-warnt{pointer-events:none}
 .pe-whl{fill:rgba(192,57,43,.08);stroke:#C0392B;stroke-width:2;stroke-dasharray:6 4;vector-effect:non-scaling-stroke;pointer-events:none}
 .pe-wring{fill:none;stroke:#C0392B;stroke-width:2;vector-effect:non-scaling-stroke;pointer-events:none}
-.pewarn .pewi{appearance:none;border:0;background:none;padding:0;text-align:left;font:inherit;color:inherit;cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}
+.pewarn .pewh{appearance:none;border:0;background:transparent;display:flex;align-items:center;gap:8px;padding:9px 12px;font:600 13px var(--display);color:var(--ink);cursor:pointer;text-align:left}
+.pewarn.open .pewh{border-bottom:1px solid var(--line)}.pewarn .pewht{flex:1}.pewarn .pewa{color:var(--muted);font-size:11px}
+.pewarn .pewc{min-width:20px;height:20px;padding:0 5px;box-sizing:border-box;border-radius:10px;background:var(--warn);color:#fff;display:inline-grid;place-items:center;font:700 11.5px var(--display)}
+.pewarn.calm .pewc{background:var(--accent)}.pewarn.calm{border-color:var(--btn-line)}
+.pewarn.news .pewc{animation:pewpulse 1.2s ease 2}@keyframes pewpulse{50%{transform:scale(1.25)}}@media (prefers-reduced-motion:reduce){.pewarn.news .pewc{animation:none}}
+.pewarn .pewl{list-style:none;margin:0;padding:4px;overflow:auto;display:grid;gap:2px}
+.pewarn .pewi{appearance:none;border:0;background:none;width:100%;display:flex;gap:9px;align-items:flex-start;padding:7px 8px;border-radius:8px;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.pewarn .pewi:hover,.pewarn .pewi.on{background:color-mix(in srgb,var(--warn) 9%,transparent)}
+.pewarn .pewn{flex:0 0 auto;width:18px;height:18px;border-radius:9px;background:var(--warn);color:#fff;display:grid;place-items:center;font:700 10.5px var(--display);margin-top:1px}
+.pewarn .pewi.base .pewn{background:var(--muted)}.pewarn .pewt{display:grid;gap:1px;min-width:0}.pewarn .pewt b{font:600 12.5px/1.35 var(--display);color:var(--ink)}
+.pewarn .pewt small{font:500 11.5px/1.35 var(--display);color:var(--muted)}
+.pe-warnc.hov{stroke:var(--ink);stroke-width:3;vector-effect:non-scaling-stroke}
 .pewarn .pewi:hover,.pewarn .pewi.on{color:#B03A2E}.pewarn .pewi.base{opacity:.7}.pewarn .pewi:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .pewpop{position:absolute;z-index:6;width:min(340px,calc(100% - 16px));box-sizing:border-box;padding:12px 30px 12px 13px;border-radius:12px;background:var(--sheet);border:1px solid rgba(192,57,43,.45);box-shadow:0 12px 32px rgba(0,0,0,.18);font:500 12.5px/1.45 var(--display);color:var(--ink)}
 .pewpop b{display:block;font:600 13.5px/1.35 var(--display);color:#B03A2E;margin-bottom:4px}.pewpop p{margin:0 0 8px;color:var(--ink2)}.pewpop p.pwn{color:var(--muted);font-style:italic}
@@ -493,7 +505,7 @@ h3{font-weight:600}
 @media (max-width:760px){.pecat{top:auto;height:48%;left:8px;right:8px;width:auto}}
 .pe-was{fill:none;stroke:#C0572E;stroke-width:1.3;stroke-dasharray:5 4;vector-effect:non-scaling-stroke;pointer-events:none}
 .pe-warnc.base{fill:var(--muted);opacity:.6}
-.pewarn .pewb{appearance:none;border:0;background:none;padding:2px 0 0;text-align:left;color:var(--accent);font:600 12px var(--display);cursor:pointer}
+.pewarn .pewb{appearance:none;border:0;border-top:1px solid var(--line);background:none;padding:8px 12px;text-align:left;color:var(--accent);font:600 12px var(--display);cursor:pointer}
 .pewarn span.base{color:var(--muted)}
 .pegos{display:block;font:500 11.5px var(--mono);color:var(--muted);margin-top:1px}
 #pego{margin-top:2px}#pego span{text-align:left}
@@ -1083,6 +1095,12 @@ function peAddDoor(T,L,a,side){ if(L.lock)return 'Doors can\'t be added to the f
   else { if(toHi<40&&toHi>=0)d.at=g.hi-10-w; d.at+=w; d.sa=-1; }
   if(!peDoorFits(T,L,peDoorOp(d)))return 'There is no room for a door there (80 cm, clear of the ends and other openings).';
   T.doors.push(d); peSyncOps(T); return ''; }
+function peDoorRehost(T,d,M,u){ if(M.lock)return 'doors in the façade stay as drawn';      // a door taken to another wall: centred where it is dropped, clear of the ends and the other openings
+  if(M.a[1]-M.a[0]<d.w+8)return 'that wall is too short for it';
+  var was={line:d.line,at:d.at,sa:d.sa,src:d.src}; d.line=M.id; d.sa=1; d.at=Math.max(M.a[0]+5,Math.min(M.a[1]-5-d.w,Math.round((u-d.w/2)/5)*5));
+  if(!peDoorFits(T,M,peDoorOp(d))){ var ok=false; for(var k=5;k<=200&&!ok;k+=5)[k,-k].forEach(function(dd){ if(ok)return; var a0=d.at; d.at=a0+dd; if(d.at>=M.a[0]+3&&d.at+d.w<=M.a[1]-3&&peDoorFits(T,M,peDoorOp(d)))ok=true; else d.at=a0; });
+    if(!ok){ d.line=was.line; d.at=was.at; d.sa=was.sa; return 'no room for it on that wall, clear of its ends and other openings'; } }
+  d.src=null; peSyncOps(T); return ''; }
 function peDelDoor(T,d){ if(peLine(T,d.line).lock)return 'Doors in the façade stay as drawn.'; T.doors.splice(T.doors.indexOf(d),1); peSyncOps(T); return ''; }
 function peDelWall(T,L){ if(L.lock)return L.lock==='concrete'?'Concrete can\'t be taken out.':'The façade stays.';
   if(L.ops.some(function(op){ return op[2]==='win'||op[2]==='gl'; }))return 'It has a window in it.';
@@ -3988,7 +4006,6 @@ vrBtn.addEventListener('click',function(){
   }).catch(function(e){ statusEl.hidden=false; statusEl.textContent='VR could not start: '+(e&&e.message||e); });
 });
 // ----- the 2D view
-document.getElementById('pewarn').addEventListener('click',function(e){ if(e.target.closest('button'))return; if(window.innerWidth<=760)this.classList.toggle('open'); });   // on a phone the list folds to its heading
 var peEl=document.getElementById('pe'), peSvg=document.getElementById('pesvg'), peSel=document.getElementById('pesel'), peWarn=document.getElementById('pewarn'), peHint=document.getElementById('pehint');
 var SVGNS='http://www.w3.org/2000/svg';
 function peT(){ if(!PE_T[LAYOUT])PE_T[LAYOUT]=peFromPlan(LAYOUT); return PE_T[LAYOUT]; }
@@ -4126,14 +4143,11 @@ function peDraw(){ if(!PE.on)return; var T=peT(), r=peSvg.getBoundingClientRect(
     if(WS.di!=null&&T.doors[WS.di]){ var dp=peDoorPts(T,T.doors[WS.di]), xs=[dp.hinge[0],dp.leaf[0],dp.shut[0]], ys=[dp.hinge[1],dp.leaf[1],dp.shut[1]]; hl([Math.min.apply(0,xs),Math.min.apply(0,ys),Math.max.apply(0,xs),Math.max.apply(0,ys)]); }
     if(WS.line!=null){ var wl=peLine(T,WS.line); if(wl)hl(peLineRect(wl)); } if(WS.ri!=null&&T.rooms[WS.ri])hl(T.rooms[WS.ri].r);
     el('circle',{cx:WS.x,cy:WS.y,r:Math.max(11,14*k),class:'pe-wring'},g); }
-  (PE.exporting?[]:PE.showBase?W.filter(function(w){ return !w.ack; }):Wn).forEach(function(w){ var c=el('circle',{cx:w.x,cy:w.y,r:Math.max(7,(PE.coarse?11:8)*k),class:'pe-warnc'+(w.base?' base':''),'data-w':w.t},g); var tt=el('title',{},c); tt.textContent=w.t+' · click for solutions';
-    var t=el('text',{x:w.x,y:w.y+Math.max(3,3.2*k),class:'pe-warnt','font-size':Math.max(9,9.5*k)},g); t.textContent='!'; });
-  peWarn.hidden=!W.length; peWarn.innerHTML=''; if(W.length){ var hd=document.createElement('b');
-    hd.textContent=Wn.length?(Wn.length===1?'1 thing to check':Wn.length+' things to check'):'Nothing new to check'; peWarn.appendChild(hd);
-    Wn.slice(0,8).forEach(function(w){ var s=document.createElement('button'); s.type='button'; s.className='pewi'+(PE.wsel===w.t?' on':''); s.textContent=w.t; s.title='Show it, with its solutions'; s.addEventListener('click',function(ev){ ev.stopPropagation(); peWarnShow(w.t); }); peWarn.appendChild(s); });
-    if(Wb.length){ var bb=document.createElement('button'); bb.type='button'; bb.className='pewb'; bb.setAttribute('aria-expanded',String(!!PE.showBase));
-      bb.textContent=(PE.showBase?'Hide':'Show')+' '+Wb.length+' already in the design'; bb.addEventListener('click',function(){ PE.showBase=!PE.showBase; peDraw(); }); peWarn.appendChild(bb);
-      if(PE.showBase)Wb.forEach(function(w){ var s=document.createElement('button'); s.type='button'; s.className='pewi base'; s.textContent=w.t; s.addEventListener('click',function(ev){ ev.stopPropagation(); peWarnShow(w.t); }); peWarn.appendChild(s); }); } }
+  var WLs=PE.exporting?[]:PE.showBase?Wn.concat(Wb.filter(function(w){ return !w.ack; })):Wn;     // each problem's mark carries its number in the list
+  var wR=Math.max(7,(PE.coarse?11:8)*k), wSeen=[]; WLs.forEach(function(w){ var n=wSeen.filter(function(q){ return Math.hypot(q[0]-w.x,q[1]-w.y)<wR*1.6; }).length; wSeen.push([w.x,w.y]); w.mx=w.x+n*wR*2.2; w.my=w.y; });   // marks on the same spot stand side by side
+  WLs.forEach(function(w,ix){ var c=el('circle',{cx:w.mx,cy:w.my,r:Math.max(7,(PE.coarse?11:8)*k),class:'pe-warnc'+(w.base?' base':''),'data-w':w.t},g); var tt=el('title',{},c); tt.textContent=(ix+1)+'. '+w.t+' · click for solutions';
+    var t=el('text',{x:w.mx,y:w.my+Math.max(3,3.2*k),class:'pe-warnt','font-size':Math.max(9,9.5*k)},g); t.textContent=w.base?'·':String(ix+1); });
+  peWarnList(T,W,Wn,Wb,WLs);
   if(PE._hg&&!PE.exporting)peSvg.appendChild(PE._hg);     // the handles above the walls, so they can always be taken
   if(!PE.exporting)peWarnPop(T,W);
   peHint.hidden=false; peHint.textContent=peHintText(T); peHint.className='pehint'+(PE.drag&&(PE.drag.stop||PE.drag.stopw||PE.drag.warn)?' stop':'');
@@ -4165,10 +4179,11 @@ function peHintText(T){ var D=PE.drag;
   if(D&&D.t==='wall'&&D.stop)return 'Stopped: '+D.stop.why+' · release keeps it here · Esc cancels';
   if(D&&D.t==='wall'&&D.moved)return 'Moving the wall · '+(D.done>0?'+':D.done<0?'−':'')+Math.abs(D.done)+' cm · walls joined to it follow · Esc cancels';
   if(D&&D.t==='dw')return D.stopw?'Stopped at '+Math.round(T.doors[D.i].w)+' cm: '+D.stopw+' · Esc cancels':'Door width · '+Math.round(T.doors[D.i].w)+' cm · the other end stays · Esc cancels';
-  if(D&&D.t==='door'&&D.moved)return 'Moving the door along its wall · Esc cancels';
+  if(D&&D.t==='door'&&D.moved)return (D.err?'Not there: '+D.err+' · ':D.free?'Bring it onto a wall · ':'')+'Moving the door along its wall · drag it onto another wall to move it there · Esc cancels';
   if(PE.tool==='wall')return 'Drag on the plan to draw a wall · it snaps to the walls it meets · its length shows as you draw';
   if(PE.tool==='door')return 'Click a wall where the door should go, on the side it should open into';
   if(PE.hovDh)return 'Drag to change the door\'s width · the other end stays · Alt for 1 cm steps';
+  if(PE.hovDoor!=null&&!D)return 'Door · drag it along its wall, or onto another wall to move it there · click it to turn, flip or resize it';
   if(PE.hov!=null){ var L=peLine(T,PE.hov); if(L&&L.lock)return (L.lock==='concrete'?'Concrete wall':'Façade wall')+' · it stays where it is';
     return 'Wall · drag to move it, the walls joined to it follow · click, then type the distance or use the arrow keys · Shift+click picks more · double-click the whole run'; }
   if(PE.hovDoor!=null){ var dd=T.doors[PE.hovDoor], lk=dd&&peLine(T,dd.line).lock; return lk?'Façade door · it stays as drawn':'Door · drag along the wall to move it · pick it, then drag an end to change its width · H flips the hinge, S the swing'; }
@@ -4876,6 +4891,30 @@ function peFixes(T,w){ var out=[], d=w.di!=null&&T.doors[w.di];
   if(PE.undo.length&&w.k!=='wet'&&w.k!=='room')out.push({l:'Undo the last change',f:function(){ peUndo(); },quiet:1});
   return out; }
 function peWarnShow(t){ PE.wsel=t; peDraw(); }
+// the list of things to check, at the foot of the plan on the right: a number that matches the mark on the plan, where it is, and what to do
+var PE_DO={room:'Make it bigger: move one of its walls',pocket:'Give it solid wall to slide into, or make it a hinged door',swing:'Open it the other way, hinge it on the other side, or make it sliding',
+  thru:'Move the piece off the wall',walk:'Keep 75 cm to walk past: move the wall or the piece',over:'Move one of the two pieces apart',win:'Move it clear of the window',
+  front:'Give it its clear floor in front',noway:'Put a door in one of its walls',wet:'Check the drains and water supply on site'};
+function peWhere(T,w){ if(w.ri!=null&&T.rooms[w.ri])return T.rooms[w.ri].n; var r=T.rooms.filter(function(q){ return w.x>=q.r[0]-2&&w.x<=q.r[2]+2&&w.y>=q.r[1]-2&&w.y<=q.r[3]+2; })[0];
+  if(r)return r.n; var gd=(ALL.layouts[LAYOUT]||{}).garden; return gd&&gd.length&&inPoly(w.x,w.y,gd)?'Garden':'On the plan'; }
+function peWarnList(T,W,Wn,Wb,WL){ peWarn.hidden=!W.length; peWarn.innerHTML=''; if(!W.length)return;
+  var narrow=peSvg.getBoundingClientRect().width<1300, busy=(!peSel.hidden||!!PE.fr)&&narrow, open=(PE.wopen==null?window.innerWidth>760&&!busy:PE.wopen)&&(Wn.length>0||PE.showBase);     // open on a wide screen, folded on a phone and beside an open panel, until you choose
+  peWarn.className='pewarn'+(open?' open':'')+(Wn.length?'':' calm'); if(PE.wn!=null&&Wn.length>PE.wn)PE.wnT=Date.now(); PE.wn=Wn.length; if(PE.wnT&&Date.now()-PE.wnT<2600)peWarn.classList.add('news');
+  var hd=document.createElement('button'); hd.type='button'; hd.className='pewh'; hd.setAttribute('aria-expanded',String(open));
+  hd.innerHTML='<span class="pewc">'+(Wn.length||'✓')+'</span><span class="pewht"></span><span class="pewa" aria-hidden="true">'+(open?'▾':'▴')+'</span>';
+  hd.querySelector('.pewht').textContent=Wn.length?(Wn.length===1?'thing to check':'things to check'):'Nothing new to check';
+  hd.title=open?'Fold the list':'Open the list'; hd.addEventListener('click',function(ev){ ev.stopPropagation(); PE.wopen=!open; peDraw(); }); peWarn.appendChild(hd);
+  if(!open)return;
+  var ol=document.createElement('ol'); ol.className='pewl'; peWarn.appendChild(ol);
+  WL.forEach(function(w,ix){ var li=document.createElement('li'), b=document.createElement('button'); b.type='button'; b.className='pewi'+(PE.wsel===w.t?' on':'')+(w.base?' base':''); b.title='Show it on the plan, with its solutions';
+    b.innerHTML='<span class="pewn"></span><span class="pewt"><b></b><small></small></span>'; b.querySelector('.pewn').textContent=w.base?'·':ix+1; b.querySelector('b').textContent=w.t;
+    b.querySelector('small').textContent=peWhere(T,w)+' · '+(w.base?'in the design already':(PE_DO[w.k]||'Click for the solutions'));
+    b.addEventListener('click',function(ev){ ev.stopPropagation(); peWarnShow(w.t); });
+    b.addEventListener('mouseenter',function(){ var m=peSvg.querySelector('[data-w="'+w.t.replace(/"/g,'\\"')+'"]'); if(m)m.classList.add('hov'); });
+    b.addEventListener('mouseleave',function(){ var m=peSvg.querySelector('.pe-warnc.hov'); if(m)m.classList.remove('hov'); });
+    li.appendChild(b); ol.appendChild(li); });
+  if(Wb.length){ var bb=document.createElement('button'); bb.type='button'; bb.className='pewb'; bb.setAttribute('aria-expanded',String(!!PE.showBase));
+    bb.textContent=(PE.showBase?'Hide the ':'Show the ')+Wb.length+' already in the design'; bb.addEventListener('click',function(ev){ ev.stopPropagation(); PE.showBase=!PE.showBase; peDraw(); }); peWarn.appendChild(bb); } }
 function peWarnPop(T,W){ var wl0=document.getElementById('pewarn'); if(wl0)wl0.style.visibility=''; var box=document.getElementById('pewpop'), w=PE.wsel&&W.filter(function(q){ return q.t===PE.wsel; })[0];
   if(!w){ if(PE.wsel&&!box.hidden){ box.hidden=true; toast('','Solved: '+PE.wsel.replace(/:.*$/,'')); } PE.wsel=null; box.hidden=true; return; }
   var r=peSvg.getBoundingClientRect(), sx=(w.x-PE.view.x)/PE.view.k, sy=(w.y-PE.view.y)/PE.view.k;
@@ -5053,7 +5092,12 @@ peSvg.addEventListener('pointermove',function(e){ if(!PE.pts[e.pointerId]){ if(e
         D.stop={why:why,rect:blk}; } else D.stop=null;
       if(got){ D.done+=got; D.moved=true; peLine(T,D.id).moved=1; } }
     D.cur=[e.clientX,e.clientY]; peDraw(); return; }
-  if(D.t==='door'){ var d=T.doors[D.i], Ld=peLine(T,d.line); if(Ld.lock)return; var na=D.at0+Math.round((Ld.o==='h'?p[0]-D.p0[0]:p[1]-D.p0[1])/(e.altKey?1:5))*(e.altKey?1:5);
+  if(D.t==='door'){ var d=T.doors[D.i], Ld=peLine(T,d.line); if(Ld.lock)return;
+    var dOff=Math.abs((Ld.o==='h'?p[1]:p[0])-(Ld.c[0]+Ld.c[1])/2);      // dragged well off its wall: onto another, it goes there
+    if(dOff>35){ var bw=null, bdd=25; T.lines.forEach(function(M){ if(M.id===Ld.id)return; var b=peLineRect(M), dx=Math.max(b[0]-p[0],0,p[0]-b[2]), dy=Math.max(b[1]-p[1],0,p[1]-b[3]), dd=Math.hypot(dx,dy); if(dd<bdd){ bdd=dd; bw=M; } });
+      D.moved=true; if(!bw){ D.err=null; D.free=1; peDraw(); return; } D.free=0;
+      var rer=peDoorRehost(T,d,bw,bw.o==='h'?p[0]:p[1]); if(rer){ D.err=rer; peDraw(); return; } D.err=null; D.at0=d.at; D.p0=p.slice(); D.hops=(D.hops||0)+1; peDraw(); return; }
+    D.free=0; var na=D.at0+Math.round((Ld.o==='h'?p[0]-D.p0[0]:p[1]-D.p0[1])/(e.altKey?1:5))*(e.altKey?1:5);
     if(!e.altKey)na=peDoorSnap(T,d,na);
     if(Math.abs(na-D.at0)<2&&!D.moved)return; D.moved=true;
     var err2=peDoorEdit(T,d,function(d){ d.at=na; }); if(err2&&!D.err){ D.err=err2; } peDraw(); } });
