@@ -91,6 +91,9 @@ When the owner asks for this (or anything like it), go through these steps in or
     `peBuildPocket` builds the wall a pocket needs. A window is an opening `[a0,a1,'win',src,{s,h}]` in its wall:
     `peWinEdit`, `peAddWin` and `peDelWin` change it, and `pe3dScene` builds it once it carries `{s,h}`. A warning the
     owner keeps goes into the trial's `keep` list (`peKeepKey`).
+  - **Saving.** Every saved item (copies list, trials of copies, furniture, the trial index, the bin) is mirrored into
+    the artifact's store as `saves/<key>` (`lsmPush`) and restored on opening when the browser lacks it (`lsmPull`,
+    `cpRehydrate`, `cpFromFurnish`); `plan_trial.js` does the same for the plan page. Without a store nothing changes.
   - **Test handle.** `APT_PLAN.ev(src)` evaluates inside the page, so tests can reach these functions.
 - **A trial sent to you** ("Send to Claude" in the 2D plan) arrives three ways:
   - in the 3D artifact's store, under the `trials` collection with the plan as the document (read it with the artifact data tool: `get`, collection `trials`, document `c`);

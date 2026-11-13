@@ -57,14 +57,27 @@
   var CKEY='__PREFIX__-copies', FKEY='__PREFIX__-furnish', CUR={};
   try{ CUR=JSON.parse(sessionStorage.getItem(KEY+'-cur')||'{}')||{}; }catch(e){}
   function copies(){ try{ return (JSON.parse(localStorage.getItem(CKEY)||'[]')||[]).filter(function(c){ return c&&c.id&&c.from; }); }catch(e){ return []; } }
-  function saveCopies(l){ try{ localStorage.setItem(CKEY,JSON.stringify(l)); }catch(e){} }
+  function saveCopies(l){ try{ localStorage.setItem(CKEY,JSON.stringify(l)); }catch(e){} lsmPush(); }
+  // your copies kept in this page's store as well as this browser, one document per saved item; what the browser lacks comes back on opening
+  var LSM={re:/^(__PREFIX__-(copies|furnish|trials|bin)|apt3d-trial2-copy-.+)$/,sent:{},t:null,db:null,can:true};
+  function lsmId(k){ return k.replace(/[^A-Za-z0-9_\-.~:@+]/g,'_').slice(0,190); }
+  function lsmPush(){ if(!LSM.db||!LSM.can)return; clearTimeout(LSM.t); LSM.t=setTimeout(function(){ var now={}; try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(LSM.re.test(k))now[k]=localStorage.getItem(k); } }catch(e){ return; }
+    Object.keys(now).concat(Object.keys(LSM.sent)).forEach(function(k,i,a){ if(a.indexOf(k)!==i)return; var v=now[k]==null?null:now[k]; if(LSM.sent[k]===v||(v&&v.length>250000))return; LSM.sent[k]=v;
+      LSM.db.doc('saves/'+lsmId(k)).set({k:k,v:v,updated:new Date().toISOString()}).catch(function(e){ delete LSM.sent[k]; if(e&&/invalid_argument|permission|not_granted|not_writer/.test(e.code||''))LSM.can=false; }); }); },1500); }
+  function lsmMerge(loc,rem){ try{ var a=JSON.parse(loc), b=JSON.parse(rem); if(Array.isArray(a)&&Array.isArray(b)){ var ids={}; a.forEach(function(c){ if(c&&c.id)ids[c.id]=1; }); var add=b.filter(function(c){ return c&&c.id&&!ids[c.id]; }); return add.length?JSON.stringify(a.concat(add)):null; }
+    if(a&&b&&typeof a==='object'&&typeof b==='object'){ var ch=false; Object.keys(b).forEach(function(x){ if(a[x]==null||(Array.isArray(a[x])&&!a[x].length&&Array.isArray(b[x])&&b[x].length)){ a[x]=b[x]; ch=true; } }); return ch?JSON.stringify(a):null; } }catch(e){} return null; }
+  function lsmPull(db,done){ db.collection('saves').get().then(function(qs){ var got=0;
+      (qs.docs||[]).forEach(function(sn){ var d=sn.data&&sn.data(); if(!d||!d.k||!LSM.re.test(d.k)||d.v==null)return; var loc=null; try{ loc=localStorage.getItem(d.k); }catch(e){}
+        if(loc==null){ try{ localStorage.setItem(d.k,d.v); got++; }catch(e){} LSM.sent[d.k]=d.v; return; } if(loc===d.v){ LSM.sent[d.k]=d.v; return; }
+        if(/-(copies|furnish|trials|bin)$/.test(d.k)){ var m=lsmMerge(loc,d.v); if(m){ try{ localStorage.setItem(d.k,m); got++; }catch(e){} } } });
+      done(got); }).catch(function(){ done(0); }); }
   function saveCur(){ try{ sessionStorage.setItem(KEY+'-cur',JSON.stringify(CUR)); }catch(e){} }
   function designName(k){ var t=document.getElementById('tab-'+k); if(!t)return k==='existing'?'the plan as built':'the plan'; var sm=t.querySelector('small'), sub=sm?sm.textContent:'', main=t.textContent.replace(sub,'').trim(), rv=(sub.match(/Rev [\d.]+/)||[])[0];
     return rv?rv+' · '+main:main; }
   function newCopy(from){ var l=copies(), used={}; l.forEach(function(c){ used[c.id]=1; }); var n=1; while(used['copy-'+from+'-'+n])n++;
     var c={id:'copy-'+from+'-'+n,from:from,name:(n>1?'Copy '+n+' of ':'Copy of ')+designName(from),at:new Date().toISOString()}; l.push(c); saveCopies(l); return c; }
   function copyOf(id){ return copies().filter(function(c){ return c.id===id; })[0]; }
-  function dropCopy(id){ var l=copies().filter(function(c){ return c.id!==id; }); saveCopies(l);
+  function dropCopy(id){ var l=copies().filter(function(c){ return c.id!==id; }); saveCopies(l); setTimeout(lsmPush,0);
     try{ for(var i=localStorage.length-1;i>=0;i--){ var kk=localStorage.key(i); if(kk&&kk.indexOf('apt3d-trial2-'+id+'-')===0)localStorage.removeItem(kk); }
       var fl=JSON.parse(localStorage.getItem(FKEY)||'null'); if(fl&&fl[id]){ delete fl[id]; localStorage.setItem(FKEY,JSON.stringify(fl)); }
       var ix=read(); if(ix[id]){ delete ix[id]; localStorage.setItem(KEY,JSON.stringify(ix)); } }catch(e){} }
@@ -81,10 +94,14 @@
     orig.forEach(function(t){ var k=t.getAttribute('data-plan'); if(k===ACT&&CUR[k])t.setAttribute('aria-selected','false'); }); }   // a copy shown: its tab is the one picked
   function bar(svg,k){ var id='ptbar-'+k, b=document.getElementById(id); if(!b){ b=document.createElement('div'); b.id=id; b.className='ptbar'; svg.parentNode.insertBefore(b,svg); }
     var cid=CUR[k], c=cid&&copyOf(cid), mine=copies().filter(function(q){ return q.from===k; });
-    if(!c){ b.innerHTML='<span class="pts">'+(k==='existing'?'<b>The plan as built</b>, as measured: it stays as it is.':'<b>The design</b>, as drawn: it stays as it is.')+' Edit starts a new copy to work on'+(mine.length?' (you have '+mine.length+(mine.length===1?' copy':' copies')+', in the tabs)':'')+'.</span><button type="button" class="pted">Edit</button>';
-      b.querySelector('.pted').addEventListener('click',function(){ var cc=newCopy(k); pick(k,cc.id); edit(cc.id); }); chooser(b,k,mine,null); return; }
+    if(!c){ b.innerHTML='<span class="pts">'+(k==='existing'?'<b>The plan as built</b>, as measured: it stays as it is.':'<b>The design</b>, as drawn: it stays as it is.')+(mine.length?' You have '+mine.length+(mine.length===1?' copy':' copies')+' of it, in the tabs: Edit lets you carry on with one or start a new one.':' Edit starts a copy of it to work on.')+'</span><button type="button" class="pted">Edit</button>';
+      b.querySelector('.pted').addEventListener('click',function(){ if(!mine.length){ var cc=newCopy(k); pick(k,cc.id); edit(cc.id); return; }   // copies already: carry on with one, or start a new one
+        var ix=read(); b.innerHTML='<span class="pts">Carry on with one of your copies, or start a new one:</span><span class="ptm ptch"></span>'; var m=b.querySelector('.ptch');
+        mine.slice().reverse().forEach(function(q){ var bt=document.createElement('button'); bt.type='button'; var at=(ix[q.id]&&ix[q.id].at)||q.at, d=at?new Date(at):null; bt.textContent=q.name+(d&&!isNaN(d)?' · changed '+d.toLocaleDateString(undefined,{day:'numeric',month:'short'})+' '+d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'}):''); bt.addEventListener('click',function(){ pick(k,q.id); edit(q.id); }); m.appendChild(bt); });
+        var nb=document.createElement('button'); nb.type='button'; nb.className='pted'; nb.textContent='Start a new copy'; nb.addEventListener('click',function(){ var cc=newCopy(k); pick(k,cc.id); edit(cc.id); }); m.appendChild(nb);
+        var cb=document.createElement('button'); cb.type='button'; cb.textContent='Cancel'; cb.addEventListener('click',all); m.appendChild(cb); }); chooser(b,k,mine,null); return; }
     var e=read()[c.id], parts=[]; if(e&&e.sum)parts.push(esc(e.sum.replace(/^Your trial of [^:]*: /,''))); if(e&&e.pcs&&e.pcs.length)parts.push(e.pcs.length+(e.pcs.length===1?' piece':' pieces')+' placed'); if(e&&e.gone&&e.gone.length)parts.push(e.gone.length+' of the design\'s cleared');
-    b.innerHTML='<span class="pts"><b></b>, your copy of '+esc(designName(k))+', in this browser: '+(parts.join(' · ')||'no changes yet')+'</span><button type="button" class="pted">Edit</button><span class="ptm"><button type="button" data-a="des">Show the design</button><button type="button" data-a="ren">Rename</button><button type="button" data-a="new">New copy</button><button type="button" data-a="del">Delete</button></span>';
+    b.innerHTML='<span class="pts"><b></b>, your copy of '+esc(designName(k))+', saved as you work: '+(parts.join(' · ')||'no changes yet')+'</span><button type="button" class="pted">Edit</button><span class="ptm"><button type="button" data-a="des">Show the design</button><button type="button" data-a="ren">Rename</button><button type="button" data-a="new">New copy</button><button type="button" data-a="del">Delete</button></span>';
     b.querySelector('b').textContent=c.name; b.querySelector('.pted').addEventListener('click',function(){ edit(c.id); }); chooser(b,k,mine,c.id);
     b.querySelector('[data-a="des"]').addEventListener('click',function(){ pick(k,null); });
     b.querySelector('[data-a="new"]').addEventListener('click',function(){ var n=newCopy(k); pick(k,n.id); edit(n.id); });
@@ -117,7 +134,8 @@
       var f=Array.isArray(fl[k])&&fl[k].length?fl[k]:null; if(!tk&&!f&&!idx[k])return; var c=newCopy(k);
       if(tk){ localStorage.setItem('apt3d-trial2-'+c.id+'-'+tk.slice(pre.length),localStorage.getItem(tk)); localStorage.removeItem(tk); } if(f)fl[c.id]=f; delete fl[k]; if(idx[k]){ idx[c.id]=idx[k]; idx[c.id].name=c.name; delete idx[k]; } ch=true; });
     if(ch){ localStorage.setItem(FKEY,JSON.stringify(fl)); localStorage.setItem(KEY,JSON.stringify(idx)); } localStorage.setItem(CKEY+'-v1','1'); }catch(e){} })();
-  all(); window.addEventListener('storage',function(ev){ if(ev.key===KEY||ev.key===CKEY)all(); });
+  all(); window.addEventListener('storage',function(ev){ if(ev.key===KEY||ev.key===CKEY)all(); if(!ev.key||LSM.re.test(ev.key))lsmPush(); });   // the editor saves: the store follows
+  try{ if(window.claude&&window.claude.use)window.claude.use('db').then(function(db){ if(!db)return; LSM.db=db; lsmPull(db,function(got){ if(got)all(); lsmPush(); }); }).catch(function(){}); }catch(e){}
   try{ var q=new URLSearchParams(location.search).get('edit'); if(q){ var qc=copyOf(q), qf=qc?qc.from:q, tq=document.getElementById('tab-'+qf); if(tq)tq.click(); setTimeout(function(){ edit(q); },60); } }catch(e){}   // from the 3D page's 2D button
   window.APT_PLAN_TRIAL={redraw:all,edit:edit,copies:copies};
 })();

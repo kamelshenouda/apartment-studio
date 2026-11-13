@@ -451,7 +451,7 @@ h3{font-weight:600}
 .pe-whl{fill:rgba(192,57,43,.08);stroke:#C0392B;stroke-width:2;stroke-dasharray:6 4;vector-effect:non-scaling-stroke;pointer-events:none}
 .pe-wring{fill:none;stroke:#C0392B;stroke-width:2;vector-effect:non-scaling-stroke;pointer-events:none}
 .embed2d .pe{left:0!important}
-.cpbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:-4px 12px 12px;padding:7px 9px;border:1px dashed var(--btn-line);border-radius:9px;font:500 12px/1.3 var(--display);color:var(--ink2)}.cpbar span{flex:1 1 9em;min-width:0}.cpbar b{color:var(--ink)}.cpbar input{flex:1 1 10em;min-width:0;font:inherit;padding:5px 7px;border:1px solid var(--btn-line);border-radius:6px;background:var(--sheet);color:var(--ink)}.cpbar button{appearance:none;border:1px solid var(--btn-line);background:var(--btn);color:var(--ink);border-radius:7px;padding:5px 9px;font:600 12px var(--display);cursor:pointer}.cpbar .cpdel{color:#B23A2E}.cpbar[hidden]{display:none}#layout .cpb small{color:var(--accent)}#layout .cpb[aria-pressed="true"] small{color:inherit;opacity:.8}
+#pereset.sure{background:#B23A2E!important;color:#fff!important;border-color:#B23A2E!important}.cpch{position:fixed;inset:0;z-index:60;background:rgba(20,22,24,.38);display:grid;place-items:center;padding:16px}.cpchb{background:var(--sheet);color:var(--ink);border-radius:14px;padding:18px 18px 14px;max-width:420px;width:100%;box-shadow:0 18px 50px rgba(0,0,0,.3);font:500 13px/1.4 var(--display)}.cpchb b{font-size:16px}.cpchb p{margin:6px 0 12px;color:var(--ink2)}.cpchl{display:grid;gap:6px;max-height:50vh;overflow:auto}.cpchl button{appearance:none;text-align:left;border:1px solid var(--btn-line);background:var(--btn);color:var(--ink);border-radius:9px;padding:9px 11px;cursor:pointer;display:grid;gap:2px;font:600 13px var(--display)}.cpchl small{font-weight:500;color:var(--ink2)}.cpchr{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}.cpchr button{appearance:none;border:1px solid var(--btn-line);background:var(--btn);color:var(--ink);border-radius:8px;padding:7px 12px;font:600 13px var(--display);cursor:pointer}.cpchr .pri{background:var(--accent);color:#fff;border-color:var(--accent)}.cpbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:-4px 12px 12px;padding:7px 9px;border:1px dashed var(--btn-line);border-radius:9px;font:500 12px/1.3 var(--display);color:var(--ink2)}.cpbar span{flex:1 1 9em;min-width:0}.cpbar b{color:var(--ink)}.cpbar input{flex:1 1 10em;min-width:0;font:inherit;padding:5px 7px;border:1px solid var(--btn-line);border-radius:6px;background:var(--sheet);color:var(--ink)}.cpbar button{appearance:none;border:1px solid var(--btn-line);background:var(--btn);color:var(--ink);border-radius:7px;padding:5px 9px;font:600 12px var(--display);cursor:pointer}.cpbar .cpdel{color:#B23A2E}.cpbar[hidden]{display:none}#layout .cpb small{color:var(--accent)}#layout .cpb[aria-pressed="true"] small{color:inherit;opacity:.8}
 .pekey{position:absolute;left:14px;bottom:14px;z-index:3;display:grid;gap:6px;justify-items:start}.pe.catopen .pekey{left:322px}
 .pekey button{appearance:none;border:1px solid var(--btn-line);background:var(--sheet);color:var(--ink);font:600 12px var(--display);padding:6px 11px;border-radius:999px;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.08)}
 .pekey .pekl{display:grid;gap:5px;padding:10px 12px;background:var(--sheet);border:1px solid var(--btn-line);border-radius:10px;font:500 12px var(--display);color:var(--ink2);box-shadow:0 6px 20px rgba(0,0,0,.12);order:-1}
@@ -712,7 +712,7 @@ h3{font-weight:600}
         <div class="pegrp"><button type="button" data-tool="sel" title="Move walls and doors (V)">Move</button><button type="button" data-tool="wall" title="Draw a wall (W)">+ Wall</button><button type="button" data-tool="door" title="Put a door in a wall (D)">+ Door</button><span class="pedk" id="pedk" hidden role="group" aria-label="Kind of door"><button type="button" data-dk="hinged" aria-pressed="true">Hinged</button><button type="button" data-dk="slide">Pocket</button><button type="button" data-dk="slide2">Pocket ×2</button><button type="button" data-dk="wall">On the wall</button><button type="button" data-dk="screen">Oak screen</button><button type="button" data-dk="open">Open</button></span><button type="button" data-tool="win" title="Put a window in a wall (N)">+ Window</button><button type="button" data-tool="meas" title="Measure between two points (M)" aria-label="Measure">↔</button><button type="button" id="pecatb" aria-pressed="false" aria-controls="pecat" title="The catalogue: furniture, kitchen, bathroom and more, at standard sizes (F)">+ Furniture</button></div>
         <div class="pegrp"><button type="button" id="peundo" title="Undo (Ctrl+Z, ⌘Z)" aria-label="Undo">↶</button><button type="button" id="peredo" title="Redo (Shift+Ctrl+Z)" aria-label="Redo">↷</button></div>
         <div class="pegrp"><button type="button" id="pedims" aria-pressed="true" title="Overall dimensions, scale bar and north">Dims</button><button type="button" id="pefurn" aria-pressed="true" title="Show the furniture on the plan">Furniture</button><button type="button" id="peareas" aria-pressed="false" title="The area of every room, and the total">Areas</button><button type="button" id="pesave" title="Save this plan as a picture">Save</button><button type="button" id="pesend" title="Send your trial to Claude: what changed, in an architect's terms, with the exact data">Send to Claude</button></div>
-        <button type="button" id="pereset" title="Drop this trial: back to the plan as designed">Back to the design</button>
+        <button type="button" id="pereset" title="Clear every change in this copy (it asks first)">Clear my changes</button>
         <button type="button" id="pe3dx" hidden>See it in 3D</button>
         <button type="button" class="pri" id="pe3d">See it in 3D</button></div>
       <svg class="pesvg" id="pesvg" role="img" aria-label="Editable plan"></svg>
@@ -795,12 +795,46 @@ var CP_KEY='<@v105>apt3d</@v105>-copies', CPS=[];
 try{ CPS=(JSON.parse(localStorage.getItem(CP_KEY)||'[]')||[]).filter(function(c){ return c&&c.id&&c.from&&ALL.layouts[c.from]&&!ALL.layouts[c.id]; }); }catch(e){ CPS=[]; }
 function cpReg(c){ var src=(typeof PE_ORIG!=='undefined'&&PE_ORIG&&PE_ORIG[c.from])||ALL.layouts[c.from], L=JSON.parse(JSON.stringify(src)); L.name=c.name; L.copyOf=c.from; ALL.layouts[c.id]=L; if(typeof PE_ORIG!=='undefined'&&PE_ORIG&&L.plan2d)PE_ORIG[c.id]=L; return L; }
 CPS.forEach(cpReg);
-function cpSave(){ try{ localStorage.setItem(CP_KEY,JSON.stringify(CPS)); }catch(e){} }
+function cpSave(){ try{ localStorage.setItem(CP_KEY,JSON.stringify(CPS)); }catch(e){} lsmPush(); }
+// your copies kept in the artifact's store as well as this browser: every saved item, one document each (saves/<key>), sent a moment after
+// it changes; when the page opens, whatever this browser lacks comes back from the store. Nothing without the store changes.
+var LSM={re:/^(<@v105>apt3d</@v105>-(copies|furnish|trials|bin)|apt3d-trial2-copy-.+)$/,sent:{},t:null,db:null,can:true};
+function lsmId(k){ return k.replace(/[^A-Za-z0-9_\-.~:@+]/g,'_').slice(0,190); }
+function lsmPush(){ if(!LSM.db||!LSM.can)return; clearTimeout(LSM.t); LSM.t=setTimeout(function(){ var now={}; try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(LSM.re.test(k))now[k]=localStorage.getItem(k); } }catch(e){ return; }
+  Object.keys(now).concat(Object.keys(LSM.sent)).forEach(function(k,i,a){ if(a.indexOf(k)!==i)return; var v=now[k]==null?null:now[k]; if(LSM.sent[k]===v||(v&&v.length>250000))return; LSM.sent[k]=v;
+    LSM.db.doc('saves/'+lsmId(k)).set({k:k,v:v,updated:new Date().toISOString()}).catch(function(e){ delete LSM.sent[k]; if(e&&/invalid_argument|permission|not_granted|not_writer/.test(e.code||''))LSM.can=false; }); }); },1500); }
+function lsmMerge(k,loc,rem){ try{ var a=JSON.parse(loc), b=JSON.parse(rem); if(Array.isArray(a)&&Array.isArray(b)){ var ids={}; a.forEach(function(c){ if(c&&c.id)ids[c.id]=1; }); var add=b.filter(function(c){ return c&&c.id&&!ids[c.id]; }); return add.length?JSON.stringify(a.concat(add)):null; }
+  if(a&&b&&typeof a==='object'&&typeof b==='object'){ var ch=false; Object.keys(b).forEach(function(x){ if(a[x]==null||(Array.isArray(a[x])&&!a[x].length&&Array.isArray(b[x])&&b[x].length)){ a[x]=b[x]; ch=true; } }); return ch?JSON.stringify(a):null; } }catch(e){} return null; }
+function lsmPull(db,done){ db.collection('saves').get().then(function(qs){ var got=0;
+    (qs.docs||[]).forEach(function(sn){ var d=sn.data&&sn.data(); if(!d||!d.k||!LSM.re.test(d.k)||d.v==null)return; var loc=null; try{ loc=localStorage.getItem(d.k); }catch(e){}
+      if(loc==null){ try{ localStorage.setItem(d.k,d.v); got++; }catch(e){} LSM.sent[d.k]=d.v; return; } if(loc===d.v){ LSM.sent[d.k]=d.v; return; }
+      if(/-(copies|furnish|trials|bin)$/.test(d.k)){ var m=lsmMerge(d.k,loc,d.v); if(m){ try{ localStorage.setItem(d.k,m); got++; }catch(e){} } } });
+    done(got); }).catch(function(){ done(0); }); }
+// copies the store knows by their furniture alone (saved there before the rest was): listed again, so their pieces come back
+function cpFromFurnish(db,done){ db.collection('furnish').get().then(function(qs){ var n=0; (qs.docs||[]).forEach(function(sn){ var d=sn.data&&sn.data(), id=d&&d.layout, m=id&&/^copy-(.+)-(\d+)$/.exec(id);
+    if(!m||ALL.layouts[id]||!ALL.layouts[m[1]]||!Array.isArray(d.pieces)||!d.pieces.length)return; var c={id:id,from:m[1],name:(+m[2]>1?'Copy '+m[2]+' of ':'Copy of ')+ALL.layouts[m[1]].name,at:d.updated||new Date().toISOString()};
+    CPS.push(c); cpReg(c); if(typeof cpBtn==='function')cpBtn(c); n++; }); if(n){ try{ localStorage.setItem(CP_KEY,JSON.stringify(CPS)); }catch(e){} } done(n); }).catch(function(){ done(0); }); }
+// what came back from the store: copies, their walls and doors, their furniture
+function cpRehydrate(){ var ch=false, L2=[]; try{ L2=JSON.parse(localStorage.getItem(CP_KEY)||'[]')||[]; }catch(e){}
+  L2.forEach(function(c){ if(!c||!c.id||ALL.layouts[c.id]||!ALL.layouts[c.from])return; CPS.push(c); cpReg(c); if(typeof cpBtn==='function')cpBtn(c); ch=true; });
+  CPS.forEach(function(c){ var k=c.id; if(PE_T[k]||!PE_ORIG[k])return; try{ var s=localStorage.getItem(peKey(k)); if(s){ PE_T[k]=JSON.parse(s); if(!PE_T[k].zones)PE_T[k].zones=peZones(PE_ORIG[k].plan2d); if(!PE_T[k].shift)PE_T[k].shift={}; PE.built[k]=null; peSync(k); ch=true; } }catch(e){} });
+  try{ var fl=JSON.parse(localStorage.getItem('<@v112>apt3d</@v112>-furnish')||'null'); if(fl&&typeof fl==='object')Object.keys(fl).forEach(function(L){ if(cpIs(L)&&Array.isArray(fl[L])&&fl[L].length&&!(furn[L]&&furn[L].length)){ furn[L]=fl[L]; ch=true; } }); }catch(e){}
+  if(ch){ if(typeof peBadge==='function')peBadge(); setLayout(LAYOUT); if(PE.on)peDraw(); } return ch; }
 function cpIs(k){ return !!(ALL.layouts[k]&&ALL.layouts[k].copyOf); }
 function cpOf(k){ return CPS.filter(function(c){ return c.from===k; }); }
 function cpNew(from){ var n=1; while(ALL.layouts['copy-'+from+'-'+n])n++; var nm=(ALL.layouts[from].name||from), c={id:'copy-'+from+'-'+n,from:from,name:(n>1?'Copy '+n+' of ':'Copy of ')+nm,at:new Date().toISOString()};   // a copy of a design, to change; the design stays as it is
   CPS.push(c); cpSave(); cpReg(c); if(typeof cpBtn==='function')cpBtn(c); return c; }
 function cpFor(k){ return cpOf(k)[0]||cpNew(k); }
+function cpWhen(id){ try{ var ix=JSON.parse(localStorage.getItem('<@v105>apt3d</@v105>-trials')||'{}')||{}, at=(ix[id]&&ix[id].at)||(CPS.filter(function(c){ return c.id===id; })[0]||{}).at; if(!at)return ''; var d=new Date(at); if(isNaN(d))return '';
+  return 'changed '+d.toLocaleDateString(undefined,{day:'numeric',month:'short'})+' '+d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } }
+// a plan you already have copies of: continue one, or start a new one (the plan itself never changes)
+function cpChoose(from,go){ var mine=cpOf(from); if(!mine.length){ go(cpNew(from).id,true); return; } var ov=document.getElementById('cpch'); if(ov)ov.remove();
+  ov=document.createElement('div'); ov.id='cpch'; ov.className='cpch'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-label','Which copy');
+  ov.innerHTML='<div class="cpchb"><b></b><p>It stays as designed. Carry on with one of your copies, or start a new one.</p><div class="cpchl"></div><div class="cpchr"><button type="button" class="pri" data-a="new">Start a new copy</button><button type="button" data-a="no">Cancel</button></div></div>';
+  ov.querySelector('b').textContent=ALL.layouts[from].name; var list=ov.querySelector('.cpchl');
+  mine.slice().reverse().forEach(function(c){ var b=document.createElement('button'); b.type='button'; b.innerHTML='<span></span><small></small>'; b.querySelector('span').textContent=c.name; b.querySelector('small').textContent=cpWhen(c.id)||'your copy'; b.addEventListener('click',function(){ ov.remove(); go(c.id,false); }); list.appendChild(b); });
+  ov.querySelector('[data-a="new"]').addEventListener('click',function(){ ov.remove(); go(cpNew(from).id,true); }); ov.querySelector('[data-a="no"]').addEventListener('click',function(){ ov.remove(); });
+  ov.addEventListener('keydown',function(e){ if(e.key==='Escape'){ ov.remove(); e.stopPropagation(); } }); document.body.appendChild(ov); var f1=list.querySelector('button'); if(f1)f1.focus(); }
 var LAYOUT=ALL.default; try{var saved=localStorage.getItem('<@v35>apt3d</@v35>-plan'); if(saved&&ALL.layouts[saved])LAYOUT=saved;}catch(e){}
 // a shared view: #v1~plan~e~x~y~z~yaw~pitch~zoom~hour (standing) or #v1~plan~o~x~y~z~tx~ty~tz~hour (from above), plan cm
 var SHARE=(function(){ var m=decodeURIComponent((location.hash||'').slice(1)).split('~'); return m[0]==='v1'&&ALL.layouts[m[1]]&&m.length>=10?m:null; })();
@@ -998,7 +1032,7 @@ function pe3dScene(k,T){
 function peLoad(){ cpMigrate(); Object.keys(ALL.layouts).forEach(function(k){ var L=ALL.layouts[k]; if(!L.plan2d)return; PE_ORIG[k]=L;
   try{ var s=localStorage.getItem(peKey(k)); if(s){ PE_T[k]=JSON.parse(s); if(!PE_T[k].zones)PE_T[k].zones=peZones(L.plan2d); if(!PE_T[k].shift)PE_T[k].shift={}; ALL.layouts[k]=pe3dScene(k,PE_T[k]); PE.built[k]=s; } }catch(e){} }); }
 function peHas(k){ return !!PE_T[k]&&JSON.stringify(PE_T[k])!==(PE.base[k]||(PE.base[k]=JSON.stringify(peFromPlan(k)))); }   // a trial with a change in it
-function peSave(k){ try{ if(peHas(k))localStorage.setItem(peKey(k),JSON.stringify(PE_T[k])); else localStorage.removeItem(peKey(k)); }catch(e){} peIndex(k); }
+function peSave(k){ try{ if(peHas(k))localStorage.setItem(peKey(k),JSON.stringify(PE_T[k])); else localStorage.removeItem(peKey(k)); }catch(e){} peIndex(k); lsmPush(); }
 // the trials of every plan, as the plan page reads them (same site, same browser): the walls, doors and rooms of the
 // trial with their areas, a line saying what changed, the pieces placed (with their sizes and plan symbol family) and
 // the design's pieces cleared to make way
@@ -2799,6 +2833,7 @@ function cpDrop(id){ var c=CPS.filter(function(q){ return q.id===id; })[0]; if(!
     ['<@v105>apt3d</@v105>-furnish','<@v105>apt3d</@v105>-trials'].forEach(function(K){ var o=JSON.parse(localStorage.getItem(K)||'null'); if(o&&o[id]){ delete o[id]; localStorage.setItem(K,JSON.stringify(o)); } }); }catch(e){}
   if(LAYOUT===id)setLayout(c.from);
   if(typeof furn!=='undefined')delete furn[id]; if(typeof PE_T!=='undefined'){ delete PE_T[id]; delete PE_ORIG[id]; if(PE.built)delete PE.built[id]; } if(typeof PE_G!=='undefined')delete PE_G[id]; delete ALL.layouts[id];
+  if(fStore&&fCanWrite)fStore.doc('furnish/'+id).delete().catch(function(){}); lsmPush();
   var b=document.querySelector('#layout [data-v="'+id+'"]'); if(b)b.remove(); cpBar(); toast('',c.name+' deleted. '+(ALL.layouts[c.from]||{}).name+' is as designed.'); }
 function cpRename(id,v){ v=(v||'').trim(); if(!v)return; CPS.forEach(function(q){ if(q.id===id)q.name=v; }); cpSave(); if(ALL.layouts[id])ALL.layouts[id].name=v;
   try{ var K='<@v105>apt3d</@v105>-trials', o=JSON.parse(localStorage.getItem(K)||'null'); if(o&&o[id]){ o[id].name=v; localStorage.setItem(K,JSON.stringify(o)); } }catch(e){}
@@ -3264,7 +3299,7 @@ function fInfo(){ fRingShow();
   if(window.innerWidth>760){ fbar.style.left=(panelCover()+12)+'px'; fbar.style.right='64px'; fbar.style.transform='none'; fbar.style.width='auto'; fbar.style.maxWidth='none'; }
 }
 function fSave(){ // this browser at once; the artifact's store a moment after the last change, one write at a time
-  try{ localStorage.setItem('<@v105>apt3d</@v105>-furnish',JSON.stringify(furn)); }catch(e){} peIndex(LAYOUT);
+  try{ localStorage.setItem('<@v105>apt3d</@v105>-furnish',JSON.stringify(furn)); }catch(e){} peIndex(LAYOUT); lsmPush();
   if(!fStore||!fCanWrite)return;
   var L=LAYOUT; clearTimeout(fSaveT); fSaveT=setTimeout(function go(){
     if(fSaving){ fDirtySave=true; return; } fSaving=true;
@@ -3388,7 +3423,7 @@ renderer.domElement.addEventListener('wheel',function(e){ if(!fOn||!fSel)return;
 function fRotate(deg){ var p=fGet(); if(!p)return; fMark('Turned '+fDim(p).n); p.r=((p.r+deg)%360+360)%360; fSync(); fSave(); }
 function fRemove(){ if(!fGet())return; fMark('Removed '+fDim(fGet()).n); furn[LAYOUT]=fList().filter(function(q){return q.id!==fSel;}); fSel=null; fSync(); fSave(); }
 function setFurnish(on){
-  if(on&&!cpIs(LAYOUT)&&ALL.layouts[LAYOUT].plan2d){ var fw=ALL.layouts[LAYOUT].name, fc=cpNew(LAYOUT); setLayout(fc.id); toast('',fw+' stays as designed: you are furnishing a new copy, '+fc.name); }
+  if(on&&!cpIs(LAYOUT)&&ALL.layouts[LAYOUT].plan2d){ if(document.getElementById('cpch'))return; var fw=ALL.layouts[LAYOUT].name; cpChoose(LAYOUT,function(id,nw){ setLayout(id); toast('',fw+' stays as designed: you are furnishing '+(nw?'a new copy, ':'')+ALL.layouts[id].name); setFurnish(true); }); return; }
   fOn=on; var b=document.getElementById('fmode'); b.setAttribute('aria-pressed',on?'true':'false'); b.textContent=on?'Stop furnishing':'Start furnishing';
   if(on){ clearCard(); if(measuring)setMeasuring(false); selectTab('furnish'); if(appEl.classList.contains('hidepanel'))window.togglePanel();
     if(state.fu!=='all'){ setKey('fu','all',true); applyState(); }
@@ -3494,13 +3529,14 @@ try{ var fl=JSON.parse(localStorage.getItem('<@v112>apt3d</@v112>-furnish')||'nu
 fSync();
 if(window.claude&&window.claude.use){
   window.claude.use('user').then(function(u){ if(u&&u.can)Promise.resolve(u.can('data.write')).then(function(c){ if(c===false)fCanWrite=false; }); }).catch(function(){});
-  window.claude.use('db').then(function(db){ if(!db)return; fStore=db;
-    <@v113>Object.keys(ALL.layouts)</@v113>.forEach(function(L){ db.doc('furnish/'+L).onSnapshot(function(sn){
+  window.claude.use('db').then(function(db){ if(!db)return; fStore=db; LSM.db=db;
+    lsmPull(db,function(got){ cpFromFurnish(db,function(nf){ var back=(got&&cpRehydrate())||nf; if(back)toast('','Your copies are back from this page\'s store'); fSubAll(db); lsmPush(); }); }); }).catch(function(){});
+}
+function fSubAll(db){
+    <@v113>Object.keys(ALL.layouts)</@v113>.concat(CPS.map(function(c){ return c.id; })).filter(function(L,i,a){ return a.indexOf(L)===i; }).forEach(function(L){ db.doc('furnish/'+L).onSnapshot(function(sn){   // your copies: their furniture as saved in the store
       if(!sn.exists||sn.metadata.hasPendingWrites)return; var d=sn.data(); if(!d||!Array.isArray(d.pieces))return;
       if((fDrag&&L===LAYOUT)||L===SHARED_F||!cpIs(L))return; furn[L]=JSON.parse(JSON.stringify(d.pieces)).filter(function(q){ return q&&FDEF[q.t]&&isFinite(q.x)&&isFinite(q.y); });
-      if(L===LAYOUT)fSync(); }, function(){}); });
-  }).catch(function(){});
-}
+      if(L===LAYOUT)fSync(); }, function(){}); }); }
 
 
 
@@ -4153,7 +4189,7 @@ function peFit(){ var b=SCENE.bounds||[0,0,1800,1650], r=peSvg.getBoundingClient
 function peToPlan(cx,cy){ var r=peSvg.getBoundingClientRect(); return [PE.view.x+(cx-r.left)*PE.view.k,PE.view.y+(cy-r.top)*PE.view.k]; }
 function peOpen(on){
   if(on===PE.on)return;
-  if(on&&!cpIs(LAYOUT)&&PE_ORIG[LAYOUT]){ var cw=ALL.layouts[LAYOUT].name, cc=cpNew(LAYOUT); setLayout(cc.id); toast('',cw+' stays as designed: you are working on a new copy, '+cc.name); }   // the designs are locked: changes go into a copy
+  if(on&&!cpIs(LAYOUT)&&PE_ORIG[LAYOUT]){ if(document.getElementById('cpch'))return; var cw=ALL.layouts[LAYOUT].name; cpChoose(LAYOUT,function(id,nw){ setLayout(id); toast('',cw+' stays as designed: you are '+(nw?'working on a new copy, ':'carrying on with ')+ALL.layouts[id].name); peOpen(true); }); return; }   // the designs are locked: changes go into a copy
   PE.on=on; peEl.hidden=!on; appEl.classList.toggle('pefull',!!on);   // the plan editor takes the whole screen; the panel comes back with the 3D document.getElementById('z2d').setAttribute('aria-pressed',String(on));
   if(on){ if(!PE_ORIG[LAYOUT]){ toast('','This plan has no editable walls'); PE.on=false; peEl.hidden=true; return; }
     peEl.style.left=(panelCover()||0)+'px'; PE.sel=null; PE.fr=null; PE.place=null; PE.placeAt=null; PE.undo=[]; PE.redo=[]; peFit(); peDraw(); peTool('sel'); }
@@ -4308,7 +4344,7 @@ function peDraw(){ if(!PE.on)return; var T=peT(), r=peSvg.getBoundingClientRect(
     Object.keys(was).forEach(function(n){ tot0+=was[n]; });
     AP.innerHTML='<b>Areas, m²</b><table>'+rows+'</table><div class="petot"><span>Rooms together</span><b>'+tot.toFixed(1)+'</b>'+(Math.abs(tot-tot0)>=.05?'<i class="'+(tot>tot0?'up':'dn')+'">'+(tot>tot0?'+':'−')+Math.abs(tot-tot0).toFixed(1)+'</i>':'')+'</div><p>Clear floor inside the walls, measured from them.</p>'; }
   document.getElementById('peundo').disabled=!PE.undo.length; document.getElementById('peredo').disabled=!PE.redo.length;
-  document.getElementById('pereset').disabled=!peHas(LAYOUT);
+  var prs=document.getElementById('pereset'); if(!prs.classList.contains('sure')){ var hasT=peHas(LAYOUT), bnn=!hasT&&peBin(LAYOUT); prs.disabled=!hasT&&!bnn; prs.textContent=hasT||!bnn?'Clear my changes':'Bring back my changes'; prs.title=hasT?'Clear every change in this copy (it asks first; undo brings them back)':bnn?'Bring back the changes you cleared':'Nothing to clear'; }
   document.getElementById('petitle').textContent=(peHas(LAYOUT)?'Your trial of ':'')+SCENE.name.split(' · ')[0];
   peSelUI(); }
 function peHintText(T){ var D=PE.drag;
@@ -5358,8 +5394,12 @@ function peSwap(from,to){ if(!from.length)return; var top=from.pop();     // a s
 function peUndo(){ peSwap(PE.undo,PE.redo); }
 function peRedo(){ peSwap(PE.redo,PE.undo); }
 document.getElementById('peundo').addEventListener('click',peUndo); document.getElementById('peredo').addEventListener('click',peRedo);
-document.getElementById('pereset').addEventListener('click',function(){ if(!peHas(LAYOUT))return; PE.undo.push(JSON.stringify(PE_T[LAYOUT])); PE.redo=[];
-  delete PE_T[LAYOUT]; peSave(LAYOUT); PE.sel=null; peDraw(); toast('','Back to '+SCENE.name.split(' · ')[0]+' as designed. Undo brings your trial back.'); });
+function peBin(k,v){ try{ var B=JSON.parse(localStorage.getItem('<@v105>apt3d</@v105>-bin')||'{}')||{}; if(v===undefined)return B[k]||null; if(v)B[k]={at:new Date().toISOString(),t:v}; else delete B[k]; localStorage.setItem('<@v105>apt3d</@v105>-bin',JSON.stringify(B)); }catch(e){} return null; }   // what Clear took away, to bring back
+document.getElementById('pereset').addEventListener('click',function(){ var b=this;
+  if(!peHas(LAYOUT)){ var bn=peBin(LAYOUT); if(!bn)return; PE_T[LAYOUT]=JSON.parse(bn.t); peBin(LAYOUT,null); PE.undo=[]; PE.redo=[]; peSave(LAYOUT); peDraw(); toast('','Your changes are back'); return; }
+  if(!b.classList.contains('sure')){ b.classList.add('sure'); b.textContent='Clear every change? Click again'; clearTimeout(b._t); b._t=setTimeout(function(){ b.classList.remove('sure'); peDraw(); },4000); return; }   // asks first
+  b.classList.remove('sure'); clearTimeout(b._t); var was=JSON.stringify(PE_T[LAYOUT]); peBin(LAYOUT,was); PE.undo.push(was); PE.redo=[];
+  delete PE_T[LAYOUT]; peSave(LAYOUT); PE.sel=null; peDraw(); toast('','Cleared: back to '+SCENE.name.split(' · ')[0]+' as designed. Undo, or Bring back my changes, returns them.'); });
 var PE_EMB=document.documentElement.classList.contains('embed')&&new URLSearchParams(location.search).get('edit')==='1'&&window.parent!==window;   // editing inside the plan page
 if(PE_EMB){ document.documentElement.classList.add('embed2d'); var pd=document.getElementById('pe3d'); pd.textContent='Done'; pd.title='Back to the plan page, with your changes'; document.getElementById('pe3dx').hidden=false; }
 if(PE_EMB)(function rdy(n){ if(PE.on){ window.parent.postMessage({apt:'edit-ready',plan:LAYOUT},'*'); return; } if(n<120)setTimeout(function(){ rdy(n+1); },250); })(0);   // tells the plan page the editor is open
@@ -5507,7 +5547,7 @@ progress(1,'Ready');
 var ld=document.getElementById('loading'); if(ld){ ld.classList.add('done'); setTimeout(function(){ ld.remove(); },700); }
 window.<@v134>APT_READY</@v134>=true;
 try{ peIndex(LAYOUT); }catch(e){}
-if(new URLSearchParams(location.search).get('edit')==='1'||location.hash==='#edit')(function go(n){ setTimeout(function(){ if(!PE.on)peOpen(true); if(!PE.on&&n<8)go(n+1); },n?250:120); })(0);   // from the plan page's Edit in 2D
+if(new URLSearchParams(location.search).get('edit')==='1'||location.hash==='#edit')(function go(n){ setTimeout(function(){ if(document.getElementById('cpch'))return; if(!PE.on)peOpen(true); if(!PE.on&&!document.getElementById('cpch')&&n<8)go(n+1); },n?250:120); })(0);   // from the plan page's Edit in 2D
 adapt.t0=performance.now(); renderer.setAnimationLoop(loop);
 </script>
 
