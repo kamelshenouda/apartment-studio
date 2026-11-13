@@ -47,12 +47,13 @@ def rooms(r):
     return ' and '.join(r) if len(r) <= 2 else ', '.join(r[:-1]) + ' and ' + r[-1]
 
 
-def fingerprint(page, plan):
-    """The same fingerprint the 3D page gives a plan (peKey): a trial made on another version of the plan is flagged."""
+def fingerprint(page, plan, data=None):
+    """The same fingerprint the 3D page gives a plan (peKey): a trial made on another version of the plan is flagged.
+    A copy of a design (plan 'copy-c-1') is fingerprinted on its design's walls (data 'c')."""
     src = open(page, encoding='utf-8').read()
     i = src.index('var ALL=') + len('var ALL=')
     ALL, _ = json.JSONDecoder().raw_decode(src[i:])
-    P = ALL['layouts'][plan]['plan2d']
+    P = ALL['layouts'][data or plan]['plan2d']
     js = lambda v: [js(x) for x in v] if isinstance(v, list) else (int(v) if isinstance(v, float) and v.is_integer() else v)   # numbers as JavaScript writes them
     s = json.dumps([[js(L['a']), js(L['c'])] for L in P['lines']], separators=(',', ':'))
     h = 0
@@ -74,10 +75,10 @@ def report(d, page=None):
     L.append('')
     L.append(f"{d['summary'].rstrip('.…')}.")
     L.append('')
-    L.append(f"Plan `{p['id']}`, made in the 2D plan on {d['made'][:10]}. Plan centimetres: x to the right, y down the plan.")
+    L.append(f"Plan `{p['id']}`" + (f", a copy of the design `{p['copyOf']}`" if p.get('copyOf') else '') + f", made in the 2D plan on {d['made'][:10]}. Plan centimetres: x to the right, y down the plan.")
     if page:
         try:
-            fp = fingerprint(page, p['id'])
+            fp = fingerprint(page, p['id'], p.get('copyOf'))
             L.append('')
             L.append('Made on the plan as it is now.' if fp == d.get('fingerprint') else
                      f'**Made on another version of the plan** ({d.get("fingerprint")}, now {fp}): check every coordinate against the drawing before using it.')
@@ -152,8 +153,8 @@ def report(d, page=None):
 
 
 def furnish(d, path, write):
-    k = d['plan']['id']
-    new = d['furniture']['furnish_json'].get(k, {'pieces': []})
+    k = d['plan'].get('copyOf') or d['plan']['id']      # a copy's furniture goes to the design it was copied from
+    new = d['furniture']['furnish_json'].get(d['plan']['id'], {'pieces': []})
     cur = json.load(open(path, encoding='utf-8')) if os.path.exists(path) else {}
     was = (cur.get(k) or {}).get('pieces', [])
     print(f'{path}: plan {k} has {len(was)} piece(s); the trial has {len(new["pieces"])}.')

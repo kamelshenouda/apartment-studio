@@ -82,6 +82,10 @@ When the owner asks for this (or anything like it), go through these steps in or
     sets `X.miss` to a plain reason when an asked-for set does not fit; the usual set (`X.def`) never sets one. The
     garden is the walk's room `'g'`, the largest rectangle in its outline (`pfGardenRect`). `pfGroup` places a set of
     pieces anywhere in a room.
+  - **The plans are locked; changes go into copies.** A layout id `copy-<plan>-<n>` is a copy, listed in
+    `<prefix>-copies` in the browser (`cpReg` builds it from its plan, with `copyOf`). `peOpen` and `setFurnish` on a plan
+    move to its copy (`cpFor`). The plan page's part is in `plan_trial.js` (tabs, Edit, Rename, New copy, Delete). Never
+    let an edit reach a plan itself.
   - **Test handle.** `APT_PLAN.ev(src)` evaluates inside the page, so tests can reach these functions.
 - **A trial sent to you** ("Send to Claude" in the 2D plan) arrives three ways:
   - in the 3D artifact's store, under the `trials` collection with the plan as the document (read it with the artifact data tool: `get`, collection `trials`, document `c`);

@@ -450,6 +450,7 @@ h3{font-weight:600}
 .pe-whl{fill:rgba(192,57,43,.08);stroke:#C0392B;stroke-width:2;stroke-dasharray:6 4;vector-effect:non-scaling-stroke;pointer-events:none}
 .pe-wring{fill:none;stroke:#C0392B;stroke-width:2;vector-effect:non-scaling-stroke;pointer-events:none}
 .embed2d .pe{left:0!important}
+#layout .cpb small{color:var(--accent)}#layout .cpb[aria-pressed="true"] small{color:inherit;opacity:.8}
 .pekey{position:absolute;left:14px;bottom:14px;z-index:3;display:grid;gap:6px;justify-items:start}.pe.catopen .pekey{left:322px}
 .pekey button{appearance:none;border:1px solid var(--btn-line);background:var(--sheet);color:var(--ink);font:600 12px var(--display);padding:6px 11px;border-radius:999px;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.08)}
 .pekey .pekl{display:grid;gap:5px;padding:10px 12px;background:var(--sheet);border:1px solid var(--btn-line);border-radius:10px;font:500 12px var(--display);color:var(--ink2);box-shadow:0 6px 20px rgba(0,0,0,.12);order:-1}
@@ -788,6 +789,17 @@ T.BufferGeometry.prototype.computeBoundsTree=computeBoundsTree; T.BufferGeometry
 T.Mesh.prototype.raycast=acceleratedRaycast;
 
 var ALL=/*SCENE*/null;
+(function(){ var E=ALL.layouts.existing; if(E&&E.items)E.items=E.items.filter(function(it){ return it.f!=='loose'; }); })();   // As built: the empty apartment, with its built-in fittings
+var CP_KEY='<@v105>apt3d</@v105>-copies', CPS=[];
+try{ CPS=(JSON.parse(localStorage.getItem(CP_KEY)||'[]')||[]).filter(function(c){ return c&&c.id&&c.from&&ALL.layouts[c.from]&&!ALL.layouts[c.id]; }); }catch(e){ CPS=[]; }
+function cpReg(c){ var src=(typeof PE_ORIG!=='undefined'&&PE_ORIG&&PE_ORIG[c.from])||ALL.layouts[c.from], L=JSON.parse(JSON.stringify(src)); L.name=c.name; L.copyOf=c.from; ALL.layouts[c.id]=L; if(typeof PE_ORIG!=='undefined'&&PE_ORIG&&L.plan2d)PE_ORIG[c.id]=L; return L; }
+CPS.forEach(cpReg);
+function cpSave(){ try{ localStorage.setItem(CP_KEY,JSON.stringify(CPS)); }catch(e){} }
+function cpIs(k){ return !!(ALL.layouts[k]&&ALL.layouts[k].copyOf); }
+function cpOf(k){ return CPS.filter(function(c){ return c.from===k; }); }
+function cpNew(from){ var n=1; while(ALL.layouts['copy-'+from+'-'+n])n++; var nm=(ALL.layouts[from].name||from), c={id:'copy-'+from+'-'+n,from:from,name:(n>1?'Copy '+n+' of ':'Copy of ')+nm,at:new Date().toISOString()};   // a copy of a design, to change; the design stays as it is
+  CPS.push(c); cpSave(); cpReg(c); if(typeof cpBtn==='function')cpBtn(c); return c; }
+function cpFor(k){ return cpOf(k)[0]||cpNew(k); }
 var LAYOUT=ALL.default; try{var saved=localStorage.getItem('<@v35>apt3d</@v35>-plan'); if(saved&&ALL.layouts[saved])LAYOUT=saved;}catch(e){}
 // a shared view: #v1~plan~e~x~y~z~yaw~pitch~zoom~hour (standing) or #v1~plan~o~x~y~z~tx~ty~tz~hour (from above), plan cm
 var SHARE=(function(){ var m=decodeURIComponent((location.hash||'').slice(1)).split('~'); return m[0]==='v1'&&ALL.layouts[m[1]]&&m.length>=10?m:null; })();
@@ -799,6 +811,11 @@ if(new URLSearchParams(location.search).get('embed')==='1')document.documentElem
 // skirting are laid again from the trial, and the furniture that stood against a moved wall moves with it
 // (pe3dScene); everything else stays as designed.
 var PE_ORIG={}, PE_T={}, PE={on:false,tool:'sel',sel:null,undo:[],redo:[],view:null,drag:null,pts:{},built:{},base:{},warnBase:{},baseRooms:{},selAt:null,showBase:false};
+function cpMigrate(){ try{ if(localStorage.getItem(CP_KEY+'-v1'))return; var FK='<@v105>apt3d</@v105>-furnish', IK='<@v105>apt3d</@v105>-trials', fl=JSON.parse(localStorage.getItem(FK)||'null')||{}, idx=JSON.parse(localStorage.getItem(IK)||'{}')||{}, ch=false;
+  Object.keys(ALL.layouts).forEach(function(k){ if(cpIs(k)||!ALL.layouts[k].plan2d)return; var key=peKey(k), st=localStorage.getItem(key), f=Array.isArray(fl[k])&&fl[k].length?fl[k]:null; if(!st&&!f)return;
+    var c=cpNew(k); if(st){ localStorage.setItem(peKey(c.id),st); localStorage.removeItem(key); } if(f)fl[c.id]=f; delete fl[k]; if(idx[k]){ idx[c.id]=idx[k]; idx[c.id].name=c.name; delete idx[k]; } ch=true; });
+  if(ch){ localStorage.setItem(FK,JSON.stringify(fl)); localStorage.setItem(IK,JSON.stringify(idx)); }
+  localStorage.setItem(CP_KEY+'-v1','1'); }catch(e){} }
 function peKey(k){ var P=(PE_ORIG[k]||ALL.layouts[k]).plan2d, s=JSON.stringify(P.lines.map(function(L){ return [L.a,L.c]; })), h=0;
   for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;
   return 'apt3d-trial2-'+k+'-'+(h>>>0).toString(36); }     // the original plan's fingerprint: a trial made on another plan is not used
@@ -959,7 +976,7 @@ function pe3dScene(k,T){
   var S={}; Object.keys(O).forEach(function(key){ S[key]=O[key]; });
   S.items=items; S.lights=lights; S.pieces=pieces; S.rooms=rooms; S.labels=labels; S.trial=true;
   return S; }
-function peLoad(){ Object.keys(ALL.layouts).forEach(function(k){ var L=ALL.layouts[k]; if(!L.plan2d)return; PE_ORIG[k]=L;
+function peLoad(){ cpMigrate(); Object.keys(ALL.layouts).forEach(function(k){ var L=ALL.layouts[k]; if(!L.plan2d)return; PE_ORIG[k]=L;
   try{ var s=localStorage.getItem(peKey(k)); if(s){ PE_T[k]=JSON.parse(s); if(!PE_T[k].zones)PE_T[k].zones=peZones(L.plan2d); if(!PE_T[k].shift)PE_T[k].shift={}; ALL.layouts[k]=pe3dScene(k,PE_T[k]); PE.built[k]=s; } }catch(e){} }); }
 function peHas(k){ return !!PE_T[k]&&JSON.stringify(PE_T[k])!==(PE.base[k]||(PE.base[k]=JSON.stringify(peFromPlan(k)))); }   // a trial with a change in it
 function peSave(k){ try{ if(peHas(k))localStorage.setItem(peKey(k),JSON.stringify(PE_T[k])); else localStorage.removeItem(peKey(k)); }catch(e){} peIndex(k); }
@@ -2690,13 +2707,17 @@ function setLayout(k){
   clearCard(); fSel=null; clearModel(); buildModel(); makeWindowLights(); makeLighting(); makeLabels(); syncLayoutUI(); applyState(); if(FIN_ON)finUI(); dirty=true;
   if(typeof PE!=='undefined'&&PE.on){ PE.undo=[]; PE.redo=[]; PE.sel=null; peFit(); peDraw(); peBadge(); }
 }
-function syncLayoutUI(){
+function cpLock(){ var lk=!cpIs(LAYOUT); document.documentElement.classList.toggle('lockedplan',lk); }
+function syncLayoutUI(){ cpLock();
   [].forEach.call(document.querySelectorAll('#layout button'),function(b){b.setAttribute('aria-pressed',b.getAttribute('data-v')===LAYOUT?'true':'false');});
   [].forEach.call(document.querySelectorAll('[data-only]'),function(el){el.hidden=el.getAttribute('data-only').split(' ').indexOf(LAYOUT)<0;});
   var nm=document.getElementById('layoutname'); if(nm)nm.textContent=SCENE.name;
   viewLabels();
 }
-[].forEach.call(document.querySelectorAll('#layout button'),function(b){b.addEventListener('click',function(){ var was=LAYOUT, v=b.getAttribute('data-v'); if(was!==v)hDo('Plan: '+ALL.layouts[v].name,function(){ setLayout(was); },function(){ setLayout(v); }); setLayout(v);});});
+function layBind(b){ b.addEventListener('click',function(){ var was=LAYOUT, v=b.getAttribute('data-v'); if(was!==v)hDo('Plan: '+ALL.layouts[v].name,function(){ setLayout(was); },function(){ setLayout(v); }); setLayout(v);}); }
+function cpBtn(c){ var g=document.getElementById('layout'); if(!g||g.querySelector('[data-v="'+c.id+'"]'))return null; var b=document.createElement('button'); b.type='button'; b.className='cpb'; b.setAttribute('data-v',c.id); b.setAttribute('aria-pressed',c.id===LAYOUT?'true':'false'); b.title=c.name;
+  b.appendChild(document.createTextNode(c.name.replace(/^Copy (\d+ )?of /,'').split(' · ')[0])); var sm=document.createElement('small'); sm.textContent=/^Copy \d/.test(c.name)?c.name.split(' of ')[0].toLowerCase():'your copy'; b.appendChild(sm); g.appendChild(b); layBind(b); return b; }
+[].forEach.call(document.querySelectorAll('#layout button:not(.cpb)'),layBind); CPS.forEach(cpBtn);
 syncLayoutUI();
 function drawLabels(){
   var w=LAY.w,h=LAY.h,v=new T.Vector3();
@@ -3269,6 +3290,7 @@ renderer.domElement.addEventListener('wheel',function(e){ if(!fOn||!fSel)return;
 function fRotate(deg){ var p=fGet(); if(!p)return; fMark('Turned '+fDim(p).n); p.r=((p.r+deg)%360+360)%360; fSync(); fSave(); }
 function fRemove(){ if(!fGet())return; fMark('Removed '+fDim(fGet()).n); furn[LAYOUT]=fList().filter(function(q){return q.id!==fSel;}); fSel=null; fSync(); fSave(); }
 function setFurnish(on){
+  if(on&&!cpIs(LAYOUT)&&ALL.layouts[LAYOUT].plan2d){ var fw=ALL.layouts[LAYOUT].name, fc=cpFor(LAYOUT); setLayout(fc.id); toast('',fw+' stays as designed: you are furnishing your copy, '+fc.name); }
   fOn=on; var b=document.getElementById('fmode'); b.setAttribute('aria-pressed',on?'true':'false'); b.textContent=on?'Stop furnishing':'Start furnishing';
   if(on){ clearCard(); if(measuring)setMeasuring(false); selectTab('furnish'); if(appEl.classList.contains('hidepanel'))window.togglePanel();
     if(state.fu!=='all'){ setKey('fu','all',true); applyState(); }
@@ -3377,7 +3399,7 @@ if(window.claude&&window.claude.use){
   window.claude.use('db').then(function(db){ if(!db)return; fStore=db;
     <@v113>Object.keys(ALL.layouts)</@v113>.forEach(function(L){ db.doc('furnish/'+L).onSnapshot(function(sn){
       if(!sn.exists||sn.metadata.hasPendingWrites)return; var d=sn.data(); if(!d||!Array.isArray(d.pieces))return;
-      if((fDrag&&L===LAYOUT)||L===SHARED_F)return; furn[L]=JSON.parse(JSON.stringify(d.pieces)).filter(function(q){ return q&&FDEF[q.t]&&isFinite(q.x)&&isFinite(q.y); });
+      if((fDrag&&L===LAYOUT)||L===SHARED_F||!cpIs(L))return; furn[L]=JSON.parse(JSON.stringify(d.pieces)).filter(function(q){ return q&&FDEF[q.t]&&isFinite(q.x)&&isFinite(q.y); });
       if(L===LAYOUT)fSync(); }, function(){}); });
   }).catch(function(){});
 }
@@ -4032,7 +4054,9 @@ function peFit(){ var b=SCENE.bounds||[0,0,1800,1650], r=peSvg.getBoundingClient
   PE.view={x:(b[0]+b[2])/2-(left+(r.width-left)/2)*k,y:(b[1]+b[3])/2-(r.height-below)*k/2,k:k}; }
 function peToPlan(cx,cy){ var r=peSvg.getBoundingClientRect(); return [PE.view.x+(cx-r.left)*PE.view.k,PE.view.y+(cy-r.top)*PE.view.k]; }
 function peOpen(on){
-  if(on===PE.on)return; PE.on=on; peEl.hidden=!on; document.getElementById('z2d').setAttribute('aria-pressed',String(on));
+  if(on===PE.on)return;
+  if(on&&!cpIs(LAYOUT)&&PE_ORIG[LAYOUT]){ var cw=ALL.layouts[LAYOUT].name, cc=cpFor(LAYOUT); setLayout(cc.id); toast('',cw+' stays as designed: you are changing your copy, '+cc.name); }   // the designs are locked: changes go into a copy
+  PE.on=on; peEl.hidden=!on; document.getElementById('z2d').setAttribute('aria-pressed',String(on));
   if(on){ if(!PE_ORIG[LAYOUT]){ toast('','This plan has no editable walls'); PE.on=false; peEl.hidden=true; return; }
     peEl.style.left=(panelCover()||0)+'px'; PE.sel=null; PE.fr=null; PE.place=null; PE.placeAt=null; PE.undo=[]; PE.redo=[]; peFit(); peDraw(); peTool('sel'); }
   else peApply(); }
@@ -4771,7 +4795,7 @@ function pePack(k){ var D=peDiff(k), T=peHas(k)?PE_T[k]:null, F=(furn[k]||[]), O
   var moved=F.filter(function(q){ return !q.gone&&q.t.charAt(0)==='@'&&FDEF[q.t]; }).map(function(q){ return {name:FDEF[q.t].n,x:q.x,y:q.y,r:q.r||0,room:roomOf(q.x,q.y)}; });
   var W=T?peWarnings(T).filter(function(w){ return !w.base; }).map(function(w){ return w.t; }):[];
   var fj={}; fj[k]={pieces:F.filter(function(q){ return !q.gone&&q.t.charAt(0)!=='@'&&FDEF[q.t]; }).map(function(q){ var o={t:q.t,x:q.x,y:q.y,r:q.r||0}; if(q.w)o.w=q.w; if(q.d)o.d=q.d; return o; })};
-  var pk={kind:'apartment-trial',v:1,plan:{id:k,name:O.name},made:new Date().toISOString(),fingerprint:peKey(k),summary:peHas(k)?peSummary(k):'Your trial of '+O.name.split(' · ')[0]+': walls and doors as designed',
+  var pk={kind:'apartment-trial',v:1,plan:{id:k,name:O.name,copyOf:ALL.layouts[k].copyOf||null},made:new Date().toISOString(),fingerprint:peKey(k),summary:peHas(k)?peSummary(k):'Your trial of '+O.name.split(' · ')[0]+': walls and doors as designed',
     walls:{moved:D.moved,added:D.added,removed:D.removed,thickness:D.thick,length:D.len},doors:D.doors,rooms:D.rooms,furniture:{placed:placed,cleared:cleared,moved:moved,furnish_json:fj},warnings:W,trial:T,furn:F};
   pk.text=peText(pk); return pk; }
 function peText(p){ var L=[], n=function(v){ return Math.round(v*10)/10; };

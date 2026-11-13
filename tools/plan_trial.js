@@ -1,6 +1,6 @@
 // The plan page and your trial: the 3D page keeps, in this browser, an index of the trials made in its 2D plan (walls,
 // doors, rooms with their areas, the pieces placed and the design's pieces cleared). Here each plan that has one gets a
-// bar: Design or Your trial, and Edit (the plan editor, full screen over this page). Your trial is drawn over the
+// bar: the design stays as drawn; Edit makes a copy (its own tab) and opens the plan editor full screen over this page. Your trial is drawn over the
 // design, faded under it, in the plan's own centimetres. It follows the 3D page live when both are open.
 // Built into the page by tools/build_plans.py (trial_script); fSym is the 3D page's own plan symbol code.
 (function(){
@@ -26,6 +26,8 @@
     '.ptr .pfr{fill:rgba(102,108,113,.08);stroke:#7A8085;stroke-width:1;stroke-dasharray:4 3}.ptr .pfh{fill:none;stroke:#7A8085;stroke-width:1.2;stroke-dasharray:6 4}.ptr .pfg{fill:#DCE5D2;stroke:#5E7F4A;stroke-width:1}'+
     '.ptr .pgone{stroke:#C0392B;stroke-width:1.5;opacity:.7}'+
     '.ptbar .pted{appearance:none;border:0;border-radius:8px;background:var(--accent,#2E5A74);color:#fff;font:600 13px var(--sans,system-ui,sans-serif);padding:7px 14px;cursor:pointer;white-space:nowrap}.ptbar .pted:hover{filter:brightness(1.08)}'+
+    '.ptbar .ptm{display:inline-flex;flex-wrap:wrap;gap:6px;align-items:center}.ptbar .ptm button{appearance:none;border:1px solid var(--line,#D8D5CF);background:transparent;color:var(--ink,#1D2125);font:600 12.5px var(--sans,system-ui,sans-serif);padding:6px 10px;border-radius:8px;cursor:pointer}.ptbar .ptm button.ptdel{border-color:#B03A2E;color:#B03A2E}.ptbar .ptm input{font:500 13px var(--sans,system-ui,sans-serif);padding:6px 8px;border:1px solid var(--line,#D8D5CF);border-radius:6px;min-width:0;width:220px;max-width:100%;background:var(--sheet,#FBFAF7);color:var(--ink,#1D2125)}'+
+    '.ptbar .ptsel{font:inherit;font-size:13px;padding:5px 8px;border:1px solid var(--line,#ccc);border-radius:6px;background:var(--paper,#fff);color:inherit;max-width:16em}.tab.ptct small{color:var(--accent,#2E5A74)}.tab.ptct[aria-selected="true"] small{color:var(--paper,#F2F1ED)}'+
     '.ptedit{position:fixed;inset:0;z-index:9999;background:var(--paper,#F2F1ED);display:grid}.ptedit iframe{border:0;width:100%;height:100%}'+
     '.ptedit .ptload{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:10px;font:600 14px var(--sans,system-ui,sans-serif);color:var(--muted,#666C71);pointer-events:none}.ptedit .ptalt{pointer-events:auto;color:var(--accent,#2E5A74)}';
   document.head.appendChild(css);
@@ -47,27 +49,69 @@
     (e.rooms||[]).forEach(function(r){ var cx=(r.r[0]+r.r[2])/2, cy=(r.r[1]+r.r[3])/2, rw=r.r[2]-r.r[0]-10, f1=Math.min(22,rw/(r.n.length*.6)), dt=r.a.toFixed(1)+' m² · '+r.w+' × '+r.d, f2=Math.min(15,rw/(dt.length*.6));
       var t=el('text',{x:cx,y:cy-4,class:'ptn','font-size':Math.max(9,f1)},g); t.textContent=r.n; var t2=el('text',{x:cx,y:cy+f2+6,class:'ptd','font-size':Math.max(8,f2)},g); t2.textContent=dt; });
   }
-  function bar(svg,k,e){ var id='ptbar-'+k, b=document.getElementById(id); if(!b){ b=document.createElement('div'); b.id=id; b.className='ptbar'; svg.parentNode.insertBefore(b,svg); }
-    if(!e){ b.innerHTML='<span class="pts">Try it yourself: move walls and doors, and furnish the rooms, on this plan. It stays in this browser; the design does not change.</span><button type="button" class="pted">Edit this plan</button>'; b.querySelector('.pted').addEventListener('click',function(){ edit(k); }); return; }
-    var parts=[]; if(e.sum)parts.push(esc(e.sum.replace(/^Your trial of [^:]*: /,''))); if(e.pcs&&e.pcs.length)parts.push(e.pcs.length+(e.pcs.length===1?' piece':' pieces')+' placed'); if(e.gone&&e.gone.length)parts.push(e.gone.length+' of the design\'s cleared');
-    var on=MODE[k]==='trial';
-    b.innerHTML='<span class="pts"><b>Your trial</b>, in this browser: '+parts.join(' · ')+'</span><span class="seg" role="group" aria-label="Show"><button type="button" data-m="design" aria-pressed="'+!on+'">Design</button><button type="button" data-m="trial" aria-pressed="'+on+'">Your trial</button></span><button type="button" class="pted">Edit</button>';
-    b.querySelector('.pted').addEventListener('click',function(){ edit(k); });
-    [].forEach.call(b.querySelectorAll('[data-m]'),function(x){ x.addEventListener('click',function(){ MODE[k]=x.getAttribute('data-m'); try{ sessionStorage.setItem(KEY+'-mode',JSON.stringify(MODE)); }catch(er){} all(); }); }); }
-  function all(){ var idx=read(); [].forEach.call(document.querySelectorAll('svg.plan[id^="plan-"]'),function(svg){ var k=svg.id.slice(5), e=idx[k]; bar(svg,k,e); draw(svg,k,e); }); }
-  // Edit: the plan editor, full screen over this page, in the plan page's own look; Done comes back here with your trial shown
+  // the four designs stay as drawn: Edit works on a copy, made the first time, with a tab of its own beside the designs
+  var CKEY='__PREFIX__-copies', FKEY='__PREFIX__-furnish', CUR={};
+  try{ CUR=JSON.parse(sessionStorage.getItem(KEY+'-cur')||'{}')||{}; }catch(e){}
+  function copies(){ try{ return (JSON.parse(localStorage.getItem(CKEY)||'[]')||[]).filter(function(c){ return c&&c.id&&c.from; }); }catch(e){ return []; } }
+  function saveCopies(l){ try{ localStorage.setItem(CKEY,JSON.stringify(l)); }catch(e){} }
+  function saveCur(){ try{ sessionStorage.setItem(KEY+'-cur',JSON.stringify(CUR)); }catch(e){} }
+  function designName(k){ var t=document.getElementById('tab-'+k); if(!t)return k==='existing'?'the plan as built':'the plan'; var sm=t.querySelector('small'), sub=sm?sm.textContent:'', main=t.textContent.replace(sub,'').trim(), rv=(sub.match(/Rev [\d.]+/)||[])[0];
+    return rv?rv+' · '+main:main; }
+  function newCopy(from){ var l=copies(), used={}; l.forEach(function(c){ used[c.id]=1; }); var n=1; while(used['copy-'+from+'-'+n])n++;
+    var c={id:'copy-'+from+'-'+n,from:from,name:(n>1?'Copy '+n+' of ':'Copy of ')+designName(from),at:new Date().toISOString()}; l.push(c); saveCopies(l); return c; }
+  function copyOf(id){ return copies().filter(function(c){ return c.id===id; })[0]; }
+  function dropCopy(id){ var l=copies().filter(function(c){ return c.id!==id; }); saveCopies(l);
+    try{ for(var i=localStorage.length-1;i>=0;i--){ var kk=localStorage.key(i); if(kk&&kk.indexOf('apt3d-trial2-'+id+'-')===0)localStorage.removeItem(kk); }
+      var fl=JSON.parse(localStorage.getItem(FKEY)||'null'); if(fl&&fl[id]){ delete fl[id]; localStorage.setItem(FKEY,JSON.stringify(fl)); }
+      var ix=read(); if(ix[id]){ delete ix[id]; localStorage.setItem(KEY,JSON.stringify(ix)); } }catch(e){} }
+  function pick(from,id){ var t=document.getElementById('tab-'+from); if(t&&ACT!==from)t.click(); ACT=from; if(id)CUR[from]=id; else delete CUR[from]; saveCur(); all(); }
+  var ACT=null;   // the design on show: its own tab looks unpicked while one of its copies is shown
+  function tabsUI(){ var orig=[].slice.call(document.querySelectorAll('.tab[data-plan]')); if(!orig.length)return; var box=orig[0].parentNode;
+    orig.forEach(function(t){ if(t.getAttribute('aria-selected')==='true')ACT=t.getAttribute('data-plan'); });
+    [].forEach.call(box.querySelectorAll('.ptct'),function(x){ x.remove(); });
+    copies().forEach(function(c){ var t=document.getElementById('tab-'+c.from); if(!t)return; var b=document.createElement('button'); b.type='button'; b.className='tab ptct'; b.setAttribute('role','tab');
+      var on=CUR[c.from]===c.id&&ACT===c.from; b.setAttribute('aria-selected',String(on)); b.innerHTML='<small>Your copy</small>'; b.appendChild(document.createTextNode(c.name.replace(/^Copy (\d+ )?of /,''))); b.title=c.name;
+      b.addEventListener('click',function(){ pick(c.from,c.id); }); box.appendChild(b); });
+    orig.forEach(function(t){ var k=t.getAttribute('data-plan'); if(k===ACT&&CUR[k])t.setAttribute('aria-selected','false'); }); }   // a copy shown: its tab is the one picked
+  function bar(svg,k){ var id='ptbar-'+k, b=document.getElementById(id); if(!b){ b=document.createElement('div'); b.id=id; b.className='ptbar'; svg.parentNode.insertBefore(b,svg); }
+    var cid=CUR[k], c=cid&&copyOf(cid), mine=copies().filter(function(q){ return q.from===k; });
+    if(!c){ b.innerHTML='<span class="pts">'+(k==='existing'?'<b>The plan as built</b>, as measured: it stays as it is.':'<b>The design</b>, as drawn: it stays as it is.')+' Edit makes your own copy to change'+(mine.length?' (you have '+mine.length+')':'')+'.</span><button type="button" class="pted">'+(mine.length?'Edit your copy':'Edit a copy')+'</button>';
+      b.querySelector('.pted').addEventListener('click',function(){ var cc=mine[0]||newCopy(k); pick(k,cc.id); edit(cc.id); }); chooser(b,k,mine,null); return; }
+    var e=read()[c.id], parts=[]; if(e&&e.sum)parts.push(esc(e.sum.replace(/^Your trial of [^:]*: /,''))); if(e&&e.pcs&&e.pcs.length)parts.push(e.pcs.length+(e.pcs.length===1?' piece':' pieces')+' placed'); if(e&&e.gone&&e.gone.length)parts.push(e.gone.length+' of the design\'s cleared');
+    b.innerHTML='<span class="pts"><b></b>, your copy of '+esc(designName(k))+', in this browser: '+(parts.join(' · ')||'no changes yet')+'</span><button type="button" class="pted">Edit</button><span class="ptm"><button type="button" data-a="des">Show the design</button><button type="button" data-a="ren">Rename</button><button type="button" data-a="new">New copy</button><button type="button" data-a="del">Delete</button></span>';
+    b.querySelector('b').textContent=c.name; b.querySelector('.pted').addEventListener('click',function(){ edit(c.id); }); chooser(b,k,mine,c.id);
+    b.querySelector('[data-a="des"]').addEventListener('click',function(){ pick(k,null); });
+    b.querySelector('[data-a="new"]').addEventListener('click',function(){ var n=newCopy(k); pick(k,n.id); edit(n.id); });
+    b.querySelector('[data-a="ren"]').addEventListener('click',function(){ var m=b.querySelector('.ptm'); m.innerHTML='<input type="text" aria-label="Name of the copy" maxlength="60"><button type="button" data-a="ok">Save</button><button type="button" data-a="no">Cancel</button>';
+      var inp=m.querySelector('input'); inp.value=c.name; inp.focus(); inp.select();
+      function ok(){ var v=inp.value.trim(); if(v){ var l=copies(); l.forEach(function(q){ if(q.id===c.id)q.name=v; }); saveCopies(l); var ix=read(); if(ix[c.id]){ ix[c.id].name=v; try{ localStorage.setItem(KEY,JSON.stringify(ix)); }catch(er){} } } all(); }
+      inp.addEventListener('keydown',function(ev){ if(ev.key==='Enter')ok(); if(ev.key==='Escape')all(); }); m.querySelector('[data-a="ok"]').addEventListener('click',ok); m.querySelector('[data-a="no"]').addEventListener('click',all); });
+    b.querySelector('[data-a="del"]').addEventListener('click',function(){ var m=b.querySelector('.ptm'); m.innerHTML='<span>Delete it, with its changes?</span><button type="button" data-a="yes" class="ptdel">Delete</button><button type="button" data-a="no">Keep</button>';
+      m.querySelector('[data-a="yes"]').addEventListener('click',function(){ dropCopy(c.id); pick(k,null); }); m.querySelector('[data-a="no"]').addEventListener('click',all); }); }
+  function chooser(b,k,mine,cid){ if(document.querySelector('.tab[data-plan]')||mine.length<(cid?2:1))return;   // a page without tabs: its copies in a list
+    var s=document.createElement('select'); s.className='ptsel'; s.setAttribute('aria-label','Show');
+    s.innerHTML='<option value="">The design</option>'+mine.map(function(q){ return '<option value="'+esc(q.id)+'">'+esc(q.name)+'</option>'; }).join(''); s.value=cid||'';
+    s.addEventListener('change',function(){ pick(k,s.value||null); }); b.insertBefore(s,b.querySelector('.pted')); }
+  function all(){ var idx=read(); tabsUI(); [].forEach.call(document.querySelectorAll('svg.plan[id^="plan-"]'),function(svg){ var k=svg.id.slice(5); if(CUR[k]&&!copyOf(CUR[k]))delete CUR[k]; var e=CUR[k]?(idx[CUR[k]]||{}):null; MODE[k]=CUR[k]?'trial':'design'; bar(svg,k); draw(svg,k,e); }); }
+  [].forEach.call(document.querySelectorAll('.tab[data-plan]'),function(t){ t.addEventListener('click',function(ev){ if(ev.isTrusted){ delete CUR[t.getAttribute('data-plan')]; saveCur(); } setTimeout(all,0); }); });   // a design's tab: the design
+  // Edit: the plan editor, full screen over this page, in the plan page's own look; Done comes back here with your copy shown
   var ED=null;
-  function edit(k){ if(ED)return; ED=document.createElement('div'); ED.className='ptedit'; ED.setAttribute('role','dialog'); ED.setAttribute('aria-label','Editing the plan');
-    ED.innerHTML='<p class="ptload">Opening the plan for editing…<a class="ptalt" hidden></a></p>'; var alt=ED.querySelector('.ptalt'); alt.href=P3D+'?plan='+encodeURIComponent(k)+'&edit=1'; alt.textContent='Not opening? Edit it on its own page'; setTimeout(function(){ if(alt.parentNode)alt.hidden=false; },7000); var f=document.createElement('iframe'); f.title='Plan editor'; f.src=P3D+'?plan='+encodeURIComponent(k)+'&edit=1&embed=1';
+  function edit(k){ if(ED)return; var cp=copyOf(k); if(!cp){ var mine=copies().filter(function(q){ return q.from===k; }); cp=mine[0]||newCopy(k); pick(k,cp.id); } k=cp.id;   // a design is never edited: its copy is
+    ED=document.createElement('div'); ED.className='ptedit'; ED.setAttribute('role','dialog'); ED.setAttribute('aria-label','Editing '+cp.name);
+    ED.innerHTML='<p class="ptload">Opening '+esc(cp.name)+' for editing…<a class="ptalt" hidden></a></p>'; var alt=ED.querySelector('.ptalt'); alt.href=P3D+'?plan='+encodeURIComponent(k)+'&edit=1'; alt.textContent='Not opening? Edit it on its own page'; setTimeout(function(){ if(alt.parentNode)alt.hidden=false; },7000); var f=document.createElement('iframe'); f.title='Plan editor'; f.src=P3D+'?plan='+encodeURIComponent(k)+'&edit=1&embed=1';
     window.addEventListener('message',function rdy(ev){ if(ev.data&&ev.data.apt==='edit-ready'){ var l=ED&&ED.querySelector('.ptload'); if(l)l.remove(); window.removeEventListener('message',rdy); } });   // the loading note stays until the editor says it is open
     ED.appendChild(f); document.body.appendChild(ED); document.documentElement.style.overflow='hidden'; ED.k=k; f.focus(); }
-  function closeEdit(k){ if(!ED)return; ED.remove(); ED=null; document.documentElement.style.overflow='';
-    var t=document.getElementById('tab-'+k); if(t&&t.getAttribute('aria-selected')!=='true')t.click();      // back on the plan that was edited
-    if(read()[k]){ MODE[k]='trial'; try{ sessionStorage.setItem(KEY+'-mode',JSON.stringify(MODE)); }catch(er){} } all();
-    var sv=document.getElementById('plan-'+k); if(sv&&sv.scrollIntoView)sv.scrollIntoView({block:'center'}); }
+  function closeEdit(k){ if(!ED)return; ED.remove(); ED=null; document.documentElement.style.overflow=''; var cp=copyOf(k);
+    if(cp)pick(cp.from,cp.id); else all();      // back on the copy that was edited
+    var sv=document.getElementById('plan-'+(cp?cp.from:k)); if(sv&&sv.scrollIntoView)sv.scrollIntoView({block:'center'}); }
   window.addEventListener('message',function(ev){ var d=ev.data||{}; if(!ED||!d.apt)return;
     if(d.apt==='edit-done')closeEdit(d.plan||ED.k); else if(d.apt==='open3d')location.href=P3D+'?plan='+encodeURIComponent(d.plan||ED.k); });
-  all(); window.addEventListener('storage',function(ev){ if(ev.key===KEY)all(); });
-  try{ var q=new URLSearchParams(location.search).get('edit'); if(q){ var tq=document.getElementById('tab-'+q); if(tq)tq.click(); setTimeout(function(){ edit(q); },60); } }catch(e){}   // from the 3D page's 2D button
-  window.APT_PLAN_TRIAL={redraw:all,edit:edit};
+  (function(){ try{ if(localStorage.getItem(CKEY+'-v1'))return; var idx=read(), fl=JSON.parse(localStorage.getItem(FKEY)||'null')||{}, ch=false;   // once: trials made on the designs become copies of them
+    [].forEach.call(document.querySelectorAll('svg.plan[id^="plan-"]'),function(svg){ var k=svg.id.slice(5), pre='apt3d-trial2-'+k+'-', tk=null; for(var i=0;i<localStorage.length;i++){ var kk=localStorage.key(i); if(kk&&kk.indexOf(pre)===0)tk=kk; }
+      var f=Array.isArray(fl[k])&&fl[k].length?fl[k]:null; if(!tk&&!f&&!idx[k])return; var c=newCopy(k);
+      if(tk){ localStorage.setItem('apt3d-trial2-'+c.id+'-'+tk.slice(pre.length),localStorage.getItem(tk)); localStorage.removeItem(tk); } if(f)fl[c.id]=f; delete fl[k]; if(idx[k]){ idx[c.id]=idx[k]; idx[c.id].name=c.name; delete idx[k]; } ch=true; });
+    if(ch){ localStorage.setItem(FKEY,JSON.stringify(fl)); localStorage.setItem(KEY,JSON.stringify(idx)); } localStorage.setItem(CKEY+'-v1','1'); }catch(e){} })();
+  all(); window.addEventListener('storage',function(ev){ if(ev.key===KEY||ev.key===CKEY)all(); });
+  try{ var q=new URLSearchParams(location.search).get('edit'); if(q){ var qc=copyOf(q), qf=qc?qc.from:q, tq=document.getElementById('tab-'+qf); if(tq)tq.click(); setTimeout(function(){ edit(q); },60); } }catch(e){}   // from the 3D page's 2D button
+  window.APT_PLAN_TRIAL={redraw:all,edit:edit,copies:copies};
 })();
