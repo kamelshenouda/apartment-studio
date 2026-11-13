@@ -1,6 +1,6 @@
 // The plan page and your trial: the 3D page keeps, in this browser, an index of the trials made in its 2D plan (walls,
 // doors, rooms with their areas, the pieces placed and the design's pieces cleared). Here each plan that has one gets a
-// bar: Design or Your trial, and Edit in 2D (the 3D page opened straight into its 2D plan). Your trial is drawn over the
+// bar: Design or Your trial, and Edit (the plan editor, full screen over this page). Your trial is drawn over the
 // design, faded under it, in the plan's own centimetres. It follows the 3D page live when both are open.
 // Built into the page by tools/build_plans.py (trial_script); fSym is the 3D page's own plan symbol code.
 (function(){
@@ -24,7 +24,10 @@
     '.ptr .ptn,.ptr .ptd{paint-order:stroke;stroke:#FBFAF7;stroke-width:5px;stroke-linejoin:round}.ptr .ptn{font:600 22px var(--sans,system-ui,sans-serif);fill:#1D2125;text-anchor:middle}.ptr .ptd{font:500 15px var(--mono,ui-monospace,monospace);fill:#4A4F54;text-anchor:middle}'+
     '.ptr .pf{fill:#FBFAF7;stroke:#4A4F54;stroke-width:1.3}.ptr .pfl{fill:none;stroke:#7A8085;stroke-width:1}.ptr .pfd{fill:#7A8085;opacity:.55}.ptr .pfs{fill:#EAF0F3;stroke:#7A8085;stroke-width:1}'+
     '.ptr .pfr{fill:rgba(102,108,113,.08);stroke:#7A8085;stroke-width:1;stroke-dasharray:4 3}.ptr .pfh{fill:none;stroke:#7A8085;stroke-width:1.2;stroke-dasharray:6 4}.ptr .pfg{fill:#DCE5D2;stroke:#5E7F4A;stroke-width:1}'+
-    '.ptr .pgone{stroke:#C0392B;stroke-width:1.5;opacity:.7}';
+    '.ptr .pgone{stroke:#C0392B;stroke-width:1.5;opacity:.7}'+
+    '.ptbar .pted{appearance:none;border:0;border-radius:8px;background:var(--accent,#2E5A74);color:#fff;font:600 13px var(--sans,system-ui,sans-serif);padding:7px 14px;cursor:pointer;white-space:nowrap}.ptbar .pted:hover{filter:brightness(1.08)}'+
+    '.ptedit{position:fixed;inset:0;z-index:9999;background:var(--paper,#F2F1ED);display:grid}.ptedit iframe{border:0;width:100%;height:100%}'+
+    '.ptedit .ptload{position:absolute;inset:0;display:grid;place-items:center;font:600 14px var(--sans,system-ui,sans-serif);color:var(--muted,#666C71);pointer-events:none}';
   document.head.appendChild(css);
   function draw(svg,k,e){ var old=svg.querySelector('g.ptr'); if(old)old.remove(); var on=!!e&&MODE[k]==='trial', walls=on&&!!e.lines; svg.classList.toggle('trialon',on); svg.classList.toggle('trialwalls',walls); if(!on)return;
     var vb=svg.viewBox.baseVal, g=el('g',{class:'ptr'},svg);
@@ -45,13 +48,26 @@
       var t=el('text',{x:cx,y:cy-4,class:'ptn','font-size':Math.max(9,f1)},g); t.textContent=r.n; var t2=el('text',{x:cx,y:cy+f2+6,class:'ptd','font-size':Math.max(8,f2)},g); t2.textContent=dt; });
   }
   function bar(svg,k,e){ var id='ptbar-'+k, b=document.getElementById(id); if(!b){ b=document.createElement('div'); b.id=id; b.className='ptbar'; svg.parentNode.insertBefore(b,svg); }
-    var link=P3D+'?plan='+encodeURIComponent(k)+'&edit=1';
-    if(!e){ b.innerHTML='<span class="pts">Try it yourself: move walls and doors, and furnish the rooms, in a 2D plan that shows in the 3D. It stays in this browser; the design does not change.</span><a href="'+link+'">Edit this plan in 2D ↗</a>'; return; }
+    if(!e){ b.innerHTML='<span class="pts">Try it yourself: move walls and doors, and furnish the rooms, on this plan. It stays in this browser; the design does not change.</span><button type="button" class="pted">Edit this plan</button>'; b.querySelector('.pted').addEventListener('click',function(){ edit(k); }); return; }
     var parts=[]; if(e.sum)parts.push(esc(e.sum.replace(/^Your trial of [^:]*: /,''))); if(e.pcs&&e.pcs.length)parts.push(e.pcs.length+(e.pcs.length===1?' piece':' pieces')+' placed'); if(e.gone&&e.gone.length)parts.push(e.gone.length+' of the design\'s cleared');
     var on=MODE[k]==='trial';
-    b.innerHTML='<span class="pts"><b>Your trial</b>, in this browser: '+parts.join(' · ')+'</span><span class="seg" role="group" aria-label="Show"><button type="button" data-m="design" aria-pressed="'+!on+'">Design</button><button type="button" data-m="trial" aria-pressed="'+on+'">Your trial</button></span><a href="'+link+'">Edit in 2D ↗</a>';
+    b.innerHTML='<span class="pts"><b>Your trial</b>, in this browser: '+parts.join(' · ')+'</span><span class="seg" role="group" aria-label="Show"><button type="button" data-m="design" aria-pressed="'+!on+'">Design</button><button type="button" data-m="trial" aria-pressed="'+on+'">Your trial</button></span><button type="button" class="pted">Edit</button>';
+    b.querySelector('.pted').addEventListener('click',function(){ edit(k); });
     [].forEach.call(b.querySelectorAll('[data-m]'),function(x){ x.addEventListener('click',function(){ MODE[k]=x.getAttribute('data-m'); try{ sessionStorage.setItem(KEY+'-mode',JSON.stringify(MODE)); }catch(er){} all(); }); }); }
   function all(){ var idx=read(); [].forEach.call(document.querySelectorAll('svg.plan[id^="plan-"]'),function(svg){ var k=svg.id.slice(5), e=idx[k]; bar(svg,k,e); draw(svg,k,e); }); }
+  // Edit: the plan editor, full screen over this page, in the plan page's own look; Done comes back here with your trial shown
+  var ED=null;
+  function edit(k){ if(ED)return; ED=document.createElement('div'); ED.className='ptedit'; ED.setAttribute('role','dialog'); ED.setAttribute('aria-label','Editing the plan');
+    ED.innerHTML='<p class="ptload">Opening the plan for editing…</p>'; var f=document.createElement('iframe'); f.title='Plan editor'; f.src=P3D+'?plan='+encodeURIComponent(k)+'&edit=1&embed=1';
+    f.addEventListener('load',function(){ var l=ED&&ED.querySelector('.ptload'); if(l)setTimeout(function(){ if(l.parentNode)l.remove(); },1500); });
+    ED.appendChild(f); document.body.appendChild(ED); document.documentElement.style.overflow='hidden'; ED.k=k; f.focus(); }
+  function closeEdit(k){ if(!ED)return; ED.remove(); ED=null; document.documentElement.style.overflow='';
+    var t=document.getElementById('tab-'+k); if(t&&t.getAttribute('aria-selected')!=='true')t.click();      // back on the plan that was edited
+    if(read()[k]){ MODE[k]='trial'; try{ sessionStorage.setItem(KEY+'-mode',JSON.stringify(MODE)); }catch(er){} } all();
+    var sv=document.getElementById('plan-'+k); if(sv&&sv.scrollIntoView)sv.scrollIntoView({block:'center'}); }
+  window.addEventListener('message',function(ev){ var d=ev.data||{}; if(!ED||!d.apt)return;
+    if(d.apt==='edit-done')closeEdit(d.plan||ED.k); else if(d.apt==='open3d')location.href=P3D+'?plan='+encodeURIComponent(d.plan||ED.k); });
   all(); window.addEventListener('storage',function(ev){ if(ev.key===KEY)all(); });
-  window.APT_PLAN_TRIAL={redraw:all};
+  try{ var q=new URLSearchParams(location.search).get('edit'); if(q){ var tq=document.getElementById('tab-'+q); if(tq)tq.click(); setTimeout(function(){ edit(q); },60); } }catch(e){}   // from the 3D page's 2D button
+  window.APT_PLAN_TRIAL={redraw:all,edit:edit};
 })();

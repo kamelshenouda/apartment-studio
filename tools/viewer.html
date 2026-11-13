@@ -18,6 +18,9 @@
 }
 :root[data-theme="dark"]{--warn:#E3A862;--glass:rgba(22,24,27,.6);--glass-line:rgba(255,255,255,.1);--btn:rgba(255,255,255,.07);--btn-line:rgba(255,255,255,.12);color-scheme:dark;--paper:#131517;--sheet:#1A1D20;--ink:#E8E6E1;--ink2:#BFC2C4;--muted:#979DA2;--line:#34383C;--accent:#8DB6D1;--accent-ink:#0F1418;--oak:#CDA06E}
 [hidden]{display:none!important}
+:root{--z-pri:#E8EEE5;--z-pub:#F3EADF;--z-liv:#EFE3D3;--z-ser:#E3E9EE;--z-cir:#ECEBE7;--z-wet:#DFE8EE}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--z-pri:#1E2620;--z-pub:#29241D;--z-liv:#2D261D;--z-ser:#1C242B;--z-cir:#212325;--z-wet:#1C252D}}
+:root[data-theme="dark"]{--z-pri:#1E2620;--z-pub:#29241D;--z-liv:#2D261D;--z-ser:#1C242B;--z-cir:#212325;--z-wet:#1C252D}
 html,body{height:100%}
 body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.45 var(--display);overflow:hidden}
 .app{position:fixed;inset:0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -382,8 +385,8 @@ h3{font-weight:600}
 @media (max-width:700px){ .pehint{display:none} .pewarn{bottom:74px;right:12px} }
 .pe-floor{fill:var(--sheet)}.pe-garden{fill:rgba(125,145,97,.16)}
 .pe-furn{fill:color-mix(in srgb,var(--sheet) 70%,transparent);stroke:var(--muted);stroke-width:.8;opacity:.6;vector-effect:non-scaling-stroke;pointer-events:none}
-.pe-rn{fill:var(--ink);font-family:var(--display);font-weight:600;text-anchor:middle;cursor:pointer}.pe-rn.on{fill:var(--accent)}
-.pe-rd{fill:var(--muted);font-family:var(--mono);text-anchor:middle;cursor:pointer}
+.pe-rn{fill:var(--ink);font-family:var(--display);font-weight:600;letter-spacing:.06em;text-transform:uppercase;text-anchor:middle;cursor:pointer}.pe-rn.on{fill:var(--accent)}
+.pe-rd{fill:var(--ink2);font-family:var(--mono);font-weight:500;text-anchor:middle;cursor:pointer}
 .pe-wall{fill:var(--ink);cursor:grab}.pe-wall.lock{fill:url(#pehatch);stroke:var(--ink2);stroke-width:1;vector-effect:non-scaling-stroke;cursor:not-allowed}
 .pe-wall.on{fill:var(--accent)}.pe-wall.hov{fill:color-mix(in srgb,var(--accent) 55%,var(--ink))}.pe-wall.lock.on{stroke:var(--accent);stroke-width:2}
 .pe-lockbg{fill:var(--sheet)}.pe-lockln{stroke:var(--ink2)}
@@ -404,7 +407,7 @@ h3{font-weight:600}
 @media (max-width:760px){.pe.catopen .pehint,.pe.catopen .pesel{left:50%;max-width:calc(100% - 24px)!important}.pe.catopen .pesel{bottom:calc(48% + 8px)}}
 .pe-grid{stroke:var(--line);stroke-width:.5;vector-effect:non-scaling-stroke;opacity:.45}.pe-grid1{fill:none;stroke:var(--line);stroke-width:1;vector-effect:non-scaling-stroke;opacity:.8}
 .pe-room{fill:transparent;cursor:pointer}
-.pe-room.k-bed{fill:color-mix(in srgb,var(--sheet) 82%,#C9A97F)}.pe-room.k-wet{fill:color-mix(in srgb,var(--sheet) 84%,#7F9DB0)}
+.pe-room.z-pri{fill:var(--z-pri)}.pe-room.z-pub{fill:var(--z-pub)}.pe-room.z-liv{fill:var(--z-liv)}.pe-room.z-ser{fill:var(--z-ser)}.pe-room.z-cir{fill:var(--z-cir)}.pe-room.z-wetz{fill:var(--z-wet)}
 .pe-room.k-kit{fill:color-mix(in srgb,var(--sheet) 88%,#A79B86)}.pe-room.k-live{fill:color-mix(in srgb,var(--sheet) 92%,#A9A396)}
 .pe-room.k-circ{fill:color-mix(in srgb,var(--sheet) 95%,#9A968E)}.pe-room.k-store{fill:color-mix(in srgb,var(--sheet) 86%,#B5A58C)}
 .pe-room.hov{fill:color-mix(in srgb,var(--accent) 16%,var(--sheet))}.pe-room.on{fill:color-mix(in srgb,var(--accent) 26%,var(--sheet))}
@@ -446,6 +449,12 @@ h3{font-weight:600}
 .pe-warnc{pointer-events:auto!important;cursor:pointer}.pe-warnt{pointer-events:none}
 .pe-whl{fill:rgba(192,57,43,.08);stroke:#C0392B;stroke-width:2;stroke-dasharray:6 4;vector-effect:non-scaling-stroke;pointer-events:none}
 .pe-wring{fill:none;stroke:#C0392B;stroke-width:2;vector-effect:non-scaling-stroke;pointer-events:none}
+.embed2d .pe{left:0!important}
+.pekey{position:absolute;left:14px;bottom:14px;z-index:3;display:grid;gap:6px;justify-items:start}.pe.catopen .pekey{left:322px}
+.pekey button{appearance:none;border:1px solid var(--btn-line);background:var(--sheet);color:var(--ink);font:600 12px var(--display);padding:6px 11px;border-radius:999px;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.08)}
+.pekey .pekl{display:grid;gap:5px;padding:10px 12px;background:var(--sheet);border:1px solid var(--btn-line);border-radius:10px;font:500 12px var(--display);color:var(--ink2);box-shadow:0 6px 20px rgba(0,0,0,.12);order:-1}
+.pekey .pekl span{display:flex;align-items:center;gap:8px}.pekey .sw{width:20px;height:11px;border:1px solid var(--line);display:inline-block}.pekey .sw.dot{width:12px;height:12px;border-radius:6px;background:var(--warn);border:0}
+@media (max-width:760px){.pekey{bottom:auto;top:calc(var(--pbh,52px) + 10px)}.pe.catopen .pekey{display:none}}
 .pewarn .pewh{appearance:none;border:0;background:transparent;display:flex;align-items:center;gap:8px;padding:9px 12px;font:600 13px var(--display);color:var(--ink);cursor:pointer;text-align:left}
 .pewarn.open .pewh{border-bottom:1px solid var(--line)}.pewarn .pewht{flex:1}.pewarn .pewa{color:var(--muted);font-size:11px}
 .pewarn .pewc{min-width:20px;height:20px;padding:0 5px;box-sizing:border-box;border-radius:10px;background:var(--warn);color:#fff;display:inline-grid;place-items:center;font:700 11.5px var(--display)}
@@ -702,10 +711,15 @@ h3{font-weight:600}
         <div class="pegrp"><button type="button" id="peundo" title="Undo (Ctrl+Z, ⌘Z)" aria-label="Undo">↶</button><button type="button" id="peredo" title="Redo (Shift+Ctrl+Z)" aria-label="Redo">↷</button></div>
         <div class="pegrp"><button type="button" id="pedims" aria-pressed="true" title="Overall dimensions, scale bar and north">Dims</button><button type="button" id="pefurn" aria-pressed="true" title="Show the furniture on the plan">Furniture</button><button type="button" id="peareas" aria-pressed="false" title="The area of every room, and the total">Areas</button><button type="button" id="pesave" title="Save this plan as a picture">Save</button><button type="button" id="pesend" title="Send your trial to Claude: what changed, in an architect's terms, with the exact data">Send to Claude</button></div>
         <button type="button" id="pereset" title="Drop this trial: back to the plan as designed">Back to the design</button>
+        <button type="button" id="pe3dx" hidden>See it in 3D</button>
         <button type="button" class="pri" id="pe3d">See it in 3D</button></div>
       <svg class="pesvg" id="pesvg" role="img" aria-label="Editable plan"></svg>
       <div class="pesel" id="pesel" hidden></div>
       <div class="pewarn" id="pewarn" hidden role="status"></div>
+      <div class="pekey" id="pekey"><button type="button" id="pekeyb" aria-expanded="false">Key</button><div class="pekl" id="pekl" hidden>
+        <span><i class="sw" style="background:var(--ink)"></i>Wall</span><span><i class="sw" style="background:var(--accent)"></i>Wall you moved or added</span><span><i class="sw" style="background:#5A544D"></i>Concrete column (stays)</span>
+        <span><i class="sw" style="background:var(--z-pub)"></i>Kitchen · dining · reception</span><span><i class="sw" style="background:var(--z-pri)"></i>Bedrooms</span><span><i class="sw" style="background:var(--z-ser)"></i>Service</span>
+        <span><i class="sw" style="background:var(--z-wet)"></i>Bathrooms</span><span><i class="sw" style="background:var(--z-cir)"></i>Halls and corridors</span><span><i class="sw dot"></i>Something to check</span></div></div>
       <div class="pewpop" id="pewpop" hidden role="dialog" aria-label="A problem and its solutions"></div>
       <div class="peareas" id="peareasp" hidden></div>
       <p class="pehint" id="pehint"></p>
@@ -4055,7 +4069,7 @@ function peDraw(){ if(!PE.on)return; var T=peT(), r=peSvg.getBoundingClientRect(
   (O.garden||[]).length&&el('polygon',{points:O.garden.map(function(q){ return q.join(','); }).join(' '),class:'pe-garden'},g);
   (T.zones||[]).forEach(function(z){ el('rect',{x:z.r[0],y:z.r[1],width:z.r[2]-z.r[0],height:z.r[3]-z.r[1],class:'pe-floor'+(z.k==='wetz'?' wet':'')},g); });
   T.rooms.forEach(function(rm,i){ var sel=PE.sel&&PE.sel.t==='room'&&PE.sel.i===i, hv=!sel&&PE.hovRoom===i&&!PE.drag;
-    el('rect',{x:rm.r[0],y:rm.r[1],width:rm.r[2]-rm.r[0],height:rm.r[3]-rm.r[1],class:'pe-room k-'+peKind(rm.n)+(sel?' on':'')+(hv?' hov':''),'data-room':i},g); });
+    el('rect',{x:rm.r[0],y:rm.r[1],width:rm.r[2]-rm.r[0],height:rm.r[3]-rm.r[1],class:'pe-room z-'+peZone(T,rm)+(sel?' on':'')+(hv?' hov':''),'data-room':i},g); });
   var GS=pfGoneS();
   var ONS=pfShownS();
   if(PE.furn!==false)peGroups(LAYOUT).forEach(function(gr){ if(GS[gr.s]||!pfGroupOn(ONS,gr))return; var b=peGroupBox(T,gr), mv=T.shift[gr.s]&&(T.shift[gr.s][0]||T.shift[gr.s][1]);
@@ -4092,10 +4106,11 @@ function peDraw(){ if(!PE.on)return; var T=peT(), r=peSvg.getBoundingClientRect(
   var RI=peRoomInfo(T);
   T.rooms.forEach(function(rm,i){ var dm=RI[i], cx=(rm.r[0]+rm.r[2])/2, cy=(rm.r[1]+rm.r[3])/2, sel=PE.sel&&PE.sel.t==='room'&&PE.sel.i===i;
     var was=PE.baseRooms[LAYOUT]&&PE.baseRooms[LAYOUT][rm.o||rm.n], da=was!=null?dm.a-was:0, dtx=Math.abs(da)>=.05?' ('+(da>0?'+':'−')+Math.abs(da).toFixed(1)+')':'';
-    var rw=rm.r[2]-rm.r[0]-8, f1=Math.min(fs,rw/(rm.n.length*.62)), dt=dm.a.toFixed(1)+' m² · '+Math.round(dm.w*100)+' × '+Math.round(dm.d*100)+dtx, f2=Math.min(fs*.82,rw/(dt.length*.6));   // sized to fit the room
-    if(f2<fs*.55){ dt=dm.a.toFixed(1)+' m²'; f2=Math.min(fs*.82,rw/(dt.length*.6)); }
-    var t=el('text',{x:cx,y:cy-f2*.25,class:'pe-rn'+(sel?' on':''),'font-size':Math.max(f1,fs*.45),'data-room':i},g); t.textContent=rm.n;
-    var t2=el('text',{x:cx,y:cy+f2*1.1,class:'pe-rd','font-size':Math.max(f2,fs*.4),'data-room':i},g); t2.textContent=dt; });
+    var rw=rm.r[2]-rm.r[0]-8, dims=dm.w.toFixed(2)+' × '+dm.d.toFixed(2), f1=Math.min(Math.max(21,9.5*k),rw/(rm.n.length*.7)), dt=dims+(dtx?' · '+dm.a.toFixed(1)+' m²'+dtx:''), f2=Math.min(Math.max(15,7.5*k),rw/(dt.length*.58));   // as the plan page: the name, then width × length in metres (and the area when the trial changes it)
+    if(f2<6*k&&dtx){ dt=dm.a.toFixed(1)+' m²'+dtx; f2=Math.min(Math.max(15,7.5*k),rw/(dt.length*.58)); }
+    f1=Math.max(f1,6.5*k); f2=Math.max(f2,6*k);
+    var t=el('text',{x:cx,y:cy-f1*.15,class:'pe-rn'+(sel?' on':''),'font-size':f1,'data-room':i},g); t.textContent=rm.n;
+    var t2=el('text',{x:cx,y:cy-f1*.15+f1*1.2,class:'pe-rd','font-size':f2,'data-room':i},g); t2.textContent=dt; });
   P.cols.forEach(function(c){ el('rect',{x:c[0],y:c[1],width:c[2]-c[0],height:c[3]-c[1],class:'pe-col',fill:'url(#pehatch)'},g); });
   var selIds=PE.sel&&PE.sel.t==='wall'?(PE.sel.ids||[PE.sel.id]):[];
   var stopped=PE.drag&&PE.drag.t==='wall'&&PE.drag.stop;
@@ -4191,6 +4206,8 @@ function peHintText(T){ var D=PE.drag;
   if(PE.sel&&PE.sel.t==='door')return 'Door · drag an end to change its width · type the distance from the walls below · H flips the hinge, S the swing · Delete removes it';
   if(PE.sel&&PE.sel.t==='wall')return 'Drag the wall to move it · drag a dot at an end to make it longer or shorter, at a side to make it thicker · or type the clear distance below · arrow keys nudge it 1 cm (Shift: 10) · Esc lets go';
   return 'Point at a wall, a door or a room to see what it does · drag the floor to move around · scroll or pinch to zoom'; }
+function peZone(T,rm){ var cx=(rm.r[0]+rm.r[2])/2, cy=(rm.r[1]+rm.r[3])/2, z=(PE_ORIG[LAYOUT].plan2d.zones||[]).filter(function(q){ return cx>=q[0]&&cx<=q[2]&&cy>=q[1]&&cy<=q[3]; })[0];   // the zone the room stands in, as the plan page colours it
+  if(z&&/^(pri|pub|liv|ser|cir|wetz)$/.test(z[4]))return z[4]; var k=peKind(rm.n); return {bed:'pri',wet:'wetz',kit:'pub',live:'pub',circ:'cir',store:'ser'}[k]||'cir'; }
 function peKind(n){ return /bath|wc|shower|toilet|laundry|utility/i.test(n)?'wet':/bed|master|kids|nanny|maid|guest|nursery/i.test(n)?'bed':/kitchen/i.test(n)?'kit':
   /corridor|hall|lobby|foyer|passage|entr|landing/i.test(n)?'circ':/dressing|storage|store|closet|walk|pantry/i.test(n)?'store':'live'; }
 function peTag(g,x,y,txt,fs,vert,kind){ var w=txt.length*fs*.58+fs*.8, h=fs*1.35, tg=el('g',{class:'pe-tag '+(kind||''),transform:vert?'rotate(-90 '+x+' '+y+')':''},g);
@@ -5137,8 +5154,15 @@ function peRedo(){ peSwap(PE.redo,PE.undo); }
 document.getElementById('peundo').addEventListener('click',peUndo); document.getElementById('peredo').addEventListener('click',peRedo);
 document.getElementById('pereset').addEventListener('click',function(){ if(!peHas(LAYOUT))return; PE.undo.push(JSON.stringify(PE_T[LAYOUT])); PE.redo=[];
   delete PE_T[LAYOUT]; peSave(LAYOUT); PE.sel=null; peDraw(); toast('','Back to '+SCENE.name.split(' · ')[0]+' as designed. Undo brings your trial back.'); });
-document.getElementById('pe3d').addEventListener('click',function(){ peOpen(false); });
-document.getElementById('z2d').addEventListener('click',function(){ peOpen(!PE.on); });
+var PE_EMB=document.documentElement.classList.contains('embed')&&new URLSearchParams(location.search).get('edit')==='1'&&window.parent!==window;   // editing inside the plan page
+if(PE_EMB){ document.documentElement.classList.add('embed2d'); var pd=document.getElementById('pe3d'); pd.textContent='Done'; pd.title='Back to the plan page, with your changes'; document.getElementById('pe3dx').hidden=false; }
+function peDone(){ try{ if(typeof peIndex==='function')peIndex(LAYOUT); }catch(e){} window.parent.postMessage({apt:'edit-done',plan:LAYOUT},'*'); }
+document.getElementById('pe3dx').addEventListener('click',function(){ try{ if(typeof peIndex==='function')peIndex(LAYOUT); }catch(e){} window.parent.postMessage({apt:'open3d',plan:LAYOUT},'*'); });
+var PE_PLANPG=null; if(!document.documentElement.classList.contains('embed'))try{ fetch('plan.html',{method:'HEAD'}).then(function(r){ if(r.ok)PE_PLANPG='plan.html'; }).catch(function(){}); }catch(e){}   // the site has a plan page: 2D editing happens there
+document.getElementById('pekeyb').addEventListener('click',function(){ var l=document.getElementById('pekl'); l.hidden=!l.hidden; this.setAttribute('aria-expanded',String(!l.hidden)); });
+function peTo2D(){ if(PE_PLANPG&&!PE.on){ location.href=PE_PLANPG+'?edit='+encodeURIComponent(LAYOUT); return; } peOpen(!PE.on); }
+document.getElementById('pe3d').addEventListener('click',function(){ if(PE_EMB){ peDone(); return; } peOpen(false); });
+document.getElementById('z2d').addEventListener('click',peTo2D);
 document.getElementById('pego').addEventListener('click',function(){ peOpen(true); });
 PE.coarse=!!(window.matchMedia&&matchMedia('(pointer:coarse)').matches);
 document.getElementById('pedims').addEventListener('click',function(){ PE.dims=PE.dims===false; this.setAttribute('aria-pressed',String(PE.dims!==false)); peDraw(); });
@@ -5187,7 +5211,7 @@ document.getElementById('pesave').addEventListener('click',function(){ document.
   img.onerror=function(){ toast('','The picture could not be made in this browser'); };
   img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(new XMLSerializer().serializeToString(cl)); });
 window.addEventListener('keydown',function(e){ if(PE.on||e.ctrlKey||e.metaKey||e.altKey||/input|textarea|select/i.test(e.target.tagName))return;
-  if((e.key||'').toLowerCase()==='p'){ peOpen(true); e.preventDefault(); } });
+  if((e.key||'').toLowerCase()==='p'){ peTo2D(); e.preventDefault(); } });
 [].forEach.call(document.querySelectorAll('#pe [data-tool]'),function(b){ b.addEventListener('click',function(){ peTool(b.getAttribute('data-tool')); }); });
 window.addEventListener('keydown',function(e){ if(!PE.on||/input|textarea|select/i.test(e.target.tagName))return; var k=(e.key||'').toLowerCase(), mod=e.ctrlKey||e.metaKey;
   if(!kguide.hidden){ if(k==='escape'||e.key==='?'){ showGuide(false); e.preventDefault(); e.stopPropagation(); } return; }   // the key guide over the plan: Esc or ? closes it
@@ -5208,7 +5232,7 @@ window.addEventListener('keydown',function(e){ if(!PE.on||/input|textarea|select
   else if(k==='m'&&!mod){ peTool(PE.tool==='meas'?'sel':'meas'); }
   else if(k==='f'&&!mod)pfCat(!PE.cat);
   else if((k==='h'||k==='s')&&!mod&&PE.sel&&PE.sel.t==='door'){ var si=PE.sel.i; peDo(function(T){ return peDoorEdit(T,T.doors[si],k==='h'?function(q){ q.at+=q.sa*q.w; q.sa=-q.sa; }:function(q){ q.ss=-q.ss; }); }); }
-  else if(k==='p'&&!mod)peOpen(false);
+  else if(k==='p'&&!mod){ if(PE_EMB)peDone(); else peOpen(false); }
   else if(k==='tab'){ var TT2=peT(), list=TT2.lines.map(function(L){ return {t:'wall',id:L.id,k:(L.o==='h'?0:1)*1e7+Math.round((L.c[0])*1e3+L.a[0])}; })
       .concat(TT2.doors.map(function(d,i){ return {t:'door',i:i,k:2e7+i}; }))
       .concat(fList().filter(function(q){ return !q.gone&&q.t.charAt(0)!=='@'&&FDEF[q.t]; }).map(function(q,i){ return {t:'pc',id:q.id,k:3e7+i}; })).sort(function(a,b){ return a.k-b.k; });   // walls, doors, then the pieces placed
