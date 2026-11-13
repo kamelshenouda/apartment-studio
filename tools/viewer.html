@@ -4112,7 +4112,8 @@ function peDraw(){ if(!PE.on)return; var T=peT(), r=peSvg.getBoundingClientRect(
     wdot(wz?WL.a[0]:wm,wz?wm:WL.a[0],'a0',wz?'ew':'ns',tipA); wdot(wz?WL.a[1]:wm,wz?wm:WL.a[1],'a1',wz?'ew':'ns',tipA);
     wdot(wz?wam:WL.c[0]-woff,wz?WL.c[0]-woff:wam,'c0',wz?'ns':'ew',tipC); wdot(wz?wam:WL.c[1]+woff,wz?WL.c[1]+woff:wam,'c1',wz?'ns':'ew',tipC); }
   var rsel=PE.sel&&PE.sel.t==='pc'&&pfSelIds().length===1&&pfGet(PE.sel.id);      // the picked piece's handles: drag a dot to change its width or depth, the other side stays
-  if(rsel&&!rsel.gone&&FDEF[rsel.t]&&PE.furn!==false&&(!PE.drag||PE.drag.t==='rs')){ var RD=fDim(rsel), hw=RD.w/2, hd=RD.d/2, rr=(coarse?9:5.5)*k, rq=((Math.round((rsel.r||0)/90)%2)+2)%2;
+  var RD0s=rsel&&FDEF[rsel.t]&&fDim(rsel), rr0=(coarse?9:5.5)*k;   // no dots while picking more; a small piece gets smaller dots, and none when they would be too small to grab (its W and D boxes size it)
+  if(rsel&&!rsel.gone&&FDEF[rsel.t]&&PE.furn!==false&&!PE.multi&&Math.min(RD0s.w,RD0s.d)/5>=2.5*k&&(!PE.drag||PE.drag.t==='rs')){ var RD=RD0s, hw=RD.w/2, hd=RD.d/2, rr=Math.min(rr0,Math.min(RD.w,RD.d)/5), rq=((Math.round((rsel.r||0)/90)%2)+2)%2;
     var hg=el('g',{transform:'translate('+rsel.x+' '+rsel.y+') rotate('+(rsel.r||0)+')'},g); PE._hg=hg;
     [['e',hw,0],['w',-hw,0],['s',0,hd],['n',0,-hd],['se',hw,hd],['sw',-hw,hd],['ne',hw,-hd],['nw',-hw,-hd]].forEach(function(h){ var cur=h[0].length===2?((h[0]==='se'||h[0]==='nw')!==!!rq?'nwse':'nesw'):((h[0]==='e'||h[0]==='w')!==!!rq?'ew':'ns');
       var c=el('circle',{cx:h[1],cy:h[2],r:h[0].length===2?rr*.85:rr,class:'pe-rh','data-rh':h[0]},hg); c.style.cursor=cur+'-resize'; var tt=document.createElementNS('http://www.w3.org/2000/svg','title'); tt.textContent=h[0].length===2?'Drag to change the width and depth':(h[0]==='e'||h[0]==='w'?'Drag to change the width':'Drag to change the depth'); c.appendChild(tt); }); }
@@ -5043,7 +5044,7 @@ function peSelUI(){ var T=peT(), s=PE.sel; peSel.innerHTML=''; peSel.hidden=!s||
 peSvg.addEventListener('pointerdown',function(e){ if(e.button>0)return; peSvg.setPointerCapture(e.pointerId); e.preventDefault();
   PE.pts[e.pointerId]={x:e.clientX,y:e.clientY};
   var ids=Object.keys(PE.pts); if(ids.length===2){ PE.drag={t:'pinch',d0:peDist(),k0:PE.view.k,c:peToPlan.apply(null,peMid())}; return; }
-  var T=peT(), p=peToPlan(e.clientX,e.clientY), tg=e.target, wid=tg.getAttribute('data-wall'), di=tg.closest&&tg.closest('[data-door]'), ri=tg.getAttribute('data-room');
+  var T=peT(), p=peToPlan(e.clientX,e.clientY), tg=peUnderLabel(e), wid=tg.getAttribute('data-wall'), di=tg.closest&&tg.closest('[data-door]'), ri=tg.getAttribute('data-room');
   if(PE.place&&PE.tool==='sel'){ var pl=pfPlace(p[0],p[1],e.altKey); if(!e.shiftKey)pfPick(null); else PE.sel={t:'pc',id:pl.id}; return; }   // Shift keeps placing the same piece
   if(PE.tool==='wall'){ var sp=peSnap(T,p[0],p[1]); PE.drag={t:'draw',p0:sp,p1:sp}; return; }
   var whh=tg.getAttribute&&tg.getAttribute('data-wh'); if(whh&&PE.sel&&PE.sel.t==='wall'){ var WL0=peLine(T,PE.sel.id); if(WL0&&!WL0.lock){
@@ -5078,7 +5079,9 @@ function peSnap(T,x,y){ var best=[Math.round(x/5)*5,Math.round(y/5)*5], bx=20*Ma
   T.lines.forEach(function(L){ var cs=[L.c[0],L.c[1],(L.c[0]+L.c[1])/2];
     cs.forEach(function(c){ if(L.o==='v'&&Math.abs(c-x)<bx&&y>L.a[0]-30&&y<L.a[1]+30){ bx=Math.abs(c-x); best[0]=c; } if(L.o==='h'&&Math.abs(c-y)<by&&x>L.a[0]-30&&x<L.a[1]+30){ by=Math.abs(c-y); best[1]=c; } }); });
   return best; }
-peSvg.addEventListener('pointermove',function(e){ if(!PE.pts[e.pointerId]){ if(e.pointerType==='mouse'){ var tg2=e.target, hw=tg2.getAttribute&&tg2.getAttribute('data-wall'), hv=hw!=null?+hw:null;
+function peUnderLabel(e){ var t=e.target; if(!/pe-r[nd]/.test((t.getAttribute&&t.getAttribute('class'))||''))return t;   // a room's name over a piece: the piece is what is meant
+  var u=document.elementsFromPoint(e.clientX,e.clientY).filter(function(x){ return x.closest&&x.closest('[data-pc]')&&peSvg.contains(x); })[0]; return u||t; }
+peSvg.addEventListener('pointermove',function(e){ if(!PE.pts[e.pointerId]){ if(e.pointerType==='mouse'){ var tg2=peUnderLabel(e), hw=tg2.getAttribute&&tg2.getAttribute('data-wall'), hv=hw!=null?+hw:null;
       var hd=tg2.closest&&tg2.closest('[data-door]'), hdv=hd?+hd.getAttribute('data-door'):null, hr=tg2.getAttribute&&tg2.getAttribute('data-room'), hrv=hr!=null&&hv==null&&hdv==null?+hr:null, hh=tg2.getAttribute&&tg2.getAttribute('data-dh');
       if(hh!=null){ hv=null; hdv=null; hrv=null; PE.hovDh=true; } else PE.hovDh=false;
       var hpe=tg2.closest&&tg2.closest('[data-pc]'), hpc=hpe&&hv==null&&hdv==null?hpe.getAttribute('data-pc'):null;
