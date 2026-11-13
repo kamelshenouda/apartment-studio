@@ -5156,6 +5156,7 @@ document.getElementById('pereset').addEventListener('click',function(){ if(!peHa
   delete PE_T[LAYOUT]; peSave(LAYOUT); PE.sel=null; peDraw(); toast('','Back to '+SCENE.name.split(' · ')[0]+' as designed. Undo brings your trial back.'); });
 var PE_EMB=document.documentElement.classList.contains('embed')&&new URLSearchParams(location.search).get('edit')==='1'&&window.parent!==window;   // editing inside the plan page
 if(PE_EMB){ document.documentElement.classList.add('embed2d'); var pd=document.getElementById('pe3d'); pd.textContent='Done'; pd.title='Back to the plan page, with your changes'; document.getElementById('pe3dx').hidden=false; }
+if(PE_EMB)(function rdy(n){ if(PE.on){ window.parent.postMessage({apt:'edit-ready',plan:LAYOUT},'*'); return; } if(n<120)setTimeout(function(){ rdy(n+1); },250); })(0);   // tells the plan page the editor is open
 function peDone(){ try{ if(typeof peIndex==='function')peIndex(LAYOUT); }catch(e){} window.parent.postMessage({apt:'edit-done',plan:LAYOUT},'*'); }
 document.getElementById('pe3dx').addEventListener('click',function(){ try{ if(typeof peIndex==='function')peIndex(LAYOUT); }catch(e){} window.parent.postMessage({apt:'open3d',plan:LAYOUT},'*'); });
 var PE_PLANPG=null; if(!document.documentElement.classList.contains('embed'))try{ fetch('plan.html',{method:'HEAD'}).then(function(r){ if(r.ok)PE_PLANPG='plan.html'; }).catch(function(){}); }catch(e){}   // the site has a plan page: 2D editing happens there

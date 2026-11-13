@@ -27,7 +27,7 @@
     '.ptr .pgone{stroke:#C0392B;stroke-width:1.5;opacity:.7}'+
     '.ptbar .pted{appearance:none;border:0;border-radius:8px;background:var(--accent,#2E5A74);color:#fff;font:600 13px var(--sans,system-ui,sans-serif);padding:7px 14px;cursor:pointer;white-space:nowrap}.ptbar .pted:hover{filter:brightness(1.08)}'+
     '.ptedit{position:fixed;inset:0;z-index:9999;background:var(--paper,#F2F1ED);display:grid}.ptedit iframe{border:0;width:100%;height:100%}'+
-    '.ptedit .ptload{position:absolute;inset:0;display:grid;place-items:center;font:600 14px var(--sans,system-ui,sans-serif);color:var(--muted,#666C71);pointer-events:none}';
+    '.ptedit .ptload{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:10px;font:600 14px var(--sans,system-ui,sans-serif);color:var(--muted,#666C71);pointer-events:none}.ptedit .ptalt{pointer-events:auto;color:var(--accent,#2E5A74)}';
   document.head.appendChild(css);
   function draw(svg,k,e){ var old=svg.querySelector('g.ptr'); if(old)old.remove(); var on=!!e&&MODE[k]==='trial', walls=on&&!!e.lines; svg.classList.toggle('trialon',on); svg.classList.toggle('trialwalls',walls); if(!on)return;
     var vb=svg.viewBox.baseVal, g=el('g',{class:'ptr'},svg);
@@ -58,8 +58,8 @@
   // Edit: the plan editor, full screen over this page, in the plan page's own look; Done comes back here with your trial shown
   var ED=null;
   function edit(k){ if(ED)return; ED=document.createElement('div'); ED.className='ptedit'; ED.setAttribute('role','dialog'); ED.setAttribute('aria-label','Editing the plan');
-    ED.innerHTML='<p class="ptload">Opening the plan for editing…</p>'; var f=document.createElement('iframe'); f.title='Plan editor'; f.src=P3D+'?plan='+encodeURIComponent(k)+'&edit=1&embed=1';
-    f.addEventListener('load',function(){ var l=ED&&ED.querySelector('.ptload'); if(l)setTimeout(function(){ if(l.parentNode)l.remove(); },1500); });
+    ED.innerHTML='<p class="ptload">Opening the plan for editing…<a class="ptalt" hidden></a></p>'; var alt=ED.querySelector('.ptalt'); alt.href=P3D+'?plan='+encodeURIComponent(k)+'&edit=1'; alt.textContent='Not opening? Edit it on its own page'; setTimeout(function(){ if(alt.parentNode)alt.hidden=false; },7000); var f=document.createElement('iframe'); f.title='Plan editor'; f.src=P3D+'?plan='+encodeURIComponent(k)+'&edit=1&embed=1';
+    window.addEventListener('message',function rdy(ev){ if(ev.data&&ev.data.apt==='edit-ready'){ var l=ED&&ED.querySelector('.ptload'); if(l)l.remove(); window.removeEventListener('message',rdy); } });   // the loading note stays until the editor says it is open
     ED.appendChild(f); document.body.appendChild(ED); document.documentElement.style.overflow='hidden'; ED.k=k; f.focus(); }
   function closeEdit(k){ if(!ED)return; ED.remove(); ED=null; document.documentElement.style.overflow='';
     var t=document.getElementById('tab-'+k); if(t&&t.getAttribute('aria-selected')!=='true')t.click();      // back on the plan that was edited
