@@ -450,7 +450,7 @@ h3{font-weight:600}
 .pe-whl{fill:rgba(192,57,43,.08);stroke:#C0392B;stroke-width:2;stroke-dasharray:6 4;vector-effect:non-scaling-stroke;pointer-events:none}
 .pe-wring{fill:none;stroke:#C0392B;stroke-width:2;vector-effect:non-scaling-stroke;pointer-events:none}
 .embed2d .pe{left:0!important}
-#layout .cpb small{color:var(--accent)}#layout .cpb[aria-pressed="true"] small{color:inherit;opacity:.8}
+.cpbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:-4px 12px 12px;padding:7px 9px;border:1px dashed var(--btn-line);border-radius:9px;font:500 12px/1.3 var(--display);color:var(--ink2)}.cpbar span{flex:1 1 9em;min-width:0}.cpbar b{color:var(--ink)}.cpbar input{flex:1 1 10em;min-width:0;font:inherit;padding:5px 7px;border:1px solid var(--btn-line);border-radius:6px;background:var(--sheet);color:var(--ink)}.cpbar button{appearance:none;border:1px solid var(--btn-line);background:var(--btn);color:var(--ink);border-radius:7px;padding:5px 9px;font:600 12px var(--display);cursor:pointer}.cpbar .cpdel{color:#B23A2E}.cpbar[hidden]{display:none}#layout .cpb small{color:var(--accent)}#layout .cpb[aria-pressed="true"] small{color:inherit;opacity:.8}
 .pekey{position:absolute;left:14px;bottom:14px;z-index:3;display:grid;gap:6px;justify-items:start}.pe.catopen .pekey{left:322px}
 .pekey button{appearance:none;border:1px solid var(--btn-line);background:var(--sheet);color:var(--ink);font:600 12px var(--display);padding:6px 11px;border-radius:999px;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.08)}
 .pekey .pekl{display:grid;gap:5px;padding:10px 12px;background:var(--sheet);border:1px solid var(--btn-line);border-radius:10px;font:500 12px var(--display);color:var(--ink2);box-shadow:0 6px 20px rgba(0,0,0,.12);order:-1}
@@ -2708,7 +2708,7 @@ function setLayout(k){
   if(typeof PE!=='undefined'&&PE.on){ PE.undo=[]; PE.redo=[]; PE.sel=null; peFit(); peDraw(); peBadge(); }
 }
 function cpLock(){ var lk=!cpIs(LAYOUT); document.documentElement.classList.toggle('lockedplan',lk); }
-function syncLayoutUI(){ cpLock();
+function syncLayoutUI(){ cpLock(); if(typeof cpBar==='function')cpBar();
   [].forEach.call(document.querySelectorAll('#layout button'),function(b){b.setAttribute('aria-pressed',b.getAttribute('data-v')===LAYOUT?'true':'false');});
   [].forEach.call(document.querySelectorAll('[data-only]'),function(el){el.hidden=el.getAttribute('data-only').split(' ').indexOf(LAYOUT)<0;});
   var nm=document.getElementById('layoutname'); if(nm)nm.textContent=SCENE.name;
@@ -2718,6 +2718,30 @@ function layBind(b){ b.addEventListener('click',function(){ var was=LAYOUT, v=b.
 function cpBtn(c){ var g=document.getElementById('layout'); if(!g||g.querySelector('[data-v="'+c.id+'"]'))return null; var b=document.createElement('button'); b.type='button'; b.className='cpb'; b.setAttribute('data-v',c.id); b.setAttribute('aria-pressed',c.id===LAYOUT?'true':'false'); b.title=c.name;
   b.appendChild(document.createTextNode(c.name.replace(/^Copy (\d+ )?of /,'').split(' · ')[0])); var sm=document.createElement('small'); sm.textContent=/^Copy \d/.test(c.name)?c.name.split(' of ')[0].toLowerCase():'your copy'; b.appendChild(sm); g.appendChild(b); layBind(b); return b; }
 [].forEach.call(document.querySelectorAll('#layout button:not(.cpb)'),layBind); CPS.forEach(cpBtn);
+// your copy, in the panel: rename it or delete it (the plan it was copied from never changes)
+function cpDrop(id){ var c=CPS.filter(function(q){ return q.id===id; })[0]; if(!c)return; if(typeof PE!=='undefined'&&PE.on&&LAYOUT===id)peOpen(false);
+  CPS=CPS.filter(function(q){ return q.id!==id; }); cpSave();
+  try{ for(var i=localStorage.length-1;i>=0;i--){ var kk=localStorage.key(i); if(kk&&kk.indexOf('apt3d-trial2-'+id+'-')===0)localStorage.removeItem(kk); }
+    ['<@v105>apt3d</@v105>-furnish','<@v105>apt3d</@v105>-trials'].forEach(function(K){ var o=JSON.parse(localStorage.getItem(K)||'null'); if(o&&o[id]){ delete o[id]; localStorage.setItem(K,JSON.stringify(o)); } }); }catch(e){}
+  if(LAYOUT===id)setLayout(c.from);
+  if(typeof furn!=='undefined')delete furn[id]; if(typeof PE_T!=='undefined'){ delete PE_T[id]; delete PE_ORIG[id]; if(PE.built)delete PE.built[id]; } if(typeof PE_G!=='undefined')delete PE_G[id]; delete ALL.layouts[id];
+  var b=document.querySelector('#layout [data-v="'+id+'"]'); if(b)b.remove(); cpBar(); toast('',c.name+' deleted. '+(ALL.layouts[c.from]||{}).name+' is as designed.'); }
+function cpRename(id,v){ v=(v||'').trim(); if(!v)return; CPS.forEach(function(q){ if(q.id===id)q.name=v; }); cpSave(); if(ALL.layouts[id])ALL.layouts[id].name=v;
+  try{ var K='<@v105>apt3d</@v105>-trials', o=JSON.parse(localStorage.getItem(K)||'null'); if(o&&o[id]){ o[id].name=v; localStorage.setItem(K,JSON.stringify(o)); } }catch(e){}
+  var b=document.querySelector('#layout [data-v="'+id+'"]'); if(b){ b.title=v; b.firstChild.textContent=v.replace(/^Copy (\d+ )?of /,'').split(' · ')[0]; }
+  var nm=document.getElementById('layoutname'); if(nm&&LAYOUT===id)nm.textContent=v; cpBar(); }
+function cpBar(mode){ var g=document.getElementById('layout'); if(!g)return; var bar=document.getElementById('cpbar');
+  if(!bar){ bar=document.createElement('div'); bar.id='cpbar'; bar.className='cpbar'; g.parentNode.insertBefore(bar,g.nextSibling); }
+  var c=cpIs(LAYOUT)&&CPS.filter(function(q){ return q.id===LAYOUT; })[0]; bar.hidden=!c; if(!c)return;
+  if(mode==='ren'){ bar.innerHTML='<input type="text" maxlength="60" aria-label="Name of your copy"><button type="button" data-a="ok">Save</button><button type="button" data-a="no">Cancel</button>';
+    var inp=bar.querySelector('input'); inp.value=c.name; inp.focus(); inp.select();
+    inp.addEventListener('keydown',function(e){ e.stopPropagation(); if(e.key==='Enter')cpRename(c.id,inp.value); if(e.key==='Escape')cpBar(); });
+    bar.querySelector('[data-a="ok"]').onclick=function(){ cpRename(c.id,inp.value); }; bar.querySelector('[data-a="no"]').onclick=function(){ cpBar(); }; return; }
+  if(mode==='del'){ bar.innerHTML='<span>Delete <b></b>, with its changes?</span><button type="button" data-a="yes" class="cpdel">Delete</button><button type="button" data-a="no">Keep</button>';
+    bar.querySelector('b').textContent=c.name; bar.querySelector('[data-a="yes"]').onclick=function(){ cpDrop(c.id); }; bar.querySelector('[data-a="no"]').onclick=function(){ cpBar(); }; bar.querySelector('[data-a="no"]').focus(); return; }
+  bar.innerHTML='<span>Your copy of <b></b></span><button type="button" data-a="ren">Rename</button><button type="button" data-a="del" class="cpdel">Delete</button>';
+  bar.querySelector('b').textContent=(ALL.layouts[c.from]||{}).name||c.from;
+  bar.querySelector('[data-a="ren"]').onclick=function(){ cpBar('ren'); }; bar.querySelector('[data-a="del"]').onclick=function(){ cpBar('del'); }; }
 syncLayoutUI();
 function drawLabels(){
   var w=LAY.w,h=LAY.h,v=new T.Vector3();
@@ -3290,7 +3314,7 @@ renderer.domElement.addEventListener('wheel',function(e){ if(!fOn||!fSel)return;
 function fRotate(deg){ var p=fGet(); if(!p)return; fMark('Turned '+fDim(p).n); p.r=((p.r+deg)%360+360)%360; fSync(); fSave(); }
 function fRemove(){ if(!fGet())return; fMark('Removed '+fDim(fGet()).n); furn[LAYOUT]=fList().filter(function(q){return q.id!==fSel;}); fSel=null; fSync(); fSave(); }
 function setFurnish(on){
-  if(on&&!cpIs(LAYOUT)&&ALL.layouts[LAYOUT].plan2d){ var fw=ALL.layouts[LAYOUT].name, fc=cpFor(LAYOUT); setLayout(fc.id); toast('',fw+' stays as designed: you are furnishing your copy, '+fc.name); }
+  if(on&&!cpIs(LAYOUT)&&ALL.layouts[LAYOUT].plan2d){ var fw=ALL.layouts[LAYOUT].name, fc=cpNew(LAYOUT); setLayout(fc.id); toast('',fw+' stays as designed: you are furnishing a new copy, '+fc.name); }
   fOn=on; var b=document.getElementById('fmode'); b.setAttribute('aria-pressed',on?'true':'false'); b.textContent=on?'Stop furnishing':'Start furnishing';
   if(on){ clearCard(); if(measuring)setMeasuring(false); selectTab('furnish'); if(appEl.classList.contains('hidepanel'))window.togglePanel();
     if(state.fu!=='all'){ setKey('fu','all',true); applyState(); }
@@ -4055,7 +4079,7 @@ function peFit(){ var b=SCENE.bounds||[0,0,1800,1650], r=peSvg.getBoundingClient
 function peToPlan(cx,cy){ var r=peSvg.getBoundingClientRect(); return [PE.view.x+(cx-r.left)*PE.view.k,PE.view.y+(cy-r.top)*PE.view.k]; }
 function peOpen(on){
   if(on===PE.on)return;
-  if(on&&!cpIs(LAYOUT)&&PE_ORIG[LAYOUT]){ var cw=ALL.layouts[LAYOUT].name, cc=cpFor(LAYOUT); setLayout(cc.id); toast('',cw+' stays as designed: you are changing your copy, '+cc.name); }   // the designs are locked: changes go into a copy
+  if(on&&!cpIs(LAYOUT)&&PE_ORIG[LAYOUT]){ var cw=ALL.layouts[LAYOUT].name, cc=cpNew(LAYOUT); setLayout(cc.id); toast('',cw+' stays as designed: you are working on a new copy, '+cc.name); }   // the designs are locked: changes go into a copy
   PE.on=on; peEl.hidden=!on; document.getElementById('z2d').setAttribute('aria-pressed',String(on));
   if(on){ if(!PE_ORIG[LAYOUT]){ toast('','This plan has no editable walls'); PE.on=false; peEl.hidden=true; return; }
     peEl.style.left=(panelCover()||0)+'px'; PE.sel=null; PE.fr=null; PE.place=null; PE.placeAt=null; PE.undo=[]; PE.redo=[]; peFit(); peDraw(); peTool('sel'); }

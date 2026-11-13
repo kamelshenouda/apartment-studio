@@ -84,7 +84,7 @@ When the owner asks for this (or anything like it), go through these steps in or
     pieces anywhere in a room.
   - **The plans are locked; changes go into copies.** A layout id `copy-<plan>-<n>` is a copy, listed in
     `<prefix>-copies` in the browser (`cpReg` builds it from its plan, with `copyOf`). `peOpen` and `setFurnish` on a plan
-    move to its copy (`cpFor`). The plan page's part is in `plan_trial.js` (tabs, Edit, Rename, New copy, Delete). Never
+    start a new copy (`cpNew`); `cpDrop` deletes one, `cpBar` is its Rename · Delete bar in the panel. The plan page's part is in `plan_trial.js` (tabs, Edit, Rename, New copy, Delete). Never
     let an edit reach a plan itself.
   - **Test handle.** `APT_PLAN.ev(src)` evaluates inside the page, so tests can reach these functions.
 - **A trial sent to you** ("Send to Claude" in the 2D plan) arrives three ways:
