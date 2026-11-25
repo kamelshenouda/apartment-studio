@@ -5407,7 +5407,7 @@ function peDone(){ try{ if(typeof peIndex==='function')peIndex(LAYOUT); }catch(e
 document.getElementById('pe3dx').addEventListener('click',function(){ try{ if(typeof peIndex==='function')peIndex(LAYOUT); }catch(e){} window.parent.postMessage({apt:'open3d',plan:LAYOUT},'*'); });
 var PE_PLANPG=null; if(!document.documentElement.classList.contains('embed'))try{ fetch('plan.html',{method:'HEAD'}).then(function(r){ if(r.ok)PE_PLANPG='plan.html'; }).catch(function(){}); }catch(e){}   // the site has a plan page: 2D editing happens there
 document.getElementById('pekeyb').addEventListener('click',function(){ var l=document.getElementById('pekl'); l.hidden=!l.hidden; this.setAttribute('aria-expanded',String(!l.hidden)); });
-function peTo2D(){ if(PE_PLANPG&&!PE.on){ location.href=PE_PLANPG+'?edit='+encodeURIComponent(LAYOUT); return; } peOpen(!PE.on); }
+function peTo2D(){ if(PE_PLANPG&&!PE.on&&!(window.claude&&window.claude.use)){ location.href=PE_PLANPG+'?edit='+encodeURIComponent(LAYOUT); return; } peOpen(!PE.on); }   // inside Claude the 2D stays here, where every change also reaches the store; the plan page beside it shares the same copies
 document.getElementById('pe3d').addEventListener('click',function(){ if(PE_EMB){ peDone(); return; } peOpen(false); });
 document.getElementById('z2d').addEventListener('click',peTo2D);
 document.getElementById('pego').addEventListener('click',function(){ peOpen(true); });
